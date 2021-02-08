@@ -1,0 +1,28 @@
+#ymaps{
+  width: 100%;
+  height: 600px
+}
+.ymaps_object_list ul{
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+  display: block;
+}
+.ymaps_object_list ul li{
+  color: #333;
+  padding: 15px;
+}
+/*.adm-detail-content-cell-r{
+	display: flex;
+	width: 100%;
+}*/
+/*.adm-detail-valign-top.adm-detail-content-cell-l{
+	display: none;
+}*/
+#ymaps_object_values_coords{
+  width: 100%;
+}
+#ymaps_object_values_address{
+  width: 100%;
+  min-height: 100px;
+}
