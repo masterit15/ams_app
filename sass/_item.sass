@@ -1,0 +1,35 @@
+.useful
+  &_link
+    background-color: $default
+    &_list
+      display: flex
+      flex-direction: row
+      justify-content: center
+      flex-flow: row wrap
+      .item
+        width: 100%
+        max-width: 350px
+        height: auto
+        min-height: 120px
+        display: block
+        padding: 15px
+        margin: 15px
+        position: relative
+        color: $title_col
+        text-align: left
+        border-radius: 3px
+        font-weight: bold
+        box-shadow: $shadow
+        text-transform: uppercase
+        background-color: #fff
+        transition: all .3s ease
+        &:hover
+          color: $title_col
+          box-shadow: $shadow_h
+        &_icon
+          // position: absolute
+          // right: 10px
+          // top: 10px
+          font-size: 1.2rem
+          color: $blue
+          float: right

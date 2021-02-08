@@ -1,0 +1,152 @@
+
+
+/*==========  Desktop First Method  ==========*/
+
+/* Large Devices, Wide Screens */
+@media only screen and (max-width : 1200px)
+	/**/
+	.search
+		left: 0
+
+/* Medium Devices, Desktops */
+@media only screen and (max-width : 992px)
+	.top_info, .top_nav
+		display: none
+	.mmenu_btn
+		display: block
+	.services_list
+		flex-flow: column wrap
+		& .item
+			width: 100%
+			margin-bottom: 2em
+			&:nth-child(odd)
+				margin-right: 0em
+			&:nth-child(even)
+	.news
+		&_list
+			flex-direction: row
+		&_item
+			flex-direction: column
+			width: 100%
+			height: 430px
+			margin-bottom: 30px
+			&:first-child
+				flex-direction: column
+				height: 430px
+				& .news
+					&_media
+						max-width: 100%
+						height: 200px
+					&_content
+						padding: 20px
+
+/* Small Devices, Tablets */
+@media only screen and (max-width : 768px)
+	
+	/*Disable Animation on Mobile Devices*/
+	.animated
+		/*CSS transitions*/
+		-o-transition-property: none !important
+		-moz-transition-property: none !important
+		-ms-transition-property: none !important
+		-webkit-transition-property: none !important
+		transition-property: none !important
+		/*CSS transforms*/
+		-o-transform: none !important
+		-moz-transform: none !important
+		-ms-transform: none !important
+		-webkit-transform: none !important
+		transform: none !important
+		/*CSS animations*/
+		-webkit-animation: none !important
+		-moz-animation: none !important
+		-o-animation: none !important
+		-ms-animation: none !important
+		animation: none !important
+	.section
+		&_title
+			font-size: 1.2rem
+	.services_list
+		flex-flow: column wrap
+		& .item
+			flex-grow: 0
+			width: 100%
+			margin-bottom: 2em
+			&:nth-child(odd)
+				margin-right: 0em
+			&:nth-child(even)
+				&	.item_icon
+					width: 100px
+					height: 100px
+					display: block
+					float: left
+					margin: 15px
+				& .item_media
+					float: left
+				& .item_title
+					text-align: left
+	.search
+		position: absolute
+		padding: 10px 20px
+		left: 0
+		top: 0
+		&_form
+			padding: 0 15px
+			height: 100%
+	.header
+		.logo
+			h3
+				font-size: .8rem
+				margin: 0 10px
+			p
+				font-size: .8rem
+		.search
+			display: none
+			// &_mobile
+			// 	display: block
+	#footer_nav
+		display: block
+
+
+/* Extra Small Devices, Phones */
+@media only screen and (max-width : 480px)
+	/**/
+
+/* Custom, iPhone Retina */
+@media only screen and (max-width : 320px)
+	.section_title
+    font-size: 1.4rem
+
+
+/*==========  Mobile First Method  ==========*/
+
+/* Custom, iPhone Retina */
+@media only screen and (min-width : 320px)
+	/**/
+
+
+/* Extra Small Devices, Phones */
+@media only screen and (min-width : 480px)
+	/**/
+
+
+/* Small Devices, Tablets */
+@media only screen and (min-width: 768px)
+	/**/
+
+
+/* Medium Devices, Desktops */
+@media only screen and (min-width : 992px)
+	/**/
+
+
+/* Large Devices, Wide Screens */
+@media only screen and (min-width : 1200px)
+	/**/
+	.container
+		max-width: 1580px
+	.search
+		padding: 15px 0
+		right: 45px
+	aside#sidebar
+		display: block

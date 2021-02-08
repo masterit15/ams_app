@@ -1,0 +1,82 @@
+.paginationjs-pages
+  width: 100%
+  height: 44px
+  display: -webkit-box
+  display: -webkit-flex
+  display: -ms-flexbox
+  display: flex
+  justify-content: space-between
+  margin: 30px auto 30px
+  padding: 0 15px
+  max-width: 1280px
+
+  ul
+    list-style: none
+    display: inline-block
+    padding: 0
+    text-align: center
+    width: 100%
+    margin: auto
+
+  li
+    display: inline-block
+    width: auto
+    min-width: 45px
+    height: 45px
+    margin: 5px
+    padding: 0 15px
+    line-height: 45px
+    -webkit-border-radius: 4px
+    border-radius: 4px
+    border: 1px solid #ccc
+    position: relative
+    text-align: center
+    transition: all .2s ease-in-out
+    &.beginning, &.previous
+      float: left
+
+    &.beginning.act, &.previous.act
+      cursor: pointer
+      border-color: #fca1ab
+
+    &.beginning.act a, &.previous.act a
+      color: #fca1ab
+
+    &.end, &.next
+      float: right
+
+    &.end.act, &.next.act
+      cursor: pointer
+      border-color: #fca1ab
+
+    &.end.act a, &.next.act a
+      color: #fca1ab
+
+  .paginationjs-page
+    display: inline-block
+    width: 45px
+    height: 45px
+    margin: 5px
+    border-radius: 4px
+    border: 1px solid #ccc
+    position: relative
+    text-align: center
+    transition: all .2s ease-in-out
+
+    &:hover, &.active
+      border-color: #fca1ab
+
+      a, span, .act
+        color: #fca1ab
+        transition: all .2s ease-in-out
+
+    a, span
+      cursor: pointer
+      padding: 0
+      position: absolute
+      width: 100%
+      height: 100%
+      left: 0
+      top: 0
+      color: #ccc
+      line-height: 45px
