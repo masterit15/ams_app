@@ -1,0 +1,14 @@
+.news_img{
+width: 250px;
+height: auto;
+overflow: hidden;
+position: relative;
+margin-right: 20px;
+margin-bottom: 20px;
+float: left;
+}
+.news_img img{
+width: 100%;
+height: auto;
+position: relative;
+}

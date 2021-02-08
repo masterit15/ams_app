@@ -1,0 +1,13 @@
+﻿.catalog-price {
+	 color:red;
+}
+
+div.catalog-section {
+	padding-left: 120px;
+}
+
+div.catalog-section table td {
+	padding-right:0px;
+	padding-top:0px;
+	margin-left: 0px;
+}

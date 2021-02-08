@@ -1,0 +1,3 @@
+﻿.catalog-price {
+	 color:red;
+}
