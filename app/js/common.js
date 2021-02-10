@@ -1013,6 +1013,7 @@ function initializePlugins() {
     const numberBlock = document.getElementById("numbers");
     var scores = [];
     let numberElement = $('.num_item');
+    console.log(numberElement)
     for (let i = 0; i < numberElement.length; i++) {
         scores.push({ score: parseInt($(numberElement[i]).attr('data-start')), end: parseInt($(numberElement[i]).attr('data-end')) })
     }
@@ -1213,6 +1214,7 @@ function initializePlugins() {
             grecaptcha.execute('6Lf3hssZAAAAAK2SOCPR9V8zAbClunlgAlNjYLKT', { action: "homepage" })
             .then(async token => {
                 document.getElementById('token').value = await token
+                console.log(token)
             });
         });
         let method = $(this).attr('method')

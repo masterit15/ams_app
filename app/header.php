@@ -388,28 +388,74 @@ if ($GLOBALS["IS_HOME"]) {
 	<section class="section count_info" style="background-image: url('<?=SITE_TEMPLATE_PATH?>/img/count_section.jpg');">
 		<h2 class="section_title">Владикавказ в цифрах</h2>
 		<div class="container">
-			<div id="numbers">
-				<div class="row">
-					<div class="col-12 col-xl-4">
-						<div class="num_item" data-target="0" data-start="0" data-end="309173">
-							<div class="count">0</div>
-							<h3>Жителей в республике</h3>
-						</div>
-					</div>
-					<div class="col-12 col-xl-4">
-						<div class="num_item mid" data-target="1" data-start="0" data-end="745">
-							<div class="count">0</div>
-							<h3>Улиц отремонтированных</h3>
-						</div>
-					</div>
-					<div class="col-12 col-xl-4">
-						<div class="num_item" data-target="2" data-start="0" data-end="1469">
-							<div class="count">0</div>
-							<h3>Облагороженных дворов</h3>
-						</div>
-					</div>
-				</div>
-			</div>
+			<?$APPLICATION->IncludeComponent(
+				"bitrix:news.list", 
+				"counter", 
+				array(
+					"ACTIVE_DATE_FORMAT" => "d.m.Y",
+					"ADD_SECTIONS_CHAIN" => "Y",
+					"AJAX_MODE" => "N",
+					"AJAX_OPTION_ADDITIONAL" => "",
+					"AJAX_OPTION_HISTORY" => "N",
+					"AJAX_OPTION_JUMP" => "N",
+					"AJAX_OPTION_STYLE" => "Y",
+					"CACHE_FILTER" => "N",
+					"CACHE_GROUPS" => "Y",
+					"CACHE_TIME" => "36000000",
+					"CACHE_TYPE" => "A",
+					"CHECK_DATES" => "Y",
+					"DETAIL_URL" => "",
+					"DISPLAY_BOTTOM_PAGER" => "Y",
+					"DISPLAY_DATE" => "Y",
+					"DISPLAY_NAME" => "Y",
+					"DISPLAY_PICTURE" => "Y",
+					"DISPLAY_PREVIEW_TEXT" => "Y",
+					"DISPLAY_TOP_PAGER" => "N",
+					"FIELD_CODE" => array(
+						0 => "SHOW_COUNTER",
+						1 => "",
+					),
+					"FILTER_NAME" => "",
+					"HIDE_LINK_WHEN_NO_DETAIL" => "N",
+					"IBLOCK_ID" => "104",
+					"IBLOCK_TYPE" => "ams",
+					"INCLUDE_IBLOCK_INTO_CHAIN" => "Y",
+					"INCLUDE_SUBSECTIONS" => "Y",
+					"MESSAGE_404" => "",
+					"NEWS_COUNT" => "3",
+					"PAGER_BASE_LINK_ENABLE" => "N",
+					"PAGER_DESC_NUMBERING" => "N",
+					"PAGER_DESC_NUMBERING_CACHE_TIME" => "36000",
+					"PAGER_SHOW_ALL" => "N",
+					"PAGER_SHOW_ALWAYS" => "N",
+					"PAGER_TEMPLATE" => ".default",
+					"PAGER_TITLE" => "Новости",
+					"PARENT_SECTION" => "",
+					"PARENT_SECTION_CODE" => "",
+					"PREVIEW_TRUNCATE_LEN" => "",
+					"PROPERTY_CODE" => array(
+						0 => "",
+						1 => "DOC_FILE",
+						2 => "",
+					),
+					"SET_BROWSER_TITLE" => "Y",
+					"SET_LAST_MODIFIED" => "N",
+					"SET_META_DESCRIPTION" => "Y",
+					"SET_META_KEYWORDS" => "Y",
+					"SET_STATUS_404" => "N",
+					"SET_TITLE" => "Y",
+					"SHOW_404" => "N",
+					"SORT_BY1" => "ID",
+					"SORT_BY2" => "SORT",
+					"SORT_ORDER1" => "DESC",
+					"SORT_ORDER2" => "ASC",
+					"COMPONENT_TEMPLATE" => "counter",
+					"STRICT_SECTION_CHECK" => "N",
+					"COMPOSITE_FRAME_MODE" => "A",
+					"COMPOSITE_FRAME_TYPE" => "AUTO"
+				),
+				false
+			);?>
 		</div>
 	</section>
 	<!-- end section.count_info -->
@@ -499,72 +545,6 @@ if ($GLOBALS["IS_HOME"]) {
 				),
 				false
 			);?>
-		</div>
-	</section>
-	<section class="section media">
-		<div class="container">
-			<div class="row">
-			<div class="tabs_container">
-			<ul class="tabs">
-					<li class="active">Фотогалерея</li>
-					<li>Видеогалерея</li>
-				</ul>
-				<ul class="tab__content">
-					<li class="active">
-						<div class="content__wrapper">
-						Далеко-далеко за словесными горами в стране гласных и согласных живут рыбные тексты. Безопасную ему продолжил заманивший на берегу текстами путь приставка по всей океана. Прямо великий даже рукописи безорфографичный, пор путь семь собрал все.
-						Далеко-далеко за словесными горами в стране гласных и согласных живут рыбные тексты. Безопасную ему продолжил заманивший на берегу текстами путь приставка по всей океана. Прямо великий даже рукописи безорфографичный, пор путь семь собрал все.
-						Далеко-далеко за словесными горами в стране гласных и согласных живут рыбные тексты. Безопасную ему продолжил заманивший на берегу текстами путь приставка по всей океана. Прямо великий даже рукописи безорфографичный, пор путь семь собрал все.
-
-						</div>
-					</li>
-					<li>
-						<div class="content__wrapper">
-						<?
-						function youtubeVideo(){
-							$api_key = 'AIzaSyAY9B2Z33ZwbGw3sO8_2_Sd2hbZwiXfqF8';
-							$url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&order=date&maxResults=5&playlistId=PLCouz0yJGoZSY4wckQlHdMhnS8b6ZQYRO&key=". $api_key;
-							$ch = curl_init();
-							curl_setopt($ch, CURLOPT_URL, $url);
-							curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-							curl_setopt($ch, CURLOPT_HEADER, 0);
-							$output = curl_exec($ch);
-							$json = json_decode($output, true); 
-							$arRes = array();
-							foreach($json["items"] as $key => $value){
-								$arRes[] = array(
-									'currentTime' => date("d.m.Y"),
-									'videoId'	=> $value["snippet"]["resourceId"]["videoId"],
-									'videoTitle'	=> $value["snippet"]["title"],
-									'videoDesc'	=> $value["snippet"]["description"],
-									'videoImg'	=> $value["snippet"]["thumbnails"]["medium"]
-								);
-							}
-							curl_close($ch);
-							return $arRes;
-						}
-						function Youtube(){
-							$file			= $_SERVER['DOCUMENT_ROOT'].'/bitrix/templates/app/api/youtube.json';	
-							$youtube 	= json_decode(file_get_contents($file),TRUE);	
-							if(count($youtube) == 0 or date("d.m.Y") != $youtube[0]['currentTime']){
-								file_put_contents($file,json_encode(youtubeVideo()));
-							}
-							if(count($youtube) > 0){
-								foreach($youtube as $key => $value){
-									echo ('<div class="you_item" data-toggle="tooltip" data-placement="bottom" title="">
-														<img class="you_icon" src="'.$value['videoImg']['url'].'">
-												</div>');
-								}
-							}
-						}
-						Youtube();
-						?>
-						</div>
-					</li>
-				</ul>
-			
-				</div>
-			</div>
 		</div>
 	</section>
 	<!-- end section.useful_link -->

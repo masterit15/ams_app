@@ -75,6 +75,30 @@
 			</div>
 		</div>
 	</footer>
+	<!-- end footer -->
+	<nav id="footer_nav">
+		<ul>
+			<li>
+				<a href="tel:303030"><i class="fa fa-phone"></i></a>
+			</li>
+			<li>
+				<div class="search">
+					<i class="fa fa-search"></i>
+				</div>
+			</li>
+			<li>
+				<span class="aa-enable aa-hide" tabindex="1" data-aa-on>
+					<i class="fa fa-low-vision"></i>
+				</span>
+			</li>
+			<li>
+				<a class="appliction" href="javascript:void(0)" data-izimodal-open="#modal_app_form" data-izimodal-transitionin="fadeInDown">
+					<i class="fa fa-pencil-square-o"></i>
+				</a>
+			</li>
+		</ul>
+	</nav>
+	<!-- begin modal -->
 	<div id="modal_app_form" data-iziModal-fullscreen="true" data-iziModal-title="Форма электронного обращения"
 		data-iziModal-subtitle="Поля, отмеченные *, обязательны для заполнения" data-iziModal-icon="icon-home">
 		
@@ -201,11 +225,34 @@
 								<textarea class="app_form_textarea" data-count="2000" data-text="Содержание обращения (не более 2000 символов)" rows="10" name="app_form_claim_30" id="app_form_claim_30" autocomplete="off"></textarea>
 								<label>Содержание обращения (не более 2000 символов)</label>
 							</div>
-							<div class="form_row__photo-previews">
+							<!-- <div class="form_row__photo-previews">
 								<input type="file" name="files[]" multiple="" id="js-photo-upload">
 								<div class="add_photo-content">
 									<div class="add_photo-item"><span class="text">Прикрепить 5 файлов</span></div>
 									<ul id="uploadImagesList"></ul>
+								</div>
+								<div class="errormassege"></div>
+								<p class="app_form_comments">Не более 5 файлов, Допустимые форматы: jpeg,jpg,png,tif,gif,pdf,doc,docx,xls,xlsx,zip,rar Максимальный допустимый размер: 5МБ</p>
+							</div> -->
+
+
+							<div class="form_row__photo-previews">
+								<input type="file" name="more_photos[]" multiple id="js-photo-upload">
+								<div class="add_photo-content">
+									<div class="add_photo-item"></div>
+									<ul id="uploadImagesList">
+										<li class="item">
+											<span class="img-wrap">
+												<img src="" alt="">
+											</span>
+											<span class="icon-wrap">
+												<i class="fa"></i>
+											</span>
+											<span class="delete-link" title="Удалить">
+												<i class="fa fa-times"></i>
+											</span>
+										</li>
+									</ul>
 								</div>
 								<div class="errormassege"></div>
 								<p class="app_form_comments">Не более 5 файлов, Допустимые форматы: jpeg,jpg,png,tif,gif,pdf,doc,docx,xls,xlsx,zip,rar Максимальный допустимый размер: 5МБ</p>
@@ -219,7 +266,7 @@
 						<label for="app_form_consent" class="checkbox">
 							<p class="app_form_comments"></p>
 							<input type="checkbox" name="app_form_consent" id="app_form_consent" placeholder="Я принимаю условия" autocomplete="off" value="36" required="">
-							<span>Я принимаю условия</span>
+							<span>Нажимая кнопку "Отправить", я принимаю <a href="/" target="_blank" rel="noopener noreferrer">условия пользовательского соглашения.</a></span>
 						</label>
 					</div>
 
@@ -232,35 +279,5 @@
 		</form>
 	</div>
 	<!-- end modal -->
-	<nav id="footer_nav">
-		<ul>
-			<li>
-				<a href="tel:303030"><i class="fa fa-phone"></i></a>
-			</li>
-			<li>
-				<div class="search">
-					<i class="fa fa-search"></i>
-				</div>
-			</li>
-			<li>
-				<span class="aa-enable aa-hide" tabindex="1" data-aa-on>
-					<i class="fa fa-low-vision"></i>
-				</span>
-			</li>
-			<li>
-				<a class="appliction" href="javascript:void(0)" data-izimodal-open="#modal_app_form" data-izimodal-transitionin="fadeInDown">
-					<i class="fa fa-pencil-square-o"></i>
-				</a>
-			</li>
-		</ul>
-	</nav>
-<!-- end footer -->
-	<!--[if lt IE 9]>
-	<script src="<?=SITE_TEMPLATE_PATH?>/libs/html5shiv/es5-shim.min.js"></script>
-	<script src="<?=SITE_TEMPLATE_PATH?>/libs/html5shiv/html5shiv.min.js"></script>
-	<script src="<?=SITE_TEMPLATE_PATH?>/libs/html5shiv/html5shiv-printshiv.min.js"></script>
-	<script src="<?=SITE_TEMPLATE_PATH?>/libs/respond/respond.min.js"></script>
-	<![endif]-->
-<!-- begin modal -->
 </body>
 </html>
