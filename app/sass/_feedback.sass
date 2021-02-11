@@ -1,0 +1,143 @@
+.feed
+  &-list
+  &-head
+    // text-align: center
+    height: 80px
+    line-height: 80px
+    border-bottom: 1px solid #ededed
+    display: flex
+    justify-content: space-between
+    flex-direction: row
+    &-item
+  &-detail
+    list-style: none
+    padding: 0
+    margin: 0
+    display: inline-block
+    width: 100%
+    & textarea
+      float: left
+      width: 100%
+      min-height: 100px
+      max-width: 50%
+      padding: 15px
+      margin-bottom: 15px
+    &-value
+      float: left
+      width: 100%
+      max-width: 50%
+      &-name
+        float: left
+        width: 100%
+        max-width: 50%
+        font-weight: bold
+        border: 1px soled #333
+    & li
+      padding: 10px 0
+      margin: 20px 0
+      display: block
+      
+    & .popup-gallery
+      float: left
+      margin-bottom: 20px
+      a
+        display: flex
+        justify-content: flex-start
+        flex-direction: row
+        width: 160px
+        height: 120px
+
+  &-item
+    cursor: pointer
+    width: 100%
+    display: flex
+    justify-content: space-between
+    flex-direction: row
+    height: 80px
+    position: relative
+    color: rgba($title_col,0.6)
+    border-radius: 5px
+    margin: 15px 0
+    transition: all .3s ease
+    &-toggle
+      position: absolute
+      width: 100%
+      height: 100%
+      left: 0
+      top: 0
+    &.active
+      height: 380px
+      box-shadow: 0 5px 14px rgba(#000,.1)
+      & .feed-item-prop
+        display: block
+      & .feed-item
+        &-prop
+          margin-top: 15px
+        &-departament
+          text-overflow: ellipsis
+          white-space: normal
+          max-width: 100%
+        &-left
+          flex-direction: column
+          justify-content: space-between
+          transition: all .3s ease
+        &-left, &-right
+          width: 50%
+        &-right
+          display: block
+      &::before
+        height: 100%
+    &:hover
+      transition: all .3s ease
+      color: rgba($title_col,0.6)
+      box-shadow: 0 5px 14px rgba(#000,.1)
+    &::before
+      content: ''
+      position: absolute
+      top: 0
+      left: 0
+      width: 3px
+      height: 0
+      margin: auto
+      background-color: $green
+    &-left
+      padding: 15px
+      display: flex
+      justify-content: space-between
+      flex-direction: row
+      transition: all .3s ease
+      width: 100%
+    &-right
+      padding: 15px
+      opacity: 0
+    &-avatar
+      margin: 0 15px
+      width: 50px
+      height: 50px
+      line-height: 50px
+      border-radius: 100%
+      display: block
+      text-align: center
+      background-color: #ededed
+    &-departament
+      max-width: 180px
+      display: block
+      overflow: hidden
+      text-overflow: ellipsis
+      white-space: nowrap
+      color: #393738
+      font-size: 17px
+      font-weight: 500
+      position: relative
+    &-prop
+      text-transform: uppercase
+      color:  #dfdfdf
+      display: none
+      font-size: 1rem
+    &-text
+      width: 100%
+      & .text
+        min-height: 100px
+        padding: 15px
+        background-color: #d5d5d5
+        border-radius: 5px

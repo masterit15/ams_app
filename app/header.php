@@ -17,15 +17,15 @@
 	<link rel="apple-touch-icon" sizes="72x72" href="<?=SITE_TEMPLATE_PATH?>/img/favicon/apple-touch-icon-72x72.png">
 	<link rel="apple-touch-icon" sizes="114x114" href="<?=SITE_TEMPLATE_PATH?>/img/favicon/apple-touch-icon-114x114.png">
 	<?
-$APPLICATION->ShowHead();
-Bitrix\Main\Page\Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/css/app.min.css");
-Bitrix\Main\Page\Asset::getInstance()->addJs(SITE_TEMPLATE_PATH . "/js/app.min.js");
-Bitrix\Main\Page\Asset::getInstance()->addJs("https://api-maps.yandex.ru/2.1/?apikey=256e028a-94b5-496f-b948-394772dc151a&lang=ru_RU");
-Bitrix\Main\Page\Asset::getInstance()->addJs("https://www.google.com/recaptcha/api.js?render=6Lf3hssZAAAAAK2SOCPR9V8zAbClunlgAlNjYLKT");
-// Bitrix\Main\Page\Asset::getInstance()->addJs(SITE_TEMPLATE_PATH . "/js/common.js");
-$GLOBALS["IS_HOME"] = $APPLICATION->GetCurPage(true) === SITE_DIR . "index.php";
-CModule::IncludeModule('iblock');
-?>
+	$APPLICATION->ShowHead();
+	Bitrix\Main\Page\Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/css/app.min.css");
+	Bitrix\Main\Page\Asset::getInstance()->addJs(SITE_TEMPLATE_PATH . "/js/app.min.js");
+	Bitrix\Main\Page\Asset::getInstance()->addJs("https://api-maps.yandex.ru/2.1/?apikey=256e028a-94b5-496f-b948-394772dc151a&lang=ru_RU");
+	Bitrix\Main\Page\Asset::getInstance()->addJs("https://www.google.com/recaptcha/api.js?render=6Lf3hssZAAAAAK2SOCPR9V8zAbClunlgAlNjYLKT");
+	Bitrix\Main\Page\Asset::getInstance()->addJs(SITE_TEMPLATE_PATH . "/js/common.js");
+	$GLOBALS["IS_HOME"] = $APPLICATION->GetCurPage(true) === SITE_DIR . "index.php";
+	CModule::IncludeModule('iblock');
+	?>
 </head>
 <body>
 <div class="wrapper" <?if (!$GLOBALS["IS_HOME"]) {?>id="pjax-container"<?}?>>

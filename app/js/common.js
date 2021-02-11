@@ -71,6 +71,27 @@ function initializePlugins() {
 
         lastScrollTop = $(this).scrollTop();
     })
+    // $('.feed-item-toggle').on('click', function(){
+    //     let left = $(this).parent().find('.feed-item-left')
+    //     let right = $(this).parent().find('.feed-item-right')
+    //     // $('.feed-item').removeClass('active')
+    //     $('.feed-item').not(this).each(function () {
+    //         $(this).parent().removeClass("active");
+    //         $(this).removeClass("active");  
+    //         top = $(this).innerHeight()
+    //     });
+    //     $(this).parent().toggleClass("active");
+    //     $(this).toggleClass("active");
+    //     if ($(this).hasClass('active')) {
+    //         tl.to(right, 0.2, {opacity: 1})
+    //     } else {
+    //         $(this).parent().toggleClass("active");
+    //         tl.to(right, { y: -20, opacity: 0, stagger: 0.1, duration: 0.02, })
+    //             .then(function (res) {
+                    
+    //             })
+    //     }
+    // })
     $('.accordion_item_wrap').on('click', function(){
         let parrent = $(this).parent('.accordion_item')
         $('.accordion_item_content').hide(200)
@@ -176,13 +197,14 @@ function initializePlugins() {
         })
     }
     // right panel
-    let panelHtml = `<div class="right_panel">
+    
+    $('[data-panel]').on('click', function () {
+        $('.right_panel').remove()
+        let panelHtml = `<div class="right_panel">
                             <div class="right_panel_close"><i class="fa fa-times"></i></div>
                             <h2 class="right_panel_title"></h2>
                             <div class="right_panel_content"></div>
                         </div>`
-    $('[data-panel]').on('click', function () {
-        $('.right_panel').remove()
         $('body').append(panelHtml)
         let panel = $('.right_panel')
         let thisTitle = $(this).children('.item_title').text()
@@ -415,7 +437,7 @@ function initializePlugins() {
     // popover
     $('.popover').remove()
     $('[data-toggle="popover"]').popover({
-        trigger: 'hover',
+        trigger: 'click',
         html: true,
         placement: 'bottom',
         container: 'body'
@@ -1013,7 +1035,7 @@ function initializePlugins() {
     const numberBlock = document.getElementById("numbers");
     var scores = [];
     let numberElement = $('.num_item');
-    console.log(numberElement)
+    console.log(numberBlock)
     for (let i = 0; i < numberElement.length; i++) {
         scores.push({ score: parseInt($(numberElement[i]).attr('data-start')), end: parseInt($(numberElement[i]).attr('data-end')) })
     }

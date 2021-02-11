@@ -50,7 +50,7 @@ function scripts() {
 		'node_modules/animejs/lib/anime.min.js',
 		'node_modules/chart.js/dist/Chart.bundle.min.js',
 		`${defpath}libs/specversion/special_version.js`,
-		`${defpath}js/common.js`
+		// `${defpath}js/common.js`
 		])
 	
 	.pipe(concat('app.min.js')) // Конкатенируем в один файл

@@ -11,6 +11,7 @@
   &.active
     & .folder-summary
       height: auto
+      min-height: 100px
       transition: all .5s ease
       &:after
         width: 100%
@@ -101,7 +102,23 @@
   display: flex
   font-size: 15px
   margin-top: 8px
-
+.folder-summary__avatar
+  width: 50px
+  height: 50px
+  line-height: 50px
+  text-transform: uppercase
+  color: #b5b4b5
+  border-radius: 100%
+  background-color: rgba(#b5b4b5,.5)
+  border: 1px solid #b5b4b5
+.folder-summary__status
+  position: absolute
+  right: 15px
+  bottom: 15px
+  border-radius: 30px
+  font-size: 0.9rem
+  font-weight: bold
+  padding: 8px 15px
 .folder-summary__end
   margin-left: 15px
   
@@ -194,7 +211,24 @@
 
 .folder-item__details
   padding: 1px 0 0 15px
+  &__action
+    width: 100%
+    display: flex
+    justify-content: space-between
 
+  &__btn
+    cursor: pointer
+    background-color: transparent
+    border: none
+    padding: 10px 20px
+    border-radius: 50px
+    font-size: 1rem
+    font-weight: bold
+    color: rgba($blue, .8)
+    background-color: rgba($blue, .3)
+    &:hover
+      color: rgba($blue, 1)
+      background-color: rgba($blue, .4)
 .folder-item__details__name
   color: #393738
   font-size: 17px
@@ -213,7 +247,10 @@
   color: #b5b4b5
   font-size: 15px
   margin-top: 8px
-
+.folder-item__details__value
+  color: #b5b4b5
+  font-size: 15px
+  margin-top: 8px
 .folder-item__size
   color: #6a696a
   font-weight: 500

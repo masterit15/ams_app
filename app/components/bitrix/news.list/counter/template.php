@@ -14,18 +14,22 @@ $this->setFrameMode(true);
 ?>
 <div id="numbers">
 	<div class="row">
-		<?foreach($arResult["ITEMS"] as $arItem):?>
+		<?
+		$index = 0;
+		foreach($arResult["ITEMS"] as $arItem):?>
 			<?
 			$this->AddEditAction($arItem['ID'], $arItem['EDIT_LINK'], CIBlock::GetArrayByID($arItem["IBLOCK_ID"], "ELEMENT_EDIT"));
 			$this->AddDeleteAction($arItem['ID'], $arItem['DELETE_LINK'], CIBlock::GetArrayByID($arItem["IBLOCK_ID"], "ELEMENT_DELETE"), array("CONFIRM" => GetMessage('CT_BNL_ELEMENT_DELETE_CONFIRM')));
 			// PR($arItem["PROPERTIES"]["COUNT"]["VALUE"]);
 			?>
 			<div class="col-12 col-xl-4" id="<?=$this->GetEditAreaId($arItem['ID']);?>">
-				<div class="num_item" data-target="0" data-start="0" data-end="<?=$arItem["PROPERTIES"]["COUNT"]["VALUE"]?>">
+				<div class="num_item" data-target="<?=$index?>" data-start="0" data-end="<?=$arItem["PROPERTIES"]["COUNT"]["VALUE"]?>">
 					<div class="count">0</div>
 					<h3><?=$arItem["NAME"]?></h3>
 				</div>
 			</div>
-		<?endforeach;?>
+		<?
+	$index++;
+	endforeach;?>
 	</div>
 </div>
