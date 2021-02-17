@@ -1,5 +1,6 @@
 .feed
   &-list
+
   &-head
     // text-align: center
     height: 80px
@@ -15,6 +16,89 @@
     margin: 0
     display: inline-block
     width: 100%
+    .group
+      margin-bottom: 25px
+    &-status
+      &-line
+        display: flex
+        padding: 0
+        margin: 50px 0
+        flex-direction: row
+        justify-content: start
+        list-style: none
+        & li
+          position: relative
+          cursor: pointer
+          width: 100%
+          max-width: 320px
+          height: 45px
+          padding-left: 30px
+          background-color: #dcdcdc
+          line-height: 45px
+          color: $title_col
+          margin-right: 0px
+          transition: all .3s ease
+          &:first-child
+            border-radius: 5px 0 0 5px
+          &.is_none
+            &[data-status-id]
+              background-color: #dcdcdc
+              color: $title_col
+              &:before
+                border-color: transparent transparent transparent #dcdcdc
+          &:hover
+            transition: all .3s ease
+            box-shadow: 4px 3px 3px rgba(#000,0.4)
+            &:after
+              opacity: 1
+              transition: all .3s ease
+          &:before
+            content: ''
+            position: absolute
+            top: 0
+            right: -25px
+            width: 0
+            height: 0
+            border-style: solid
+            border-width: 22.5px 0 22.5px 25px
+            border-color: transparent transparent transparent #dcdcdc
+          &:after
+            content: ''
+            opacity: 0
+            position: absolute
+            top: 5px
+            right: -28px
+            width: 0
+            height: 0
+            filter: blur(1px)
+            border-style: solid
+            border-width: 21.5px 0 21.5px 24px
+            border-color: transparent transparent transparent rgba(#000,0.4)
+            transition: all .3s ease
+            z-index: -1
+          &[data-status-id="15"]
+            background-color: rgba($red,0.2)
+            color: $red
+            z-index: 3
+            &:before
+              border-color: transparent transparent transparent #fee2e4
+          &[data-status-id="16"]
+            background-color: rgba($yellow,0.2)
+            color: $yellow
+            z-index: 2
+            &:before
+              border-color: transparent transparent transparent #fdf1d0
+          &[data-status-id="17"]
+            background-color: rgba($green,0.2)
+            color: $green
+            z-index: 1
+            &:before
+              border-color: transparent transparent transparent #ccf4eb
+    & .group
+      margin-bottom: 30px
+    &-title
+      text-transform: uppercase
+      margin-bottom: 30px
     & textarea
       float: left
       width: 100%
@@ -32,10 +116,10 @@
         max-width: 50%
         font-weight: bold
         border: 1px soled #333
-    & li
-      padding: 10px 0
-      margin: 20px 0
-      display: block
+    // & li
+    //   padding: 10px 0
+    //   margin: 20px 0
+    //   display: block
       
     & .popup-gallery
       float: left

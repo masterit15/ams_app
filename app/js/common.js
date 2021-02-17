@@ -71,27 +71,8 @@ function initializePlugins() {
 
         lastScrollTop = $(this).scrollTop();
     })
-    // $('.feed-item-toggle').on('click', function(){
-    //     let left = $(this).parent().find('.feed-item-left')
-    //     let right = $(this).parent().find('.feed-item-right')
-    //     // $('.feed-item').removeClass('active')
-    //     $('.feed-item').not(this).each(function () {
-    //         $(this).parent().removeClass("active");
-    //         $(this).removeClass("active");  
-    //         top = $(this).innerHeight()
-    //     });
-    //     $(this).parent().toggleClass("active");
-    //     $(this).toggleClass("active");
-    //     if ($(this).hasClass('active')) {
-    //         tl.to(right, 0.2, {opacity: 1})
-    //     } else {
-    //         $(this).parent().toggleClass("active");
-    //         tl.to(right, { y: -20, opacity: 0, stagger: 0.1, duration: 0.02, })
-    //             .then(function (res) {
-                    
-    //             })
-    //     }
-    // })
+
+    
     $('.accordion_item_wrap').on('click', function(){
         let parrent = $(this).parent('.accordion_item')
         $('.accordion_item_content').hide(200)
@@ -144,6 +125,9 @@ function initializePlugins() {
             },
             success: function (res) {
                 console.log(res)
+                // location.href = `download_zip.php?${res.download}&${res.path}&${res.name}`
+                window.open(`http://vladikavkaz-osetia.ru/download_zip.php?download=${res.download}&path=${res.path}&name=${res.name}`, '_blank');
+                
             },
             error: function (err) {
                 mainToast(5000, "error", 'Ошибка загрузки!', err)
@@ -197,10 +181,32 @@ function initializePlugins() {
         })
     }
     // right panel
-    
     $('[data-panel]').on('click', function () {
         $('.right_panel').remove()
         let panelHtml = `<div class="right_panel">
+                            <div class="modal_loader">
+                                <svg version="1.1" id="L7" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+                                    y="0px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
+                                    <path fill="#fff"
+                                        d="M31.6,3.5C5.9,13.6-6.6,42.7,3.5,68.4c10.1,25.7,39.2,38.3,64.9,28.1l-3.1-7.9c-21.3,8.4-45.4-2-53.8-23.3c-8.4-21.3,2-45.4,23.3-53.8L31.6,3.5z"
+                                        transform="rotate(312.597 50 50)">
+                                        <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="2s" from="0 50 50"
+                                            to="360 50 50" repeatCount="indefinite"></animateTransform>
+                                    </path>
+                                    <path fill="#fff"
+                                        d="M42.3,39.6c5.7-4.3,13.9-3.1,18.1,2.7c4.3,5.7,3.1,13.9-2.7,18.1l4.1,5.5c8.8-6.5,10.6-19,4.1-27.7c-6.5-8.8-19-10.6-27.7-4.1L42.3,39.6z"
+                                        transform="rotate(-265.194 50 50)">
+                                        <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50"
+                                            to="-360 50 50" repeatCount="indefinite"></animateTransform>
+                                    </path>
+                                    <path fill="#fff"
+                                        d="M82,35.7C74.1,18,53.4,10.1,35.7,18S10.1,46.6,18,64.3l7.6-3.4c-6-13.5,0-29.3,13.5-35.3s29.3,0,35.3,13.5L82,35.7z"
+                                        transform="rotate(312.597 50 50)">
+                                        <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="2s" from="0 50 50"
+                                            to="360 50 50" repeatCount="indefinite"></animateTransform>
+                                    </path>
+                                </svg>
+                            </div>
                             <div class="right_panel_close"><i class="fa fa-times"></i></div>
                             <h2 class="right_panel_title"></h2>
                             <div class="right_panel_content"></div>
@@ -210,12 +216,70 @@ function initializePlugins() {
         let thisTitle = $(this).children('.item_title').text()
         let title = $(panel).children('.right_panel_title')
         let content = $(panel).children('.right_panel_content')
+        $('.modal_loader').fadeIn(200)
         $(panel).addClass('open')
         let data = { id: $(this).data('id') }
+        let url = $(this).data('url')
         $.ajax({
             type: "GET",
-            url: $(this).data('url'),
+            url: url,
             data: data,
+            beforeSend: function () {
+                NProgress.start();
+            },
+            complete: function () {
+                NProgress.done();
+                $('.modal_loader').fadeOut(200)
+            },
+            success: function (res) {
+                $(title).text(thisTitle)
+                $(content).html(res);
+                // $(content).append(res);
+                $('.right_panel_close').on('click', function () {
+                    $('.right_panel').removeClass('open')
+                    $('.right_panel').remove()
+                })
+                loadFeedback()
+            },
+            error: function (err) {
+                mainToast(5000, "error", 'Ошибка загрузки!', err)
+            }
+        });
+    })
+    // функция повторной инициализации елементов формы обращения
+    function loadFeedback(){
+        $('.right_panel_content .group').each(function(){
+            let label = $(this).find('label')
+            let input = $(this).find('input')
+            let textarea = $(this).find('textarea')
+            if($(input).val() && $(input).val().length > 0 || $(textarea).val() && $(textarea).val().length > 0){
+                $(label).addClass('is_active')
+            }else{
+                $(label).removeClass('is_active')
+            }
+        })
+        $('.feed-detail-status-line').each(function(){
+            let id = $(this).data('status-active')
+            let li = $(this).find(`li[data-status-id="${id}"]`)
+            let elLi = $(this).find('li')
+            if($(li).nextAll().length > 0){
+                $(li).nextAll().addClass('is_none')
+            }
+            $(elLi).on('click', function(){
+                $(this).nextAll().addClass('is_none')
+                $(this).removeClass('is_none')
+                $('.modal_loader').fadeIn(200)
+                changeStatus($(this).data('elid'), $(this).data('status-id'))
+            })
+        })
+        $('.modal_loader').fadeOut(200)
+    }
+    // функция подгрузки обращения при изменении
+    function loadApplication(id){
+        $.ajax({
+            type: "GET",
+            url: '../bitrix/templates/app/api/application_detail.php',
+            data: { id: id },
             beforeSend: function () {
                 NProgress.start();
             },
@@ -223,20 +287,37 @@ function initializePlugins() {
                 NProgress.done();
             },
             success: function (res) {
-                $(title).text(thisTitle)
-                $(content).html(res);
-                tabsInit()
-                // $(content).append(res);
-                $('.right_panel_close').on('click', function () {
-                    $('.right_panel').removeClass('open')
-                    $('.right_panel').remove()
-                })
+                $('.right_panel_content').html(res)
+                loadFeedback()
             },
             error: function (err) {
                 mainToast(5000, "error", 'Ошибка загрузки!', err)
             }
         });
-    })
+    }
+    // функция смены статуса
+    function changeStatus(element, status){
+        $.ajax({
+            type: "POST",
+            url: '../bitrix/templates/app/api/change_feed_app.php',
+            data: {element: element, status: status},
+            beforeSend: function () {
+                NProgress.start();
+            },
+            complete: function () {
+                NProgress.done();
+            },
+            success: function (res) {
+                if(res.success){
+                    loadApplication(element)
+                }
+                mainToast(5000, res.status, ``, res.result)
+            },
+            error: function (err) {
+                mainToast(5000, "error", 'Ошибка загрузки!', err)
+            }
+        });
+    }
     // document filter
     $('#filter_document').each(function () {
         let iblock = $('.document_list').data('iblock') ? $('.document_list').data('iblock') : null
@@ -532,36 +613,36 @@ function initializePlugins() {
         language: "ru"
     });
 
-    $('#app_form_departament').on('select2:select', function (e) {
-        let data = {
-            id: e.params.data.id
-        }
-        $.ajax({
-            url: '/bitrix/templates/app/api/person.php',
-            type: 'GET',
-            data: data,
-            //dataType: 'json',
-            beforeSend: function () {
-                // NProgress.start();
-            },
-            complete: function () {
-                // NProgress.done();
-            },
-            success: function (res) {
-                $('#person').html('<option value="#">Выберите должностное лицо</option>')
-                if (res.result.length > 1) {
-                    res.result.forEach(person => {
-                        $('#person').append(`<option title="${e.params.data.text}" value="${person.ID}">${person.NAME}</option>`);
-                    })
-                } else {
-                    $('#person').append(`<option title="${e.params.data.text}" value="${res.result[0].ID}">${res.result[0].NAME}</option>`);
-                }
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-            }
-        })
-    });
+    // $('#app_form_departament').on('select2:select', function (e) {
+    //     let data = {
+    //         id: e.params.data.id
+    //     }
+    //     $.ajax({
+    //         url: '/bitrix/templates/app/api/person.php',
+    //         type: 'GET',
+    //         data: data,
+    //         //dataType: 'json',
+    //         beforeSend: function () {
+    //             // NProgress.start();
+    //         },
+    //         complete: function () {
+    //             // NProgress.done();
+    //         },
+    //         success: function (res) {
+    //             $('#person').html('<option value="#">Выберите должностное лицо</option>')
+    //             if (res.result.length > 1) {
+    //                 res.result.forEach(person => {
+    //                     $('#person').append(`<option title="${e.params.data.text}" value="${person.ID}">${person.NAME}</option>`);
+    //                 })
+    //             } else {
+    //                 $('#person').append(`<option title="${e.params.data.text}" value="${res.result[0].ID}">${res.result[0].NAME}</option>`);
+    //             }
+    //         },
+    //         error: function (xhr, ajaxOptions, thrownError) {
+    //             console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+    //         }
+    //     })
+    // });
     $('#need_person').on('change', function () {
         if ($(this).is(':checked')) {
             $('#person').select2({
@@ -653,103 +734,91 @@ function initializePlugins() {
             $(this).after(`<span class="error_message">Не валидная е-почта!</span>`)
         }
     });
+    $('#app_form_consent').each(function () {
+        let form_tab = $(this).closest('.form_tab')
+        let event = $(form_tab).find('.form_tab_event')
+        if ($(this).is(':checked')) {
+            $(form_tab).addClass('is_valid')
+            $(event).html('<i class="fa fa-check"></i>')
+        } else {
+            $(that).removeClass('is_valid')
+            $(event).html(tabNumber)
+        }
+    })
+    function formTabValidation(el, valid=false){
+        let tabNumber = $(el).data('event-num')
+        let form_tab = $(el).closest('.form_tab')
+        let event = $(form_tab).find('.form_tab_event')
+        if (valid) {
+            $(form_tab).addClass('is_valid')
+            $(event).html('<i class="fa fa-check"></i>')
+        } else {
+            $(form_tab).removeClass('is_valid')
+            $(event).html(tabNumber)
+        }
+    }
     // form tab line
-    $('.form_tab').on('change', function () {
+    $('.app_form').each(function () {
         let that = this
-        let textarea = $(this).find('textarea')
-        let input = $(this).find('input')
-        let departament = $(this).find('select#app_form_departament')
+        let textareaQuest = $(this).find('textarea[name="description"]')
+        let textareaText = $(this).find('textarea[name="description_detail"]')
+        let firstName = $(this).find('input[name="first_name"]')
+        let name = $(this).find('input[name="name"]')
+        let email = $(this).find('input[name="email"]')
+        let address = $(this).find('input[name="address"]')
+        let departament = $(this).find('#app_form_departament')
         let person = $(this).find('select#person')
         let check = $(this).find('input#app_form_persondata_18')
         let need_person = $(this).find('input#need_person')
-        let tabNumber = $(this).data('event-num')
-        let event = $(this).find('span.form_tab_event')
         let consent = $(this).find('#app_form_consent')
         let button = $('.btn_submit')
         let inputStatus = []
         let textareaStatus = []
+        let inputValidCount = 0
 
-        //console.log(phoneMask)
-        $(input).each(function () {
-            if (this.value == '') {
-                return inputStatus.push('no');
-            }
-            else {
-                return inputStatus.push('ok');
-            }
-        })
+        
         if ($(check).is(':checked')) {
             if (inputStatus[0] == 'ok' && inputStatus[1] == 'ok' && inputStatus[2] == 'ok' && inputStatus[3] == 'ok' && inputStatus[4] == 'ok' && inputStatus[5] == 'ok' && inputStatus[6] == 'ok' && inputStatus[7] == 'ok') {
-                $(this).addClass('is_valid')
-                $(event).html('<i class="fa fa-check"></i>')
+                formTabValidation(input, true)
             } else {
-                $(this).removeClass('is_valid')
-                $(event).html(tabNumber)
+                formTabValidation(input)
             }
         } else {
             if (inputStatus[0] == 'ok' && inputStatus[1] == 'no' && inputStatus[2] == 'ok' && inputStatus[3] == 'ok' && inputStatus[4] == 'ok' && inputStatus[5] == 'ok' && inputStatus[6] == 'ok' && inputStatus[7] == 'ok') {
-                $(this).addClass('is_valid')
-                $(event).html('<i class="fa fa-check"></i>')
+                formTabValidation(input, true)
             } else {
-                $(this).removeClass('is_valid')
-                $(event).html(tabNumber)
+                formTabValidation(input)
             }
         }
-        $(textarea).each(function () {
-            if (this.value.length == 0) {
-                return textareaStatus.push('no');
+
+        $(input).on('input', function(){
+            if ($(input).val() && $(input).val().length == 0) {
+                inputValidCount++
             }
             else {
-                return textareaStatus.push('ok');
+                inputValidCount--
+            }
+            if($(input).val() && $(input).val().length == 0){
+                console.log($('.form_tab.is_valid').length)
+                formTabValidation(departament, true)
             }
         })
-        if (textareaStatus[0] == 'ok' && textareaStatus[1] == 'ok') {
-            $(this).addClass('is_valid')
-            $(event).html('<i class="fa fa-check"></i>')
-        } else if (textareaStatus[0] == 'no' && textareaStatus[1] == 'no') {
-            $(this).removeClass('is_valid')
-            $(event).html(tabNumber)
-        }
-        $(departament).each(function () {
-            if (this.value != '#' && this.value != '') {
-                $(that).addClass('is_valid')
-                $(event).html('<i class="fa fa-check"></i>')
-            } else {
-                $(that).removeClass('is_valid')
-                $(event).html(tabNumber)
+        // проверяем выбран ли департамент
+        $(departament).on('change', function(){
+            if($(departament).val() != '#'){
+                formTabValidation(departament, true)
+            }else{
+                formTabValidation(departament)
             }
         })
-        if ($(need_person).is(':checked')) {
-            if ($(person).val() != '#' && $(person).val() != '') {
-                $(that).addClass('is_valid')
-                $(event).html('<i class="fa fa-check"></i>')
-            } else {
-                $(that).removeClass('is_valid')
-                $(event).html(tabNumber)
-            }
-        }
-        $(consent).each(function () {
-            if ($(this).is(':checked')) {
-                $(that).addClass('is_valid')
-                $(event).html('<i class="fa fa-check"></i>')
-            } else {
-                $(that).removeClass('is_valid')
-                $(event).html(tabNumber)
-            }
-        })
-
-        if ($(this).hasClass('is_valid')) {
-            if (!activeTab.includes(tabNumber)) {
-                activeTab.push(tabNumber);
-            }
+        // проверяем выставлена ли галочка соглация на обработку персданных
+        if ($(check).is(':checked')) {
+            formTabValidation(check, true)
         } else {
-            let index = activeTab.indexOf(tabNumber);
-            if (index > -1) {
-                activeTab.splice(index, 1);
-            }
+            formTabValidation(check)
         }
-
-        if (activeTab.length >= 4) {
+        // console.log($('.form_tab.is_valid').length)
+        if ($('.form_tab.is_valid').length >= 4) {
             $('.form_tab').addClass('is_valid')
             $('.form_submit').addClass('is_valid')
             $(button).prop("disabled", false)
@@ -757,13 +826,22 @@ function initializePlugins() {
             $('.form_submit').removeClass('is_valid')
             $(button).prop("disabled", true)
         }
+        
     })
     $('#app_form_persondata_19').suggestions({
         token: "fd6932ba741e45fb66a5724df848eb4a15478eda",
         type: "PARTY",
         onSelect: function(suggestion) {
-            if(suggestion.data.management){
-                let manager = suggestion.data.management.name.split(' ')
+            if(suggestion.data){
+                let manager = ''
+                switch (suggestion.data.type) {
+                    case 'INDIVIDUAL':
+                        manager = suggestion.data.name.full.split(' ')
+                        break;
+                    default:
+                        manager = suggestion.data.management.name.split(' ')
+                        break;
+                }
                 $('#app_form_persondata_20').val(manager[0]).parent('.group').children('label').addClass('is_active')
                 $('#app_form_persondata_21').val(manager[1]).parent('.group').children('label').addClass('is_active')
                 $('#app_form_persondata_22').val(manager[2]).parent('.group').children('label').addClass('is_active')
@@ -871,6 +949,7 @@ function initializePlugins() {
         let container = $(list)
         let button = $(container).find('.show_more')
         $(container).each(function () {
+            let url = $(this).data('url')
             let amount = $(this).data('amount')
             //let activeBoxesHide = $(this).find('.item:gt(' + (amount - 1) + ')').hide()
             let activeBoxesHide = $(this).find('.item:gt(' + (amount - 1) + ')').fadeOut()
@@ -879,7 +958,7 @@ function initializePlugins() {
                 if ($(this).hasClass('active')) {
                     $(this).html('Скрыть <i class="fa fa-chevron-up"></i>')
                     activeBoxesHide.fadeIn(300)
-                    $(container).append('<a class="show_all" href="/">Показать все <i class="fa fa-angle-right"></i></a>')
+                    $(container).append(`<a class="show_all" href="${url}">Показать все <i class="fa fa-angle-right"></i></a>`)
                 } else {
                     $(this).html('Раскрыть <i class="fa fa-chevron-down"></i>')
                     $(container).find('a.show_all').remove()
@@ -1035,7 +1114,6 @@ function initializePlugins() {
     const numberBlock = document.getElementById("numbers");
     var scores = [];
     let numberElement = $('.num_item');
-    console.log(numberBlock)
     for (let i = 0; i < numberElement.length; i++) {
         scores.push({ score: parseInt($(numberElement[i]).attr('data-start')), end: parseInt($(numberElement[i]).attr('data-end')) })
     }
@@ -1229,22 +1307,25 @@ function initializePlugins() {
         return queue
     }
     let filesArr = uploaderImg('.add_photo-item', '#js-photo-upload', '#uploadImagesList', false, false);
-
-    $('.app_form').on('submit', function (event) {
-        event.preventDefault();
+    function getNewToken(){
         grecaptcha.ready(function () {
             grecaptcha.execute('6Lf3hssZAAAAAK2SOCPR9V8zAbClunlgAlNjYLKT', { action: "homepage" })
             .then(async token => {
                 document.getElementById('token').value = await token
-                console.log(token)
             });
         });
+    }
+    getNewToken()
+    $('.app_form').on('submit', function (event) {
+        event.preventDefault();
+        
         let method = $(this).attr('method')
         let action = $(this).attr('action')
         let formData = new FormData(this)
         for (var id in filesArr) {
             formData.append('files[]', filesArr[id]);
         }
+        
         $.ajax({
             url: action,
             type: method,
@@ -1259,7 +1340,8 @@ function initializePlugins() {
                 //$('#modal_app_form').iziModal('close')
             },
             success: function (res) {
-                mainToast(time = 5000, param = 'success', res, text = 'Обращение успешно отправлено!')
+                getNewToken()
+                mainToast(time = 5000, param = res.status, res, res.result)
             },
             error: function (err) {
                  mainToast(time = 5000, param = 'error', err, text = 'Обращение не отправлено!')
@@ -1472,4 +1554,15 @@ function initializePlugins() {
         $(legend).html(chart)
       });
 
+// scrol to top==========================================================================
+    $(window).scroll(function () {
+        if ($(this).scrollTop() != 0) {
+        $('#toTop').fadeIn();
+        } else {
+        $('#toTop').fadeOut();
+        }
+    });
+    $('#toTop').click(function () {
+        $('body,html').animate({ scrollTop: 0 }, 800);
+    });
 }

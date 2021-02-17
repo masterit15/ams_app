@@ -92,6 +92,9 @@
           a
         &.popup
           &_trigger
+            z-index: 20
+            overflow: hidden
+            transition: all .3s ease
             &:before
               content: ''
               opacity: 0
@@ -115,6 +118,8 @@
               transform: translateY(10px)
               transition: all .3s ease 
             &:hover
+              overflow: inherit
+              transition: all .3s ease
               &:before, &:after
                 opacity: 1
                 transform: translateY(0px)
@@ -138,8 +143,7 @@
             background-color: #fff
             text-align: center
             overflow: hidden
-            box-shadow: $shadow_h
-            //border-top: 1px solid rgba(38,59,94,0.1)
+            // box-shadow: $shadow_h
             transform: translateY(10px)
             transition: all .3s ease 
             &.active

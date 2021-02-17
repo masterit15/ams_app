@@ -69,13 +69,15 @@
 						<li>И.о. гл. редактора: Каллагова З. М.</li>
 						<li>Свидетельство о регистрации СМИ ЭЛ № ФС 77 – 75258 от 07.03.2019 выданное Федеральной Службой по надзору в сфере связи, информационных технологий и массовых коммуникаций</li>
 						<li>Учредитель: Администрация местного самоуправления г. Владикавказ</li>
+						<li><a href="/legal/" target="_blank" rel="noopener noreferrer">Соглашение о пользовании информационными системами и ресурсами города Владикавказ</a></li>
 					</ul>
 				</div>
-				<div class="copyright">© 2019—2020. Официальный сайт администрации самоуправления и Собрания представителей г. Владикавказ. <span class="soip">12+</span></div>
+				<div class="copyright">© 2019—2020. Официальный сайт администрации самоуправления и Собрание представителей г. Владикавказ. <span class="soip">12+</span></div>
 			</div>
 		</div>
 	</footer>
 	<!-- end footer -->
+	<div id="toTop"><i class="fa fa-chevron-up"></i></div>
 	<nav id="footer_nav">
 		<ul>
 			<li>
@@ -135,7 +137,7 @@
 						<span class="form_tab_event">1</span>
 						<h3 class="app_form_title">Получатель обращения</h3>
 						<select class="select2" name="departament" id="app_form_departament">
-							<option value="#"><?=$arResult['COMMENTS'];?></option>
+							<option value="#">Выберите получателя*</option>
 							<?
 							$arFilter = Array('IBLOCK_ID'=>95, 'GLOBAL_ACTIVE'=>'Y', '!=UF_WORKER' => 0);
 							$arSelect=array('ID','NAME','UF_WORKER');
@@ -145,14 +147,14 @@
 							<?}?>
 						</select>
 
-						<label class="checkbox" for="need_person">
+						<!-- <label class="checkbox" for="need_person">
 							<input type="checkbox" name="needPerson" id="need_person">
 							<span>Обращение должностному лицу</span>
 						</label>
 
 						<select id="person" class="select2" name="person">
 							<option value="#">Выберите должностное лицо</option>
-						</select>
+						</select> -->
 					</div>
 
 					<div class="form_tab col-12" data-event-num="2">
@@ -163,81 +165,69 @@
 								<p class="app_form_comments"></p>
 							</div>
 							<div class="col-xl-12">
-								<label for="app_form_persondata_18" class="checkbox" style="width: 0%;margin-right: 15px;">
-								<input type="checkbox" name="app_form_persondata" id="app_form_persondata_18" placeholder="Обращение от юридического лица" autocomplete="off" value="18">
+								<label for="app_form_persondata_18" class="checkbox">
+								<input type="checkbox" name="app_form_persondata" id="app_form_persondata_18" placeholder="Обращение от юридического лица" autocomplete="off">
 								<span>Обращение от юридического лица</span>
 								</label>
 							</div>
 							<div class="col-xl-12">
 								<div class="group">
-									<input type="text" name="app_form_persondata_19" id="app_form_persondata_19" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input" style="box-sizing: border-box; display: none;">
+									<input type="text" name="orgname" id="app_form_persondata_19" >
 									<label>Название организации</label>
 								</div>
 							</div>
 							<div class="col-xl-4">
 								<div class="group">
-									<input type="text" name="app_form_persondata_20" id="app_form_persondata_20" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input" style="box-sizing: border-box;"><div class="suggestions-wrapper"><div class="suggestions-suggestions" style="display: none;"></div></div>
-									<label>Фамилия</label>
+									<input required type="text" name="first_name" id="app_form_persondata_20" >
+									<label>Фамилия*</label>
 								</div>
 							</div>
 							<div class="col-xl-4">
 								<div class="group">
-									<input type="text" name="app_form_persondata_21" id="app_form_persondata_21" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input" style="box-sizing: border-box;"><div class="suggestions-wrapper"><div class="suggestions-suggestions" style="display: none;"></div></div>
-									<label>Имя</label>
+									<input required type="text" name="name" id="app_form_persondata_21" >
+									<label>Имя*</label>
 								</div>
 							</div>
 							<div class="col-xl-4">
 								<div class="group">
-									<input type="text" name="app_form_persondata_22" id="app_form_persondata_22" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input" style="box-sizing: border-box;"><div class="suggestions-wrapper"><div class="suggestions-suggestions" style="display: none;"></div></div>
+									<input type="text" name="last_name" id="app_form_persondata_22" >
 									<label>Отчество</label>
 								</div>
 							</div>
 							<div class="col-xl-5">
 								<div class="group">
-									<input type="text" name="app_form_persondata_23" id="app_form_persondata_23" autocomplete="off" maxlength="18">
+									<input type="text" name="phone" id="app_form_persondata_23">
 									<label>Контактный телефон</label>
 								</div>
 							</div>
 							<div class="col-xl-7">
 								<div class="group">
-									<input type="email" name="app_form_persondata_24" id="app_form_persondata_24" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input" style="box-sizing: border-box;"><div class="suggestions-wrapper"><div class="suggestions-suggestions" style="display: none;"></div></div>
-									<label>Е-почта</label>
+									<input required type="email" name="email" id="app_form_persondata_24" >
+									<label>Е-почта*</label>
 								</div>
 							</div>
 							<div class="col-xl-12">
 								<div class="group">
-									<input type="text" name="app_form_persondata_25" id="app_form_persondata_25" autocomplete="off">
+									<input type="text" name="address" id="app_form_persondata_25">
 									<label>Адрес</label>
 								</div>
 							</div>
 						</div>
 					</div>
-
 					<div class="form_tab" data-event-num="3">
 						<span class="form_tab_event">3</span>
 						<div class="col-xl-12">	
 							<h3 class="app_form_title"><b>Содержание обращения</b></h3>
 							<div class="group">
-								<textarea class="app_form_textarea" data-count="2000" data-text="Суть вопроса (не более 2000 символов)" rows="6" name="app_form_claim_29" id="app_form_claim_29" autocomplete="off"></textarea>
-								<label>Суть вопроса (не более 2000 символов)</label>
+								<textarea class="app_form_textarea" data-count="1000" data-text="Суть вопроса (не более 2000 символов)" rows="6" name="description" id="app_form_claim_29" autocomplete="off" required></textarea>
+								<label>Суть вопроса (не более 1000 символов)*</label>
 							</div>
 							<div class="group">
-								<textarea class="app_form_textarea" data-count="2000" data-text="Содержание обращения (не более 2000 символов)" rows="10" name="app_form_claim_30" id="app_form_claim_30" autocomplete="off"></textarea>
-								<label>Содержание обращения (не более 2000 символов)</label>
+								<textarea class="app_form_textarea" data-count="2000" data-text="Содержание обращения (не более 2000 символов)" rows="10" name="description_detail" id="app_form_claim_30" autocomplete="off" required></textarea>
+								<label>Содержание обращения (не более 2000 символов)*</label>
 							</div>
-							<!-- <div class="form_row__photo-previews">
-								<input type="file" name="files[]" multiple="" id="js-photo-upload">
-								<div class="add_photo-content">
-									<div class="add_photo-item"><span class="text">Прикрепить 5 файлов</span></div>
-									<ul id="uploadImagesList"></ul>
-								</div>
-								<div class="errormassege"></div>
-								<p class="app_form_comments">Не более 5 файлов, Допустимые форматы: jpeg,jpg,png,tif,gif,pdf,doc,docx,xls,xlsx,zip,rar Максимальный допустимый размер: 5МБ</p>
-							</div> -->
-
-
 							<div class="form_row__photo-previews">
-								<input type="file" name="more_photos[]" multiple id="js-photo-upload">
+								<input type="file" name="files[]" multiple id="js-photo-upload">
 								<div class="add_photo-content">
 									<div class="add_photo-item"></div>
 									<ul id="uploadImagesList">
@@ -265,11 +255,10 @@
 						<h3 class="app_form_title"><b>Пользовательское соглашение</b></h3>
 						<label for="app_form_consent" class="checkbox">
 							<p class="app_form_comments"></p>
-							<input type="checkbox" name="app_form_consent" id="app_form_consent" placeholder="Я принимаю условия" autocomplete="off" value="36" required="">
-							<span>Нажимая кнопку "Отправить", я принимаю <a href="/" target="_blank" rel="noopener noreferrer">условия пользовательского соглашения.</a></span>
+							<input type="checkbox" name="userconsent" id="app_form_consent" placeholder="Я принимаю условия" autocomplete="off" value="36" required checked>
+							<span>Нажимая кнопку "Отправить", я принимаю <a href="/legal/" target="_blank" rel="noopener noreferrer">условия пользовательского соглашения.</a></span>
 						</label>
 					</div>
-
 					<div class="form_submit col-12">
 						<button type="submit" class="btn btn_submit" disabled="">Отправить <i class="fa fa-paper-plane-o"></i></button>
 					</div>

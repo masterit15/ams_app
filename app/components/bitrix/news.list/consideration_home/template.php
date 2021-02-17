@@ -14,7 +14,7 @@ $this->setFrameMode(true);
 ?>
 <h2 class="section_title">к сведению жителей города</h2>
 <div class="row">
-	<div class="doc_list" data-amount="4">
+	<div class="doc_list" data-amount="4" data-url="/consideration/">
 	<?foreach($arResult["ITEMS"] as $arItem):?>
 		<?//PR($arItem['DISPLAY_PROPERTIES']['DOC_FILE']['FILE_VALUE']['SRC'])?>
 		<?
