@@ -72,7 +72,15 @@
 						<li><a href="/legal/" target="_blank" rel="noopener noreferrer">Соглашение о пользовании информационными системами и ресурсами города Владикавказ</a></li>
 					</ul>
 				</div>
-				<div class="copyright">© 2019—2020. Официальный сайт администрации самоуправления и Собрание представителей г. Владикавказ. <span class="soip">12+</span></div>
+				<div class="copyright">© 2019—2020. Официальный сайт администрации самоуправления и Собрание представителей г. Владикавказ. <span class="soip">12+</span>
+					<script type="text/javascript">
+						(function(d, t, p) {
+							var j = d.createElement(t); j.async = true; j.type = "text/javascript";
+							j.src = ("https:" == p ? "https:" : "http:") + "//stat.sputnik.ru/cnt.js";
+							var s = d.getElementsByTagName(t)[0]; s.parentNode.insertBefore(j, s);
+						})(document, "script", document.location.protocol);
+					</script>
+				</div>
 			</div>
 		</div>
 	</footer>
@@ -127,6 +135,7 @@
 				</path>
 			</svg>
 		</div>
+		<div class="app_form_message"></div>
 		<form method="POST" action="<?=SITE_TEMPLATE_PATH;?>/api/feedback.php" class="app_form" enctype="multipart/form-data">
 		<input id="token" type="hidden" name="token">	
 		<div class="close"><i class="fa fa-times"></i></div>
@@ -165,55 +174,56 @@
 								<p class="app_form_comments"></p>
 							</div>
 							<div class="col-xl-12">
-								<label for="app_form_persondata_18" class="checkbox">
-								<input type="checkbox" name="app_form_persondata" id="app_form_persondata_18" placeholder="Обращение от юридического лица" autocomplete="off">
+								<label for="app_form_persondata_18" class="checkbox" style="width: 0%;margin-right: 15px;">
+								<input type="checkbox" name="app_form_persondata" id="app_form_persondata_18" placeholder="Обращение от юридического лица" autocomplete="off" value="18">
 								<span>Обращение от юридического лица</span>
 								</label>
 							</div>
 							<div class="col-xl-12">
 								<div class="group">
-									<input type="text" name="orgname" id="app_form_persondata_19" >
+									<input type="text" name="orgname" id="app_form_persondata_19" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input" style="box-sizing: border-box; display: none;">
 									<label>Название организации</label>
 								</div>
 							</div>
 							<div class="col-xl-4">
 								<div class="group">
-									<input required type="text" name="first_name" id="app_form_persondata_20" >
+									<input required type="text" name="first_name" id="app_form_persondata_20" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input" style="box-sizing: border-box;"><div class="suggestions-wrapper"><div class="suggestions-suggestions" style="display: none;"></div></div>
 									<label>Фамилия*</label>
 								</div>
 							</div>
 							<div class="col-xl-4">
 								<div class="group">
-									<input required type="text" name="name" id="app_form_persondata_21" >
+									<input required type="text" name="name" id="app_form_persondata_21" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input" style="box-sizing: border-box;"><div class="suggestions-wrapper"><div class="suggestions-suggestions" style="display: none;"></div></div>
 									<label>Имя*</label>
 								</div>
 							</div>
 							<div class="col-xl-4">
 								<div class="group">
-									<input type="text" name="last_name" id="app_form_persondata_22" >
+									<input type="text" name="last_name" id="app_form_persondata_22" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input" style="box-sizing: border-box;"><div class="suggestions-wrapper"><div class="suggestions-suggestions" style="display: none;"></div></div>
 									<label>Отчество</label>
 								</div>
 							</div>
 							<div class="col-xl-5">
 								<div class="group">
-									<input type="text" name="phone" id="app_form_persondata_23">
+									<input type="text" name="phone" id="app_form_persondata_23" autocomplete="off" maxlength="18">
 									<label>Контактный телефон</label>
 								</div>
 							</div>
 							<div class="col-xl-7">
 								<div class="group">
-									<input required type="email" name="email" id="app_form_persondata_24" >
+									<input required type="email" name="email" id="app_form_persondata_24" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input" style="box-sizing: border-box;"><div class="suggestions-wrapper"><div class="suggestions-suggestions" style="display: none;"></div></div>
 									<label>Е-почта*</label>
 								</div>
 							</div>
 							<div class="col-xl-12">
 								<div class="group">
-									<input type="text" name="address" id="app_form_persondata_25">
+									<input type="text" name="address" id="app_form_persondata_25" autocomplete="off">
 									<label>Адрес</label>
 								</div>
 							</div>
 						</div>
 					</div>
+
 					<div class="form_tab" data-event-num="3">
 						<span class="form_tab_event">3</span>
 						<div class="col-xl-12">	

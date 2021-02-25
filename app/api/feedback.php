@@ -81,12 +81,9 @@ if (CModule::IncludeModule('iblock')) {
 				$result['result'] = 'Ваше обращение под № '.$ID.'-1 принято и отправлено на модерацию.';
 				$result['status'] = 'success';
 			} else {
-				$result['result'] = 'Произошла ошибка, попробуйте еще раз.';
+				$result['result'] = 'Вы не заполнили обязательные поля, пожалуста попробуйте еще';
 				$result['status'] = 'warning';
 			}
-		}else{
-			$result['result'] = 'Вы не заполнили обязательные поля, пожалуста попробуйте еще раз.';
-			$result['status'] = 'warning';
 		}
 		// $result['status'] = "success";
 		// }else{

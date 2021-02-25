@@ -28,7 +28,7 @@ function initializePlugins() {
     $('input[name="arrFilter_DATE_CREATE_1"]').attr('placeholder', 'По дате от')
     $('input[name="arrFilter_DATE_CREATE_2').attr('placeholder', 'По дате до')
     $('form[name="arrFilter_form"] input').on('change', function(){
-        $('input[name="set_filter"]').trigger('click')
+    $('input[name="set_filter"]').trigger('click')
         // $.ajax({
         //     type: "GET",
         //     url: $(this).attr('action'),
@@ -518,7 +518,6 @@ function initializePlugins() {
     // popover
     $('.popover').remove()
     $('[data-toggle="popover"]').popover({
-        trigger: 'click',
         html: true,
         placement: 'bottom',
         container: 'body'
@@ -536,6 +535,7 @@ function initializePlugins() {
     $('.tree_item').each(function () {
         let parent = $(this).parent('li')
         let ul = $(parent).children('ul')
+        $(this).find('.select_btn').remove()
         if ($(ul).length && !$(ul).hasClass('hide')) {
             $(this).append(`<button class="select_btn">Свернуть <i class="fa fa-chevron-up"></i></button>`)
         } else if($(ul).length && $(ul).hasClass('hide')) {
@@ -745,80 +745,103 @@ function initializePlugins() {
             $(event).html(tabNumber)
         }
     })
-    function formTabValidation(el, valid=false){
-        let tabNumber = $(el).data('event-num')
-        let form_tab = $(el).closest('.form_tab')
-        let event = $(form_tab).find('.form_tab_event')
-        if (valid) {
-            $(form_tab).addClass('is_valid')
-            $(event).html('<i class="fa fa-check"></i>')
-        } else {
-            $(form_tab).removeClass('is_valid')
-            $(event).html(tabNumber)
-        }
-    }
     // form tab line
-    $('.app_form').each(function () {
+    $('.form_tab').on('change', function () {
         let that = this
-        let textareaQuest = $(this).find('textarea[name="description"]')
-        let textareaText = $(this).find('textarea[name="description_detail"]')
-        let firstName = $(this).find('input[name="first_name"]')
-        let name = $(this).find('input[name="name"]')
-        let email = $(this).find('input[name="email"]')
-        let address = $(this).find('input[name="address"]')
-        let departament = $(this).find('#app_form_departament')
+        let textarea = $(this).find('textarea')
+        let input = $(this).find('input')
+        let departament = $(this).find('select#app_form_departament')
         let person = $(this).find('select#person')
         let check = $(this).find('input#app_form_persondata_18')
         let need_person = $(this).find('input#need_person')
+        let tabNumber = $(this).data('event-num')
+        let event = $(this).find('span.form_tab_event')
         let consent = $(this).find('#app_form_consent')
         let button = $('.btn_submit')
         let inputStatus = []
         let textareaStatus = []
-        let inputValidCount = 0
 
-        
+        //console.log(phoneMask)
+        $(input).each(function () {
+            if (this.value == '') {
+                return inputStatus.push('no');
+            }
+            else {
+                return inputStatus.push('ok');
+            }
+        })
         if ($(check).is(':checked')) {
             if (inputStatus[0] == 'ok' && inputStatus[1] == 'ok' && inputStatus[2] == 'ok' && inputStatus[3] == 'ok' && inputStatus[4] == 'ok' && inputStatus[5] == 'ok' && inputStatus[6] == 'ok' && inputStatus[7] == 'ok') {
-                formTabValidation(input, true)
+                $(this).addClass('is_valid')
+                $(event).html('<i class="fa fa-check"></i>')
             } else {
-                formTabValidation(input)
+                $(this).removeClass('is_valid')
+                $(event).html(tabNumber)
             }
         } else {
             if (inputStatus[0] == 'ok' && inputStatus[1] == 'no' && inputStatus[2] == 'ok' && inputStatus[3] == 'ok' && inputStatus[4] == 'ok' && inputStatus[5] == 'ok' && inputStatus[6] == 'ok' && inputStatus[7] == 'ok') {
-                formTabValidation(input, true)
+                $(this).addClass('is_valid')
+                $(event).html('<i class="fa fa-check"></i>')
             } else {
-                formTabValidation(input)
+                $(this).removeClass('is_valid')
+                $(event).html(tabNumber)
+            }
+        }
+        $(textarea).each(function () {
+            if (this.value.length == 0) {
+                return textareaStatus.push('no');
+            }
+            else {
+                return textareaStatus.push('ok');
+            }
+        })
+        if (textareaStatus[0] == 'ok' && textareaStatus[1] == 'ok') {
+            $(this).addClass('is_valid')
+            $(event).html('<i class="fa fa-check"></i>')
+        } else if (textareaStatus[0] == 'no' && textareaStatus[1] == 'no') {
+            $(this).removeClass('is_valid')
+            $(event).html(tabNumber)
+        }
+        $(departament).each(function () {
+            if (this.value != '#' && this.value != '') {
+                $(that).addClass('is_valid')
+                $(event).html('<i class="fa fa-check"></i>')
+            } else {
+                $(that).removeClass('is_valid')
+                $(event).html(tabNumber)
+            }
+        })
+        if ($(need_person).is(':checked')) {
+            if ($(person).val() != '#' && $(person).val() != '') {
+                $(that).addClass('is_valid')
+                $(event).html('<i class="fa fa-check"></i>')
+            } else {
+                $(that).removeClass('is_valid')
+                $(event).html(tabNumber)
+            }
+        }
+        $(consent).each(function () {
+            if ($(this).is(':checked')) {
+                $(that).addClass('is_valid')
+                $(event).html('<i class="fa fa-check"></i>')
+            } else {
+                $(that).removeClass('is_valid')
+                $(event).html(tabNumber)
+            }
+        })
+
+        if ($(this).hasClass('is_valid')) {
+            if (!activeTab.includes(tabNumber)) {
+                activeTab.push(tabNumber);
+            }
+        } else {
+            let index = activeTab.indexOf(tabNumber);
+            if (index > -1) {
+                activeTab.splice(index, 1);
             }
         }
 
-        $(input).on('input', function(){
-            if ($(input).val() && $(input).val().length == 0) {
-                inputValidCount++
-            }
-            else {
-                inputValidCount--
-            }
-            if($(input).val() && $(input).val().length == 0){
-                console.log($('.form_tab.is_valid').length)
-                formTabValidation(departament, true)
-            }
-        })
-        // проверяем выбран ли департамент
-        $(departament).on('change', function(){
-            if($(departament).val() != '#'){
-                formTabValidation(departament, true)
-            }else{
-                formTabValidation(departament)
-            }
-        })
-        // проверяем выставлена ли галочка соглация на обработку персданных
-        if ($(check).is(':checked')) {
-            formTabValidation(check, true)
-        } else {
-            formTabValidation(check)
-        }
-        // console.log($('.form_tab.is_valid').length)
-        if ($('.form_tab.is_valid').length >= 4) {
+        if (activeTab.length >= 4) {
             $('.form_tab').addClass('is_valid')
             $('.form_submit').addClass('is_valid')
             $(button).prop("disabled", false)
@@ -826,7 +849,6 @@ function initializePlugins() {
             $('.form_submit').removeClass('is_valid')
             $(button).prop("disabled", true)
         }
-        
     })
     $('#app_form_persondata_19').suggestions({
         token: "fd6932ba741e45fb66a5724df848eb4a15478eda",
@@ -1341,7 +1363,8 @@ function initializePlugins() {
             },
             success: function (res) {
                 getNewToken()
-                mainToast(time = 5000, param = res.status, res, res.result)
+                // mainToast(time = 5000, param = res.status, res, res.result)
+                $('.app_form_message').text(res.result).fadeIn(200)
             },
             error: function (err) {
                  mainToast(time = 5000, param = 'error', err, text = 'Обращение не отправлено!')

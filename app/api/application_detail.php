@@ -10,6 +10,8 @@ if (CModule::IncludeModule('iblock')) {
     'ID',
     'NAME',
     'DATE_CREATE',
+    'DETAIL_TEXT',
+    'PREVIEW_TEXT',
     'PROPERTY_FIO',
     'PROPERTY_PHONE',
     'PROPERTY_EMAIL',
@@ -23,6 +25,7 @@ if (CModule::IncludeModule('iblock')) {
   );
   $res = CIBlockElement::GetList(Array(), $arFilter, false, Array(), $arSelect);
   while ($arr = $res->GetNext()) {
+    PR($arr);
     $files[] = $arr['PROPERTY_APPLICATION_FILES_VALUE'];
     $arResult = $arr;
   }
@@ -39,9 +42,7 @@ if (CModule::IncludeModule('iblock')) {
             echo '<div class="timeline_item_content">';
               echo '<h3 class="timeline_item_title">' .$timeline['title']. '</h3>';
               echo '<p class="timeline_item_desc">' .$timeline['desc']. '</p>';
-              $ava = explode(' ', $timeline['userName']);
-              $abrev = mb_substr($ava[0], 0, 1).mb_substr($ava[1], 0, 1);
-              echo '<span class="timeline_item_ava">' . $abrev . '</span>';
+              echo '<span class="timeline_item_ava">' . getAvatarText($timeline['userName']) . '</span>';
               echo '<span class="timeline_item_date">' .$timeline['datetime']. '</span>';
             echo '</div>';
           echo '</li>';
@@ -62,6 +63,7 @@ if (CModule::IncludeModule('iblock')) {
   <div class="row">
     <div class="col-12 col-xl-6">
       <div class="feed-detail-left">
+        <?//PR($arResult);?>
         <div class="group">
           <input type="text" disabled value="<?=$arResult['PROPERTY_FIO_VALUE'];?>">
           <label>ФИО</label>
@@ -77,6 +79,15 @@ if (CModule::IncludeModule('iblock')) {
         <div class="group">
           <input type="text" disabled value="<?=$arResult['PROPERTY_ORGANIZATION_VALUE'];?>">
           <label>Название организации</label>
+        </div>
+        <div class="feed-detail-files">PROPERTY_APPLICATION_FILES_VALUE</div>
+        <div class="group">
+          <textarea class="app_form_textarea" type="text" disabled><?=$arResult['PREVIEW_TEXT'];?></textarea>
+          <label>Суть вопроса</label>
+        </div>
+        <div class="group">
+          <textarea class="app_form_textarea" type="text" disabled><?=$arResult['DETAIL_TEXT'];?></textarea>
+          <label>Тексть обращения</label>
         </div>
       </div>
     </div>

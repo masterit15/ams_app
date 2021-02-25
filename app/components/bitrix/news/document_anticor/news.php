@@ -34,7 +34,7 @@ $this->setFrameMode(true);
 <?endif?>
 <?$APPLICATION->IncludeComponent(
 	"bitrix:menu",
-	"section_menu",
+	"left_menu",
 	Array(
 		"ALLOW_MULTI_SELECT" => "N",
 		"CHILD_MENU_TYPE" => "section",

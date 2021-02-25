@@ -19,7 +19,8 @@ if (CModule::IncludeModule('iblock')) {
     "ACTIVE"=>"Y",
     "?NAME" => '%'.$_REQUEST["name"].'%',
     ">=DATE_ACTIVE_FROM" => $from,
-    "<=DATE_ACTIVE_FROM" => $to
+    "<=DATE_ACTIVE_FROM" => $to,
+    'INCLUDE_SUBSECTIONS'=>'Y',
   );
   if($_REQUEST["section"]) $arFilter["SECTION_ID"] = $_REQUEST["section"];
   $res = CIBlockElement::GetList($arOrder, $arFilter, false, array(), $arSelect);
