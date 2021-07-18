@@ -1,33 +1,35 @@
 <?
 include $_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_before.php";
-$result = array('success' => false, 'result' => '');
+$result = array('success' => false);
 if(CModule::IncludeModule('iblock')){
-
   function getWorker($id){
     $res = CIBlockElement::GetByID($id);
     if($ar_res = $res->GetNext())
-      return $ar_res;
+      return $ar_res['NAME']; 
   }
   $arFilter = Array(
-    "IBLOCK_ID" =>95, 
+    "IBLOCK_ID" =>99, 
     "ACTIVE"    =>"Y", 
-    "ID"        =>$_REQUEST['id']
+    "%NAME"     => $_REQUEST['query']
   );
-  $res = CIBlockElement::GetList(Array("SORT"=>"ASC"), $arFilter,false,false, Array('PROPERTY_PERSON'));
   $section = CIBlockSection::GetList(
 		array(),
 		$arFilter,
 		false,
 		array('ID', 'NAME', 'IBLOCK_SECTION_ID', 'DEPTH_LEVEL', 'SORT', 'UF_WORKER', 'UF_POST')
 	);
-  if($ar_res = $section->GetNext())
-    $result['result'][] = getWorker($ar_res['UF_WORKER']);
-  
-  // while($ar_result = $res->GetNext()){
-    // $ar_result['person'][] = getWorker($ar_result['PROPERTY_PERSON_VALUE']);
-    // $result['result'][] = $ar_result;
-
-  // }
+  while($ar_res = $section->GetNext()){
+    $result['departament'][] = array(
+      'id'  => $ar_res['ID'],
+      'name'  => $ar_res['NAME'], 
+      'cheif' => getWorker($ar_res['UF_WORKER']) ? getWorker($ar_res['UF_WORKER']) : 'Не найден руководитель'
+    );
+  }
+  if(!$result['departament']){
+    $result['success'] = false;
+  }else{
+    $result['success'] = true;
+  }
 }
 header('Access-Control-Allow-Origin: *');
 header('Content-type: application/json');

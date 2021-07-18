@@ -16,7 +16,6 @@ $this->setFrameMode(true);
 <div class="row">
 	<div class="doc_list" data-amount="4" data-url="/consideration/">
 	<?foreach($arResult["ITEMS"] as $arItem):?>
-		<?//PR($arItem['DISPLAY_PROPERTIES']['DOC_FILE']['FILE_VALUE']['SRC'])?>
 		<?
 		$this->AddEditAction($arItem['ID'], $arItem['EDIT_LINK'], CIBlock::GetArrayByID($arItem["IBLOCK_ID"], "ELEMENT_EDIT"));
 		$this->AddDeleteAction($arItem['ID'], $arItem['DELETE_LINK'], CIBlock::GetArrayByID($arItem["IBLOCK_ID"], "ELEMENT_DELETE"), array("CONFIRM" => GetMessage('CT_BNL_ELEMENT_DELETE_CONFIRM')));
@@ -31,15 +30,9 @@ $this->setFrameMode(true);
 		</span>				
 		<div class="doc_detail">			
     <div class="doc_title">
-			<?
-			if($arItem['NAME']){
-				echo $arItem['NAME'];
-			}else{
-				echo $file['name'];
-			}
-			?>
+			<?echo $arItem['NAME'] ? $arItem['NAME'] : $file['name'];?>
 		</div>
-		<span class="doc_date"><?=$doc['DATE_CREATE']?></span>
+		<span class="doc_date"><?echo $arItem['ACTIVE_FROM'] ? $arItem['ACTIVE_FROM'] : $file['size'];?></span>
 		</div>
     <span class="doc_size"><?=$file['size']?></span>
   </a>

@@ -8,15 +8,20 @@ jQuery(function ($) {
                 console.log(error)
             });
     }
-    $(document).pjax('a, #demo-list li a', '#pjax-container', { fragment: '#pjax-container', "timeout": 5000 });
+    $(document).pjax('a:not("[no-data-pjax]"), #demo-list li a', '#pjax-container', { fragment: '#pjax-container', "timeout": 5000 });
     $('#pjax-container').on('pjax:success', function () {
         return false;
     });
     $(document).on('pjax:start', function () {
         NProgress.start();
     });
-    $(document).on('pjax:end', function () {
-        $('html, body').animate({ scrollTop: 0 }, 'slow');
+    $(document).on('pjax:end', function (e) {
+        let attr = $(e.relatedTarget).attr('no-data-pjax')
+        if (typeof attr !== typeof undefined && attr !== false) {
+            // console.log(typeof attr);
+        }else{
+            $('html, body').animate({ scrollTop: 0 }, 'slow');
+        }
         // $.pjax.reload({container:".wrapper"})
         initializePlugins()
         NProgress.done();
@@ -61,6 +66,7 @@ function initializePlugins() {
             D.body.clientHeight, D.documentElement.clientHeight
         );
     }
+
     let lastScrollTop = 0
     window.addEventListener('scroll', function(event){
         if ($(window).scrollTop() + $(window).height() === getDocHeight()) {
@@ -72,7 +78,18 @@ function initializePlugins() {
         lastScrollTop = $(this).scrollTop();
     })
 
-    
+    function PrintDiv(block) {    
+        let popupWin = window.open('', '_blank', 'width=1200,height=800')
+        popupWin.document.open()
+        popupWin.document.write('<html><body onload="window.print()">' + $(block).html() + '</html>')
+        popupWin.document.close()
+    }
+
+    $('.print_btn').on('click', function(){
+        let block = $(this).next('.block_to_print')
+        PrintDiv(block)
+    })
+
     $('.accordion_item_wrap').on('click', function(){
         let parrent = $(this).parent('.accordion_item')
         $('.accordion_item_content').hide(200)
@@ -105,35 +122,7 @@ function initializePlugins() {
             }
         }
     });
-    // download zip 
-    $('.download_zip').on('click', function(){
-        let parent  = $(this).parent()
-        let arLi    = $(parent).children('li')
-        let files   = []
-        arLi.map(li => {
-            files.push({filename: $(arLi[li]).find('.folder-item__details__name').text(), filepath: $(arLi[li]).find('a').attr('href')})
-        });
-        $.ajax({
-            type: "POST",
-            url: '/bitrix/templates/app/api/zip.php',
-            data: {files: JSON.stringify(files)},
-            beforeSend: function () {
-                NProgress.start();
-            },
-            complete: function () {
-                NProgress.done();
-            },
-            success: function (res) {
-                console.log(res)
-                // location.href = `download_zip.php?${res.download}&${res.path}&${res.name}`
-                window.open(`http://vladikavkaz-osetia.ru/download_zip.php?download=${res.download}&path=${res.path}&name=${res.name}`, '_blank');
-                
-            },
-            error: function (err) {
-                mainToast(5000, "error", 'Ошибка загрузки!', err)
-            }
-        });
-    })
+    
     // mmenu 
     $('body').removeAttr('class');
     $('#mobile-menu').removeAttr('class');
@@ -158,22 +147,6 @@ function initializePlugins() {
         $icon.on("click", function () {
             API.open();
         });
-        API.bind("open:finish", function () {
-            // setTimeout(function () {
-            //     $icon.addClass("active");
-            // }, 0);
-            // $icon.on("click", function () {
-            //     API.close();
-            // });
-        });
-        API.bind("close:finish", function () {
-            // setTimeout(function () {
-            //     $icon.removeClass("active");
-            // }, 0);
-            // $icon.on("click", function () {
-            //     API.open();
-            // });
-        });
     }
     if($('.actual_item').length > 0){
         window.addEventListener('load', function () {
@@ -184,31 +157,22 @@ function initializePlugins() {
     $('[data-panel]').on('click', function () {
         $('.right_panel').remove()
         let panelHtml = `<div class="right_panel">
-                            <div class="modal_loader">
-                                <svg version="1.1" id="L7" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
-                                    y="0px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
-                                    <path fill="#fff"
-                                        d="M31.6,3.5C5.9,13.6-6.6,42.7,3.5,68.4c10.1,25.7,39.2,38.3,64.9,28.1l-3.1-7.9c-21.3,8.4-45.4-2-53.8-23.3c-8.4-21.3,2-45.4,23.3-53.8L31.6,3.5z"
-                                        transform="rotate(312.597 50 50)">
-                                        <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="2s" from="0 50 50"
-                                            to="360 50 50" repeatCount="indefinite"></animateTransform>
+                            <div class="modal_loader"> <svg version="1.1" id="L7" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
+                                    <path fill="#fff" d="M31.6,3.5C5.9,13.6-6.6,42.7,3.5,68.4c10.1,25.7,39.2,38.3,64.9,28.1l-3.1-7.9c-21.3,8.4-45.4-2-53.8-23.3c-8.4-21.3,2-45.4,23.3-53.8L31.6,3.5z" transform="rotate(312.597 50 50)">
+                                        <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="2s" from="0 50 50" to="360 50 50" repeatCount="indefinite"></animateTransform>
                                     </path>
-                                    <path fill="#fff"
-                                        d="M42.3,39.6c5.7-4.3,13.9-3.1,18.1,2.7c4.3,5.7,3.1,13.9-2.7,18.1l4.1,5.5c8.8-6.5,10.6-19,4.1-27.7c-6.5-8.8-19-10.6-27.7-4.1L42.3,39.6z"
-                                        transform="rotate(-265.194 50 50)">
-                                        <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50"
-                                            to="-360 50 50" repeatCount="indefinite"></animateTransform>
+                                    <path fill="#fff" d="M42.3,39.6c5.7-4.3,13.9-3.1,18.1,2.7c4.3,5.7,3.1,13.9-2.7,18.1l4.1,5.5c8.8-6.5,10.6-19,4.1-27.7c-6.5-8.8-19-10.6-27.7-4.1L42.3,39.6z" transform="rotate(-265.194 50 50)">
+                                        <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="-360 50 50" repeatCount="indefinite"></animateTransform>
                                     </path>
-                                    <path fill="#fff"
-                                        d="M82,35.7C74.1,18,53.4,10.1,35.7,18S10.1,46.6,18,64.3l7.6-3.4c-6-13.5,0-29.3,13.5-35.3s29.3,0,35.3,13.5L82,35.7z"
-                                        transform="rotate(312.597 50 50)">
-                                        <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="2s" from="0 50 50"
-                                            to="360 50 50" repeatCount="indefinite"></animateTransform>
+                                    <path fill="#fff" d="M82,35.7C74.1,18,53.4,10.1,35.7,18S10.1,46.6,18,64.3l7.6-3.4c-6-13.5,0-29.3,13.5-35.3s29.3,0,35.3,13.5L82,35.7z" transform="rotate(312.597 50 50)">
+                                        <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="2s" from="0 50 50" to="360 50 50" repeatCount="indefinite"></animateTransform>
                                     </path>
-                                </svg>
-                            </div>
+                                </svg> </div>
                             <div class="right_panel_close"><i class="fa fa-times"></i></div>
-                            <h2 class="right_panel_title"></h2>
+                            <header class="right_panel_header">
+                            <h2 class="right_panel_title">${$(this).data('title')}</h2>
+                            <span class="right_panel_date">${$(this).data('date')}</span>
+                            </header>
                             <div class="right_panel_content"></div>
                         </div>`
         $('body').append(panelHtml)
@@ -234,7 +198,6 @@ function initializePlugins() {
             success: function (res) {
                 $(title).text(thisTitle)
                 $(content).html(res);
-                // $(content).append(res);
                 $('.right_panel_close').on('click', function () {
                     $('.right_panel').removeClass('open')
                     $('.right_panel').remove()
@@ -248,6 +211,66 @@ function initializePlugins() {
     })
     // функция повторной инициализации елементов формы обращения
     function loadFeedback(){
+        $('.modal_loader').fadeIn(200)
+        $('.feed-detail-action-item').on('click', function(){
+            $('.feed-detail-action-content').html('')
+            let commentField = `<fieldset class="fieldgroup">
+                                    <legend>Комментарий</legend>
+                                    <textarea class="comment_field"></textarea>
+                                    <button class="add">Добавить</button>
+                                </fieldset>`
+            let responsibleSelect = `<fieldset class="fieldgroup">
+                                        <legend>Поиск ответственного</legend>
+                                        <div class="group">
+                                            <input id="" type="text" class="responsible_search"/>
+                                            <label>Ответственный</label>
+                                            <ul class="responsible_search_list"></ul>
+                                        </div>
+                                    </fieldset>`
+            if($(this).hasClass('addcomment')){
+                $('.feed-detail-action-content').append(commentField)
+            }else if($(this).hasClass('addresponsible')){
+                $('.feed-detail-action-content').append(responsibleSelect)
+                $('.responsible_search').on('input', function(){
+                    if($(this).val().length > 0){
+                        $(this).next().addClass('is_active') 
+                    }else{
+                        $(this).next().removeClass('is_active') 
+                    }
+                    $.ajax({
+                        type: "GET",
+                        url: '../bitrix/templates/app/api/person.php',
+                        data: {query: $(this).val()},
+                        beforeSend: function () {
+                            NProgress.start();
+                        },
+                        complete: function () {
+                            NProgress.done();
+                        },
+                        success: function (res) {
+                            $('.responsible_search_list').html('')
+                            if(res.success){
+                                res.departament.forEach(departament =>{
+                                    $('.responsible_search_list').append(`<li data-id="${departament.name}" data-val="${departament.name}">${departament.name}<span>${departament.cheif}</span></li>`)
+                                })
+                                $('.responsible_search_list').slideDown()
+                                $('.responsible_search_list li').on('click', function(){
+                                    $('.responsible_search').val($(this).data('val'))
+                                    changeAplication('add_responsible', $(this).data('id'))
+                                    $('.responsible_search_list').slideUp()
+                                })
+                            }
+                        },
+                        error: function (err) {
+                            mainToast(5000, "error", 'Ошибка загрузки!', err)
+                        }
+                    });
+                })
+            }else if($(this).hasClass('addanswer')){
+                $('.feed-detail-action-content').append(commentField)
+            }
+        })
+        
         $('.right_panel_content .group').each(function(){
             let label = $(this).find('label')
             let input = $(this).find('input')
@@ -269,7 +292,7 @@ function initializePlugins() {
                 $(this).nextAll().addClass('is_none')
                 $(this).removeClass('is_none')
                 $('.modal_loader').fadeIn(200)
-                changeStatus($(this).data('elid'), $(this).data('status-id'))
+                changeAplication('change_status', $(this).data('status-id'))
             })
         })
         $('.modal_loader').fadeOut(200)
@@ -296,11 +319,11 @@ function initializePlugins() {
         });
     }
     // функция смены статуса
-    function changeStatus(element, status){
+    function changeAplication(action, status){
         $.ajax({
             type: "POST",
             url: '../bitrix/templates/app/api/change_feed_app.php',
-            data: {element: element, status: status},
+            data: {action, element: $('.feed-detail').data('elid'), status: status},
             beforeSend: function () {
                 NProgress.start();
             },
@@ -309,45 +332,77 @@ function initializePlugins() {
             },
             success: function (res) {
                 if(res.success){
-                    loadApplication(element)
+                    loadApplication($('.feed-detail').data('elid'))
                 }
-                mainToast(5000, res.status, ``, res.result)
+                // mainToast(5000, res.status, ``, res.result)
             },
             error: function (err) {
                 mainToast(5000, "error", 'Ошибка загрузки!', err)
             }
         });
     }
+
+    // let filterParams = {
+    //     name: '',
+    //     sex: '',
+    //     petsType: '',
+    //     dateFrom: '',
+    //     dateTo: '',
+    // }
+    let filterParams = { 
+        iblock: null,
+        section: null, 
+        date: null, 
+        sort: 'desc', 
+        type: '', 
+        PAGEN_1: 1 
+    }
+    // отслеживаем изменения параметров фильтра
+    let filterProxied = new Proxy(filterParams, {
+    get: function(target, prop) {
+        // console.log({
+        // 	type: "get",
+        // 	target,
+        // 	prop
+        // });
+        return Reflect.get(target, prop);
+    },
+    set: function(target, prop, value) {
+            // console.log({
+            // 	type: "set",
+            // 	target,
+            // 	prop,
+            // 	value
+            // });
+            setTimeout(()=>{
+                GetFilter(target)
+            },10)
+            
+            return Reflect.set(target, prop, value);
+        }
+    });
     // document filter
     $('#filter_document').each(function () {
         let iblock = $('.document_list').data('iblock') ? $('.document_list').data('iblock') : null
-        let filterParam = { iblock, section: null, date: null, sort: 'desc', type: '', PAGEN_1: 1 }
         let docName = $(this).find('input#filter_name')
         let sectionSelect = $(this).find('select#filter_section')
         let datePicker = $(this).find('input#filter_date')
         let sortButton = $(this).find('button#filter_sort');
-        GetFilter(filterParam);
+        filterProxied.iblock = iblock
         // фильтр по названию
         $(docName).on('input', function () {
-            if ($(this).val().length >= 3) {
-                setTimeout(() => {
-                    filterParam.name = $(this).val()
-                    GetFilter(filterParam);
-                }, 100)
-            }
+            filterProxied.name = $(this).val()
         })
         // филmтр по дате
         $(datePicker).on('input', function () {
             if ($(this).val().length >= 0) {
-                filterParam.date = null
-                GetFilter(filterParam);
+                filterProxied.date = null
             }
         })
         $(datePicker).datepicker({
             onSelect: function (formattedDate, date, inst) {
                 if (date) {
-                    filterParam.date = formattedDate;
-                    GetFilter(filterParam);
+                    filterProxied.date = formattedDate;
                 }
             }
         }).data('datepicker');
@@ -357,11 +412,10 @@ function initializePlugins() {
         })
         $(sectionSelect).on('change', function () {
             if ($(this).val() == 'all') {
-                filterParam.section = '#';
+                filterProxied.section = '#';
             } else {
-                filterParam.section = $(this).val();
+                filterProxied.section = $(this).val();
             }
-            GetFilter(filterParam);
         });
         // сортировка
         $(sortButton).on('click', function () {
@@ -374,15 +428,61 @@ function initializePlugins() {
             } else {
                 $(this).html('<i class="fa fa-sort-amount-desc"></i> По убыванию')
             }
-            filterParam.sort = sort
-            GetFilter(filterParam)
+            filterProxied.sort = sort
         })
         // функция получения данных 
-        function GetFilter(param) {
+
+    })
+    function GetFilter(param) {
+        $.ajax({
+            type: "GET",
+            url: '/bitrix/templates/app/api/document.php',
+            data: param,
+            beforeSend: function () {
+                NProgress.start();
+            },
+            complete: function () {
+                NProgress.done();
+            },
+            success: function (res) {
+                
+                $('.tooltip-inner').remove()
+                $('.document_list').html(res);
+                $('.paginationjs-page').on('click', function () {
+                    filterProxied.PAGEN_1 = $(this).attr('data-pagenum');
+                    $('html, body').animate({ scrollTop: 0 }, 'slow');
+                });
+                $('.act').on('click', function () {
+                    filterProxied.PAGEN_1 = $(this).attr('data-pagenum');
+                    $('html, body').animate({ scrollTop: 0 }, 'slow');
+                });
+
+                $('[data-toggle="tooltip"]').tooltip({
+                    animated: 'fade',
+                    html: true
+                })
+                folderAnimation()
+                downloadZIP()
+            },
+            error: function (err) {
+                mainToast(5000, "error", 'Ошибка загрузки!', err)
+            }
+        });
+    }
+    // download zip 
+    function downloadZIP(){
+        $('.download_zip').on('click', function(){
+            let parent  = $(this).parent()
+            let arLi    = $(parent).children('li')
+            let files   = []
+            arLi.map(li => {
+                if(!$(arLi[li]).hasClass('download_zip'))
+                    files.push({filename: $(arLi[li]).find('.folder-item__details__name').text(), filepath: $(arLi[li]).find('a').attr('href')})
+            });
             $.ajax({
-                type: "GET",
-                url: '/bitrix/templates/app/api/document.php',
-                data: param,
+                type: "POST",
+                url: '/bitrix/templates/app/api/zip.php',
+                data: {files: JSON.stringify(files)},
                 beforeSend: function () {
                     NProgress.start();
                 },
@@ -390,32 +490,16 @@ function initializePlugins() {
                     NProgress.done();
                 },
                 success: function (res) {
-                    
-                    $('.tooltip-inner').remove()
-                    $('.document_list').html(res);
-                    $('.paginationjs-page').on('click', function () {
-                        filterParam.PAGEN_1 = $(this).attr('data-pagenum');
-                        GetFilter(filterParam);
-                        $('html, body').animate({ scrollTop: 0 }, 'slow');
-                    });
-                    $('.act').on('click', function () {
-                        filterParam.PAGEN_1 = $(this).attr('data-pagenum');
-                        GetFilter(filterParam);
-                        $('html, body').animate({ scrollTop: 0 }, 'slow');
-                    });
-
-                    $('[data-toggle="tooltip"]').tooltip({
-                        animated: 'fade',
-                        html: true
-                    })
-                    folderAnimation()
+                    console.log(res)
+                    window.open(`http://vladikavkaz-osetia.ru/download_zip.php?download=${res.download}&path=${res.path}&name=${res.name}`, '_blank');
                 },
                 error: function (err) {
                     mainToast(5000, "error", 'Ошибка загрузки!', err)
                 }
             });
-        }
-    })
+        })
+    }
+    downloadZIP()
     // tabs 
     function tabsInit() {
         let clickedTab = $(".tabs > .active");
@@ -572,7 +656,18 @@ function initializePlugins() {
         }
         e.stopPropagation();
     });
-    // modal
+    $('#month_sel').select2({
+        language: "ru"
+    });
+    $('#year_sel').select2({
+        language: "ru"
+    });
+    $('#news_cat').select2({
+        language: "ru"
+    });
+
+
+    //  Форма обращений
     $("#modal_app_form").iziModal({
         headerColor: "#62D4BD",
         width: 840,
@@ -586,15 +681,13 @@ function initializePlugins() {
             $('.modal_loader').fadeOut("slow");
         },
         onOpening: function () {
-            if ($('input#app_form_persondata_18').is(':checked')) {
-                $('input#app_form_persondata_19').show()
-            } else {
-                $('input#app_form_persondata_19').hide()
-            }
+            getNewToken()
             $('#app_form_departament').select2({
                 language: "ru"
             });
             $('.modal_loader').fadeIn("slow");
+            $('.submit_disabled').show()
+            $('.btn_submit').hide()
         },
         onOpened: function () {
             $('.modal_loader').fadeOut("slow");
@@ -603,16 +696,6 @@ function initializePlugins() {
         onClosed: function () { },
         afterRender: function () { }
     });
-    $('#month_sel').select2({
-        language: "ru"
-    });
-    $('#year_sel').select2({
-        language: "ru"
-    });
-    $('#news_cat').select2({
-        language: "ru"
-    });
-
     // $('#app_form_departament').on('select2:select', function (e) {
     //     let data = {
     //         id: e.params.data.id
@@ -652,65 +735,13 @@ function initializePlugins() {
             $('#person').select2('destroy');
         }
     })
-    // function getAddress(param, search = false) {
-    //     ymaps.ready(function () {
-    //         ymaps.geocode(param).then(function (res) {
-    //             let obj = res.geoObjects.get(0),
-    //                 error, hint;
-    //             if (obj) {
-    //                 switch (obj.properties.get('metaDataProperty.GeocoderMetaData.precision')) {
-    //                     case 'exact':
-    //                         break;
-    //                     case 'number':
-    //                     case 'near':
-    //                     case 'range':
-    //                         error = 'Неточный адрес, требуется уточнение';
-    //                         hint = 'Уточните номер дома';
-    //                         break;
-    //                     case 'street':
-    //                         error = 'Неполный адрес, требуется уточнение';
-    //                         hint = 'Уточните номер дома';
-    //                         break;
-    //                     case 'other':
-    //                     default:
-    //                         error = 'Неточный адрес, требуется уточнение';
-    //                         hint = 'Уточните адрес';
-    //                 }
-    //             } else {
-    //                 error = 'Адрес не найден';
-    //                 hint = 'Уточните адрес';
-    //             }
-    //             // Если геокодер возвращает пустой массив или неточный результат, то показываем ошибку.ц
-    //             if (error) {
-    //                 showMessage(error, hint);
-    //             } else {
-    //                 showResult();
-    //             }
-    //         }, function (err) {
-    //             console.log(err)
-    //         })
-    //     })
-    // }
-    function showResult() {
-        $('input#app_form_persondata_25').next('.error_message').remove()
-    }
-    function showMessage(error, hint) {
-        $('input#app_form_persondata_25').next('.error_message').remove()
-        $('input#app_form_persondata_25').after(`<span class="error_message">${error}, ${hint}</span>`)
-    }
-    // поиск адреса
-    $('input#app_form_persondata_25').on('input', function () {
-        if ($(this).val().length > 0) {
-            let suggestView = new ymaps.SuggestView('app_form_persondata_25')
-            suggestView.events.add("select", function (e) {
-                if (e.get('item').value == $(this).val()) {
-                    suggestView.destroy()
-                }
-            })
-        }
-    })
-    // validate
+    
+    // Вывод ошибок при валидации всей формы
+    $("form.app_form").validate({
+        errorElement: "span"
+    });
     let activeTab = []
+    // Маска для поля телефон
     $('#app_form_persondata_23').mask('+7 (000) 000-00-00', {
         onChange: function (cep) {
             $('#app_form_persondata_23').next('.error_message').remove()
@@ -721,10 +752,12 @@ function initializePlugins() {
             $(e.target).after(`<span class="error_message">${error.p - 2} не валидный сивол!</span>`)
         }
     })
+    // Функция проверки Е-почты
     function isEmail(email) {
         var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
         return regex.test(email);
     }
+    // Поле Е-почты
     $('#app_form_persondata_24').on('input', function () {
         let valid = isEmail($(this).val())
         if (valid) {
@@ -734,99 +767,164 @@ function initializePlugins() {
             $(this).after(`<span class="error_message">Не валидная е-почта!</span>`)
         }
     });
+    // Поле пользовательское соглашение
     $('#app_form_consent').each(function () {
         let form_tab = $(this).closest('.form_tab')
+        let tabNumber = $(form_tab).data('event-num')
         let event = $(form_tab).find('.form_tab_event')
         if ($(this).is(':checked')) {
             $(form_tab).addClass('is_valid')
             $(event).html('<i class="fa fa-check"></i>')
+            activeTab.push(tabNumber)
         } else {
-            $(that).removeClass('is_valid')
+            $(form_tab).removeClass('is_valid')
             $(event).html(tabNumber)
         }
     })
-    // form tab line
+    $('.btn_submit').hide()
+    // Проверка выпадающего списка
+    $('select#app_form_departament').on('select2:select', function (e) {
+        if(e.target.value == '#'){
+            $(e.target).addClass('err')
+            $('.app_form .select2-container .select2-selection--single').css({'border-color' : '#e25460'})
+        }else{
+            $(e.target).removeClass('err')
+            $('.app_form .select2-container .select2-selection--single').css({'border-color' : '#62d4bd'})
+        }
+    });
+    // Проверка по клико всей формы на валидность
+    $('.btn_submit_disabled').on('click', function(){
+        let selectVal = $('select#app_form_departament').val() 
+        let select = $('.app_form .select2-selection--single')
+        let inputs = [...$('input[required]')]
+        let textareas = [...$('textarea[required]')]
+        if(selectVal == '#'){
+            $(select).addClass('err')
+            $('.app_form .select2-container.select2-selection--single').css({'border-color' : '#e25460'})
+        }else{
+            $(select).removeClass('err')
+            $('.app_form .select2-container.select2-selection--single').css({'border-color' : '#62d4bd'})
+        }
+
+        inputs.forEach(input => {
+            if($(input).val() == '' || $(input).val().length == 0 && !$(input).is(':checked')){
+                $(input).addClass('err')
+            }else{
+                $(input).removeClass('err')
+            }
+        });
+        textareas.forEach(textarea => {
+            if($(textarea).val().length == 0){
+                $(textarea).addClass('err')
+            }else{
+                $(textarea).removeClass('err')
+            }
+        });
+        
+        let errElement = $('.err')
+
+        if(errElement.length > 0){
+            let firstElPosition = $(errElement[0]).offset().top - $('.app_form').offset().top - $('.app_form').scrollTop() - 20 
+            $(this).parent().find('span.error').remove()
+            $(this).parent().append('<span class="error" style="text-align: center;">Возможно вы пропустили обязательные поля, перепроверьте все поля</span>')
+            $('.iziModal-wrap').animate({
+                scrollTop: firstElPosition
+            }, 300);
+        }else{
+            $('.submit_disabled').hide()
+            $('.btn_submit').show()
+        }
+        
+    })
+    function formTab(tab,valid = false){
+        let tabNumber = $(tab).data('event-num')
+        let event = $(tab).find('span.form_tab_event')
+        if(valid){
+            $(tab).addClass('is_valid')
+            $(event).html('<i class="fa fa-check"></i>')
+        }else{
+            $(tab).removeClass('is_valid')
+            $(event).html(tabNumber)
+        }
+    }
+    // Проверка на заполнение всех полей (валидация секций формы)
     $('.form_tab').on('change', function () {
         let that = this
         let textarea = $(this).find('textarea')
-        let input = $(this).find('input')
+        let input = $(this).find('input[required]')
         let departament = $(this).find('select#app_form_departament')
         let person = $(this).find('select#person')
         let check = $(this).find('input#app_form_persondata_18')
         let need_person = $(this).find('input#need_person')
         let tabNumber = $(this).data('event-num')
-        let event = $(this).find('span.form_tab_event')
         let consent = $(this).find('#app_form_consent')
         let button = $('.btn_submit')
         let inputStatus = []
         let textareaStatus = []
-
-        //console.log(phoneMask)
+        // проверяем заполнено ли поле если да то закидываем в массив ok если нет то но
         $(input).each(function () {
-            if (this.value == '') {
-                return inputStatus.push('no');
+            if (this.value !== '') {
+                $(this).addClass('valid')
+                inputStatus.push({input: $(this).data('input'), status: true});
+            }else {
+                $(this).removeClass('valid')
+                inputStatus.push({input: $(this).data('input'), status: false});
             }
-            else {
-                return inputStatus.push('ok');
+
+
+            let inputValidCount = inputStatus.filter(inp=> inp.status === true).length // если юр лицо значение 6 если нет то 5 или меньше
+            // проверка от физ \ юр лица
+            if ($(check).is(':checked')) {
+                if (inputValidCount === 6) {
+                    formTab(that,true)
+                } else {
+                    formTab(that)
+                }
+            } else {
+                if (inputValidCount === 5) {
+                    formTab(that,true)
+                } else {
+                    formTab(that)
+                }
             }
         })
-        if ($(check).is(':checked')) {
-            if (inputStatus[0] == 'ok' && inputStatus[1] == 'ok' && inputStatus[2] == 'ok' && inputStatus[3] == 'ok' && inputStatus[4] == 'ok' && inputStatus[5] == 'ok' && inputStatus[6] == 'ok' && inputStatus[7] == 'ok') {
-                $(this).addClass('is_valid')
-                $(event).html('<i class="fa fa-check"></i>')
-            } else {
-                $(this).removeClass('is_valid')
-                $(event).html(tabNumber)
-            }
-        } else {
-            if (inputStatus[0] == 'ok' && inputStatus[1] == 'no' && inputStatus[2] == 'ok' && inputStatus[3] == 'ok' && inputStatus[4] == 'ok' && inputStatus[5] == 'ok' && inputStatus[6] == 'ok' && inputStatus[7] == 'ok') {
-                $(this).addClass('is_valid')
-                $(event).html('<i class="fa fa-check"></i>')
-            } else {
-                $(this).removeClass('is_valid')
-                $(event).html(tabNumber)
-            }
-        }
+
+        
+
         $(textarea).each(function () {
             if (this.value.length == 0) {
-                return textareaStatus.push('no');
+                textareaStatus.push({textarea: $(this).data('textarea'), status: false});
             }
             else {
-                return textareaStatus.push('ok');
+                textareaStatus.push({textarea: $(this).data('textarea'), status: true});
+            }
+            let textareaValidCount = textareaStatus.filter(textarea=> textarea.status === true).length // если юр лицо значение 6 если нет то 5 или меньше
+            if (textareaValidCount === 2) {
+                formTab(that,true)
+            }else{
+                formTab(that)
             }
         })
-        if (textareaStatus[0] == 'ok' && textareaStatus[1] == 'ok') {
-            $(this).addClass('is_valid')
-            $(event).html('<i class="fa fa-check"></i>')
-        } else if (textareaStatus[0] == 'no' && textareaStatus[1] == 'no') {
-            $(this).removeClass('is_valid')
-            $(event).html(tabNumber)
-        }
+        
         $(departament).each(function () {
             if (this.value != '#' && this.value != '') {
-                $(that).addClass('is_valid')
-                $(event).html('<i class="fa fa-check"></i>')
+                formTab(that,true)
             } else {
-                $(that).removeClass('is_valid')
-                $(event).html(tabNumber)
+                formTab(that)
             }
         })
         if ($(need_person).is(':checked')) {
             if ($(person).val() != '#' && $(person).val() != '') {
-                $(that).addClass('is_valid')
-                $(event).html('<i class="fa fa-check"></i>')
+                formTab(that,true)
             } else {
-                $(that).removeClass('is_valid')
-                $(event).html(tabNumber)
+                formTab(that)
             }
         }
         $(consent).each(function () {
             if ($(this).is(':checked')) {
-                $(that).addClass('is_valid')
-                $(event).html('<i class="fa fa-check"></i>')
+                formTab(that,true)
             } else {
-                $(that).removeClass('is_valid')
-                $(event).html(tabNumber)
+                formTab(that)
             }
         })
 
@@ -840,37 +938,29 @@ function initializePlugins() {
                 activeTab.splice(index, 1);
             }
         }
-
+        
         if (activeTab.length >= 4) {
             $('.form_tab').addClass('is_valid')
             $('.form_submit').addClass('is_valid')
+            $('.submit_disabled').hide()
+            $(button).show()
             $(button).prop("disabled", false)
         } else {
             $('.form_submit').removeClass('is_valid')
+            $('.submit_disabled').show()
+            $(button).hide()
             $(button).prop("disabled", true)
         }
     })
-    $('#app_form_persondata_19').suggestions({
+    // Подсказка поля адрес
+    $('#app_form_persondata_25').suggestions({
         token: "fd6932ba741e45fb66a5724df848eb4a15478eda",
-        type: "PARTY",
+        type: "ADDRESS",
         onSelect: function(suggestion) {
-            if(suggestion.data){
-                let manager = ''
-                switch (suggestion.data.type) {
-                    case 'INDIVIDUAL':
-                        manager = suggestion.data.name.full.split(' ')
-                        break;
-                    default:
-                        manager = suggestion.data.management.name.split(' ')
-                        break;
-                }
-                $('#app_form_persondata_20').val(manager[0]).parent('.group').children('label').addClass('is_active')
-                $('#app_form_persondata_21').val(manager[1]).parent('.group').children('label').addClass('is_active')
-                $('#app_form_persondata_22').val(manager[2]).parent('.group').children('label').addClass('is_active')
-            }
-            $('#app_form_persondata_25').val(suggestion.data.address.value).next('label').addClass('is_active')
+            // console.log(suggestion.data)
         }
     });
+    // Подсказка поля е-почта
     $('#app_form_persondata_24').suggestions({
         token: "fd6932ba741e45fb66a5724df848eb4a15478eda",
         type: "EMAIL",
@@ -878,6 +968,7 @@ function initializePlugins() {
             $('#app_form_persondata_24').next('.error_message').remove()
         }
     });
+    // Подсказка поля ФИО имя
     $('#app_form_persondata_20').suggestions({
         token: "fd6932ba741e45fb66a5724df848eb4a15478eda",
         type: "NAME",
@@ -885,6 +976,7 @@ function initializePlugins() {
             
         }
     });
+    // Подсказка поля ФИО фамилия
     $('#app_form_persondata_21').suggestions({
         token: "fd6932ba741e45fb66a5724df848eb4a15478eda",
         type: "NAME",
@@ -892,6 +984,7 @@ function initializePlugins() {
             
         }
     });
+    // Подсказка поля ФИО фамилия
     $('#app_form_persondata_22').suggestions({
         token: "fd6932ba741e45fb66a5724df848eb4a15478eda",
         type: "NAME",
@@ -899,32 +992,63 @@ function initializePlugins() {
             
         }
     });
-    // label change
+
+    // Изменение фомы под ЮР-лицо
     $('input#app_form_persondata_18').on('change', function () {
+        let orgNameInput = `<div class="group" id="orgname">
+                                <input required data-input="orgname" type="text" name="orgname" id="app_form_persondata_19" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input">
+                                <label>Название организации*</label>
+                            </div>`
         let firstname = $('input#app_form_persondata_20')
         let name = $('input#app_form_persondata_21')
         let lastname = $('input#app_form_persondata_22')
         let email = $('input#app_form_persondata_24')
         let address = $('input#app_form_persondata_25')
+        let phone = $('input#app_form_persondata_23') 
         if ($(this).is(':checked')) {
-            $(firstname).parent().children('label').text('Фамилия руководителя')
-            $(name).parent().children('label').text('Имя руководителя')
+            if($('#orgname')){
+                $('#orgname').remove()
+            }
+            $(this).parent().after(orgNameInput)
+            $(firstname).parent().children('label').text('Фамилия руководителя*')
+            $(name).parent().children('label').text('Имя руководителя*')
             $(lastname).parent().children('label').text('Отчество руководителя')
-            $(email).parent().children('label').text('Е-почта организации')
-            $(address).parent().children('label').text('Адрес организации')
-            $('input#app_form_persondata_19').attr('required', true)
-            $('input#app_form_persondata_19').show()
+            $(email).parent().children('label').text('Е-почта организации*')
+            $(phone).parent().children('label').text('Контактный телефон*')
+            $(address).parent().children('label').text('Адрес организации*')
+            $('#app_form_persondata_19').suggestions({
+                token: "fd6932ba741e45fb66a5724df848eb4a15478eda",
+                type: "PARTY",
+                onSelect: function(suggestion) {
+                    if(suggestion.data){
+                        let manager = ''
+                        switch (suggestion.data.type) {
+                            case 'INDIVIDUAL':
+                                manager = suggestion.data.name.full.split(' ')
+                                break;
+                            default:
+                                manager = suggestion.data.management.name.split(' ')
+                                break;
+                        }
+                        $('#app_form_persondata_19').parent('.group').children('label').addClass('is_active')
+                        $('#app_form_persondata_20').val(manager[0]).parent('.group').children('label').addClass('is_active')
+                        $('#app_form_persondata_21').val(manager[1]).parent('.group').children('label').addClass('is_active')
+                        $('#app_form_persondata_22').val(manager[2]).parent('.group').children('label').addClass('is_active')
+                    }
+                    $('#app_form_persondata_25').val(suggestion.data.address.value).parent('.group').children('label').addClass('is_active')
+                }
+            });
         } else {
-            $(firstname).parent().children('label').text('Фамилия')
-            $(name).parent().children('label').text('Имя')
+            $(firstname).parent().children('label').text('Фамилия*')
+            $(name).parent().children('label').text('Имя*')
             $(lastname).parent().children('label').text('Отчество')
-            $(email).parent().children('label').text('Е-почта')
-            $(address).parent().children('label').text('Адрес')
-            $('input#app_form_persondata_19').attr('required', false)
-            $('input#app_form_persondata_19').hide()
+            $(email).parent().children('label').text('Е-почта*')
+            $(phone).parent().children('label').text('Контактный телефон*')
+            $(address).parent().children('label').text('Адрес*')
+            $('#orgname').remove()
         }
     })
-    // label active
+    // Подчеркивание заполненых полей
     $('.group').each(function () {
         let textarea    = $(this).find('.app_form_textarea')
         let input       = $(this).find('input')
@@ -944,7 +1068,7 @@ function initializePlugins() {
             }
         })
     })
-    // counter
+    // Подсчет количества символов в поле
     $('.group').each(function () {
         let textarea = $(this).find('textarea')
         $(textarea).on('input', function () {
@@ -966,6 +1090,10 @@ function initializePlugins() {
             }
         })
     })
+
+    // Форма обращений \
+
+
     // home document list
     function showMore(list) {
         let container = $(list)
@@ -1340,14 +1468,18 @@ function initializePlugins() {
     getNewToken()
     $('.app_form').on('submit', function (event) {
         event.preventDefault();
-        
+        $('.btn_submit').hide()
+        $('#clock').show()
         let method = $(this).attr('method')
         let action = $(this).attr('action')
+        let label = $('label')
+        let inputText = $(this).find('input[type="text"]')
+        let inputEmail = $(this).find('input[type="email"]')
+        let textarea = $(this).find('textarea')
         let formData = new FormData(this)
         for (var id in filesArr) {
             formData.append('files[]', filesArr[id]);
         }
-        
         $.ajax({
             url: action,
             type: method,
@@ -1359,12 +1491,39 @@ function initializePlugins() {
             },
             complete: function () {
                 NProgress.done();
-                //$('#modal_app_form').iziModal('close')
+                $('#modal_app_form').iziModal('close')
             },
             success: function (res) {
-                getNewToken()
-                // mainToast(time = 5000, param = res.status, res, res.result)
-                $('.app_form_message').text(res.result).fadeIn(200)
+                let appMessage = `<div class="app_form_message">
+                                    <span class="app_form_message_close">
+                                        <i class="fa fa-times"></i>
+                                    </span>
+                                    <h3 class="app_form_message_title">${res.title}</h3>
+                                    <p>${res.desc}</p>
+                                  </div>`
+                $('.app_form_message').remove()
+                $('body').append(appMessage).fadeIn(200)
+                $('.app_form_message_close').on('click', function(){
+                    $('.app_form_message').remove()
+                })
+                $('.form_tab').each(function() {
+                    if(Number($(this).data('event-num')) != 4){
+                        $(this).find('.form_tab_event').html($(this).data('event-num'))
+                        $(this).removeClass('is_valid')
+                    }
+                })
+                $("select#app_form_departament").select2("val", "#");
+                $(label).removeClass('is_active')
+                $(inputText).removeClass('valid')
+                $(inputEmail).removeClass('valid')
+                $(textarea).removeClass('valid')
+                $(inputText).val('')  
+                $(inputEmail).val('')
+                $(textarea).val('')
+                $('#app_form_persondata_18').prop('checked', false)
+                $('#app_form_consent').prop('checked', true) 
+                $('#orgname').remove()
+                $('#clock').hide()
             },
             error: function (err) {
                  mainToast(time = 5000, param = 'error', err, text = 'Обращение не отправлено!')

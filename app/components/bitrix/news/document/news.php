@@ -57,7 +57,7 @@ $APPLICATION->IncludeComponent(
 	"bitrix:news.list",
 	"",
 	Array(
-"PARENT_SECTION" => 771,
+// "PARENT_SECTION" => 771,
 		"IBLOCK_TYPE" => $arParams["IBLOCK_TYPE"],
 		"IBLOCK_ID" => $arParams["IBLOCK_ID"],
 		"NEWS_COUNT" => $arParams["NEWS_COUNT"],

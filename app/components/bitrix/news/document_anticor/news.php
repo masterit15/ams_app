@@ -33,24 +33,26 @@ $this->setFrameMode(true);
 <br />
 <?endif?>
 <?$APPLICATION->IncludeComponent(
-	"bitrix:menu",
-	"left_menu",
-	Array(
+	"bitrix:menu", 
+	"left_menu", 
+	array(
 		"ALLOW_MULTI_SELECT" => "N",
 		"CHILD_MENU_TYPE" => "section",
-		"COMPONENT_TEMPLATE" => "section_menu",
+		"COMPONENT_TEMPLATE" => "left_menu",
 		"COMPOSITE_FRAME_MODE" => "A",
 		"COMPOSITE_FRAME_TYPE" => "AUTO",
 		"DELAY" => "N",
 		"MAX_LEVEL" => "3",
-		"MENU_CACHE_GET_VARS" => array(),
+		"MENU_CACHE_GET_VARS" => array(
+		),
 		"MENU_CACHE_TIME" => "3600",
 		"MENU_CACHE_TYPE" => "N",
 		"MENU_CACHE_USE_GROUPS" => "Y",
 		"MENU_THEME" => "yellow",
 		"ROOT_MENU_TYPE" => "section",
 		"USE_EXT" => "Y"
-	)
+	),
+	false
 );?><br>
 <?if($arParams["USE_FILTER"]=="Y"):?>
 <?$APPLICATION->IncludeComponent(

@@ -4,6 +4,7 @@
 ?>
 
 <?if (!empty($arResult)) {?>
+
 <ul>
 	<li class="left">
 		<div class="specversion">
@@ -52,8 +53,8 @@
 			<li class="left popup_trigger"><a href="<?=$arItem["LINK"]?>" class="<?if ($arItem["SELECTED"]) {?>root-item-selected<?} else {?>root-item<?}?>"><?=$arItem["TEXT"]?></a>
 				<div class="popup_content">
 					<div class="popup_head">
-						<h3><?=$arItem['PARAMS']['FIO']?>"</h3>
-						<p><?=$arItem['PARAMS']['POST']?>"</p>
+						<h3><?=$arItem['PARAMS']['FIO']?></h3>
+						<p><?=$arItem['PARAMS']['POST']?></p>
 					</div>
 					<div class="row">
 					<div class="col-6">

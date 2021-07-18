@@ -52,6 +52,11 @@ $this->setFrameMode(true);
 ?>
 <br />
 <?endif?>
+<?
+
+$GLOBALS['arrFilter']= array("ACTIVE" => array("Y", "N"));
+
+?>
 <?$APPLICATION->IncludeComponent(
 	"bitrix:news.list",
 	"",
@@ -99,7 +104,7 @@ $this->setFrameMode(true);
 		"ACTIVE_DATE_FORMAT" => $arParams["LIST_ACTIVE_DATE_FORMAT"],
 		"USE_PERMISSIONS" => $arParams["USE_PERMISSIONS"],
 		"GROUP_PERMISSIONS" => $arParams["GROUP_PERMISSIONS"],
-		"FILTER_NAME" => $arParams["FILTER_NAME"],
+		"FILTER_NAME" => 'arrFilter',//$arParams["FILTER_NAME"],
 		"HIDE_LINK_WHEN_NO_DETAIL" => $arParams["HIDE_LINK_WHEN_NO_DETAIL"],
 		"CHECK_DATES" => $arParams["CHECK_DATES"],
 	),

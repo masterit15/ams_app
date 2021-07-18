@@ -36,7 +36,6 @@
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "browserslist": "^4.16.0",
-    "caniuse-lite": "^1.0.30001165",
     "chart.js": "^2.9.4",
     "filepond": "^4.24.0",
     "filepond-plugin-file-encode": "^2.1.9",

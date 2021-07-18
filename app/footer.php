@@ -73,13 +73,6 @@
 					</ul>
 				</div>
 				<div class="copyright">© 2019—2020. Официальный сайт администрации самоуправления и Собрание представителей г. Владикавказ. <span class="soip">12+</span>
-					<script type="text/javascript">
-						(function(d, t, p) {
-							var j = d.createElement(t); j.async = true; j.type = "text/javascript";
-							j.src = ("https:" == p ? "https:" : "http:") + "//stat.sputnik.ru/cnt.js";
-							var s = d.getElementsByTagName(t)[0]; s.parentNode.insertBefore(j, s);
-						})(document, "script", document.location.protocol);
-					</script>
 				</div>
 			</div>
 		</div>
@@ -135,7 +128,6 @@
 				</path>
 			</svg>
 		</div>
-		<div class="app_form_message"></div>
 		<form method="POST" action="<?=SITE_TEMPLATE_PATH;?>/api/feedback.php" class="app_form" enctype="multipart/form-data">
 		<input id="token" type="hidden" name="token">	
 		<div class="close"><i class="fa fa-times"></i></div>
@@ -175,50 +167,50 @@
 							</div>
 							<div class="col-xl-12">
 								<label for="app_form_persondata_18" class="checkbox" style="width: 0%;margin-right: 15px;">
-								<input type="checkbox" name="app_form_persondata" id="app_form_persondata_18" placeholder="Обращение от юридического лица" autocomplete="off" value="18">
+								<input type="checkbox" data-input="juristic" name="app_form_persondata" id="app_form_persondata_18" placeholder="Обращение от юридического лица" autocomplete="off" value="18">
 								<span>Обращение от юридического лица</span>
 								</label>
 							</div>
-							<div class="col-xl-12">
+							<!-- <div class="col-xl-12">
 								<div class="group">
 									<input type="text" name="orgname" id="app_form_persondata_19" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input" style="box-sizing: border-box; display: none;">
 									<label>Название организации</label>
 								</div>
-							</div>
+							</div> -->
 							<div class="col-xl-4">
 								<div class="group">
-									<input required type="text" name="first_name" id="app_form_persondata_20" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input" style="box-sizing: border-box;"><div class="suggestions-wrapper"><div class="suggestions-suggestions" style="display: none;"></div></div>
+									<input required data-input="firstName" type="text" name="first_name" id="app_form_persondata_20" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input" style="box-sizing: border-box;"><div class="suggestions-wrapper"><div class="suggestions-suggestions" style="display: none;"></div></div>
 									<label>Фамилия*</label>
 								</div>
 							</div>
 							<div class="col-xl-4">
 								<div class="group">
-									<input required type="text" name="name" id="app_form_persondata_21" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input" style="box-sizing: border-box;"><div class="suggestions-wrapper"><div class="suggestions-suggestions" style="display: none;"></div></div>
+									<input required data-input="name" type="text" name="name" id="app_form_persondata_21" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input" style="box-sizing: border-box;"><div class="suggestions-wrapper"><div class="suggestions-suggestions" style="display: none;"></div></div>
 									<label>Имя*</label>
 								</div>
 							</div>
 							<div class="col-xl-4">
 								<div class="group">
-									<input type="text" name="last_name" id="app_form_persondata_22" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input" style="box-sizing: border-box;"><div class="suggestions-wrapper"><div class="suggestions-suggestions" style="display: none;"></div></div>
+									<input type="text" data-input="lastName" name="last_name" id="app_form_persondata_22" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input" style="box-sizing: border-box;"><div class="suggestions-wrapper"><div class="suggestions-suggestions" style="display: none;"></div></div>
 									<label>Отчество</label>
 								</div>
 							</div>
 							<div class="col-xl-5">
 								<div class="group">
-									<input type="text" name="phone" id="app_form_persondata_23" autocomplete="off" maxlength="18">
-									<label>Контактный телефон</label>
+									<input required data-input="phone" type="text" name="phone" id="app_form_persondata_23" autocomplete="off" maxlength="18">
+									<label>Контактный телефон*</label>
 								</div>
 							</div>
 							<div class="col-xl-7">
 								<div class="group">
-									<input required type="email" name="email" id="app_form_persondata_24" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input" style="box-sizing: border-box;"><div class="suggestions-wrapper"><div class="suggestions-suggestions" style="display: none;"></div></div>
+									<input required data-input="email" type="email" name="email" id="app_form_persondata_24" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input" style="box-sizing: border-box;"><div class="suggestions-wrapper"><div class="suggestions-suggestions" style="display: none;"></div></div>
 									<label>Е-почта*</label>
 								</div>
 							</div>
 							<div class="col-xl-12">
 								<div class="group">
-									<input type="text" name="address" id="app_form_persondata_25" autocomplete="off">
-									<label>Адрес</label>
+									<input required  data-input="address" type="text" name="address" id="app_form_persondata_25" autocomplete="off">
+									<label>Адрес*</label>
 								</div>
 							</div>
 						</div>
@@ -229,11 +221,11 @@
 						<div class="col-xl-12">	
 							<h3 class="app_form_title"><b>Содержание обращения</b></h3>
 							<div class="group">
-								<textarea class="app_form_textarea" data-count="1000" data-text="Суть вопроса (не более 2000 символов)" rows="6" name="description" id="app_form_claim_29" autocomplete="off" required></textarea>
+								<textarea data-textarea="description" class="app_form_textarea" data-count="1000" data-text="Суть вопроса (не более 2000 символов)" rows="6" name="description" id="app_form_claim_29" autocomplete="off" required></textarea>
 								<label>Суть вопроса (не более 1000 символов)*</label>
 							</div>
 							<div class="group">
-								<textarea class="app_form_textarea" data-count="2000" data-text="Содержание обращения (не более 2000 символов)" rows="10" name="description_detail" id="app_form_claim_30" autocomplete="off" required></textarea>
+								<textarea data-textarea="descriptionDetail" class="app_form_textarea" data-count="2000" data-text="Содержание обращения (не более 2000 символов)" rows="10" name="description_detail" id="app_form_claim_30" autocomplete="off" required></textarea>
 								<label>Содержание обращения (не более 2000 символов)*</label>
 							</div>
 							<div class="form_row__photo-previews">
@@ -270,7 +262,13 @@
 						</label>
 					</div>
 					<div class="form_submit col-12">
-						<button type="submit" class="btn btn_submit" disabled="">Отправить <i class="fa fa-paper-plane-o"></i></button>
+					<div id="clock"></div>
+						<div class="submit_disabled">
+							<button type="button" class="btn btn_submit_disabled ">Отправить <i class="fa fa-paper-plane-o"></i></button>
+						</div>
+						<button type="submit" class="btn btn_submit" disabled="">
+							Отправить <i class="fa fa-paper-plane-o"></i>
+						</button>
 					</div>
 
 					</div>

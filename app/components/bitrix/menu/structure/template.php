@@ -16,42 +16,51 @@ $firstRoot = false;
 function getWorker($lnk, $item){
 	$sectionId = array_pop(explode('/', $lnk));
 	// получаем поля раздела по ИД
+	
 	$section = CIBlockSection::GetList(
 		array(),
 		array("IBLOCK_ID" => 99, 'ID' =>$sectionId),
 		false,
-		array('ID', 'NAME', 'IBLOCK_SECTION_ID', 'DEPTH_LEVEL', 'SORT', 'UF_WORKER')
+		array('ID', 'NAME', 'IBLOCK_SECTION_ID', 'DEPTH_LEVEL', 'SORT', 'UF_WORKER', 'UF_POST')
 	);
+	
 	if($ar_res = $section->Fetch()){
-		if($ar_res['UF_WORKER']){	// если сотрудник существует
+		if(isset($ar_res['UF_WORKER'])){	// если сотрудник существует
 			// получаем елемент подразделения по ИД привязанного сотрудника
-			$oDep = CIBlockElement::GetList(array(),
-			array('PROPERTY_STR_OFFICER' =>$ar_res['UF_WORKER']),
-			false,
-			false,
-			array('ID'));
-			if($departament = $oDep->Fetch())
+			// $oDep = CIBlockElement::GetList(array(),
+			// array('PROPERTY_STR_OFFICER' =>$ar_res['UF_WORKER']),
+			// false,
+			// false,
+			// array('ID'));
+			// if($departament = $oDep->Fetch())
 			// получаем сотрудника по ИД
 			$res = CIBlockElement::GetList(array(),
 			array('ID' =>$ar_res['UF_WORKER']),
 			false,
 			false,
 			array('ID', 'NAME', 'PREVIEW_TEXT', 'DETAIL_TEXT', 'DETAIL_PICTURE', 'PROPERTY_DUTY'));
-			if($worker = $res->Fetch())
+			if($worker = $res->Fetch()){
 				$worker['IMG'] = CFile::GetPath($worker['DETAIL_PICTURE']);
+				$worker['POST'] = $ar_res['UF_POST'];
+			}
 		}
-	// PR($worker);
 	}
 	if($worker){// рендерим элемент 
-		echo '<div class="tree_item" data-toggle="popover" data-placement="top" title="'.$worker['PROPERTY_DUTY_VALUE'].'" data-content="<img src=\''.$worker['IMG'].'\'>">';
-			echo '<a href="?WORKER='.$departament['ID'].'" title="'.$worker['POST'].'">';
+		if($worker['IMG']){
+			echo '<div class="tree_item" data-toggle="popover" data-trigger="hover" data-placement="right" title="'.$worker['PROPERTY_DUTY_VALUE'].'" data-content="<img src=\''.$worker['IMG'].'\'>">';
+		}else{
+			echo '<div class="tree_item" data-toggle="popover" data-trigger="hover" data-placement="right" title="'.$worker['PROPERTY_DUTY_VALUE'].'">';
+		}
+			echo '<a href="?WORKER='.$worker['ID'].'" title="'.$worker['POST'].'">';
 				echo '<div class="tree_item_content">';
 					echo '<div class="tree_item_head">';
 						echo '<p>'.$item["TEXT"].'</p>';
 						echo '<h3>'.$worker['NAME'].'</h3>';
 					echo '</div>';
 					echo '<div class="tree_item_media">';
-						echo '<img src="'.$worker['IMG'].'" alt="'.$worker['NAME'].'">';
+					if($worker['IMG']){
+						// echo '<img src="'.$worker['IMG'].'" alt="'.$worker['NAME'].'">';
+					}
 					echo '</div>';
 				echo '</div>';
 			echo '</a>';

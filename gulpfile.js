@@ -12,6 +12,7 @@ const newer         = require('gulp-newer');
 const babel 				= require('gulp-babel')
 const del           = require('del');
 
+
 let preprocessor    = 'sass';
 let lang            = 'php';
 let defpath         = 'app/';
@@ -24,41 +25,49 @@ function browsersync() {
     online: true // Режим работы: true или false
   })
 }
-
+function assets() {
+		return src([ // Берём файлы из источников
+			`${defpath}libs/modernizr/modernizr.js`,
+			'node_modules/jquery/dist/jquery.min.js',
+			'node_modules/suggestions-jquery/dist/js/jquery.suggestions.min.js',
+			'node_modules/jquery-pjax/jquery.pjax.js',
+			`${defpath}libs/specversion/jquery.cookie.min.js`,
+			`${defpath}libs/specversion/jquery.matchHeight-min.js`,
+			'node_modules/jquery-validation/dist/jquery.validate.min.js',
+			'node_modules/jquery-validation/dist/localization/messages_ru.js',
+			'node_modules/bootstrap/dist/js/bootstrap.bundle.js',
+			'node_modules/nprogress/nprogress.js',
+			'node_modules/toastr/toastr.js',
+			`${defpath}libs/waypoints/waypoints.min.js`,
+			'node_modules/gsap/dist/gsap.min.js',
+			'node_modules/izimodal/js/iziModal.min.js',
+			'node_modules/select2/dist/js/select2.min.js',
+			'node_modules/select2/dist/js/i18n/ru.js',
+			'node_modules/mmenu-js/dist/mmenu.js',
+			'node_modules/magnific-popup/dist/jquery.magnific-popup.min.js',
+			'node_modules/jquery-mask-plugin/dist/jquery.mask.min.js',
+			'node_modules/air-datepicker/dist/js/datepicker.min.js',
+			'node_modules/animejs/lib/anime.min.js',
+			'node_modules/chart.js/dist/Chart.bundle.min.js',
+			`${defpath}libs/specversion/special_version.js`,
+			])
+			.pipe(newer(`${defpath}assets/js/libs.min.js`))
+			.pipe(concat('libs.min.js')) // Конкатенируем в один файл
+			.pipe(uglify()) // Сжимаем JavaScript
+			// .pipe(babel({presets: ["@babel/preset-env"]}))
+			.pipe(terser())
+			.pipe(dest(`${defpath}assets/js/`)) // Выгружаем готовый файл в папку назначения
+			.pipe(browserSync.stream()) // Триггерим Browsersync для обновления страницы
+}
 function scripts() {
-	return src([ // Берём файлы из источников
-		`${defpath}libs/modernizr/modernizr.js`,
-		'node_modules/jquery/dist/jquery.min.js',
-		'node_modules/suggestions-jquery/dist/js/jquery.suggestions.min.js',
-		'node_modules/jquery-pjax/jquery.pjax.js',
-		`${defpath}libs/specversion/jquery.cookie.min.js`,
-		`${defpath}libs/specversion/jquery.matchHeight-min.js`,
-		'node_modules/jquery-validation/dist/jquery.validate.min.js',
-		'node_modules/jquery-validation/dist/localization/messages_ru.js',
-		'node_modules/bootstrap/dist/js/bootstrap.bundle.js',
-		'node_modules/nprogress/nprogress.js',
-		'node_modules/toastr/toastr.js',
-		`${defpath}libs/waypoints/waypoints.min.js`,
-		'node_modules/gsap/dist/gsap.min.js',
-		'node_modules/izimodal/js/iziModal.min.js',
-		'node_modules/select2/dist/js/select2.min.js',
-		'node_modules/select2/dist/js/i18n/ru.js',
-		'node_modules/mmenu-js/dist/mmenu.js',
-		'node_modules/magnific-popup/dist/jquery.magnific-popup.min.js',
-		'node_modules/jquery-mask-plugin/dist/jquery.mask.min.js',
-		'node_modules/air-datepicker/dist/js/datepicker.min.js',
-		'node_modules/animejs/lib/anime.min.js',
-		'node_modules/chart.js/dist/Chart.bundle.min.js',
-		`${defpath}libs/specversion/special_version.js`,
-		// `${defpath}js/common.js`
-		])
-	
-	.pipe(concat('app.min.js')) // Конкатенируем в один файл
-	// .pipe(uglify()) // Сжимаем JavaScript
-	// .pipe(babel({presets: ["@babel/preset-env"]}))
-	.pipe(terser())
-	.pipe(dest(`${defpath}js/`)) // Выгружаем готовый файл в папку назначения
-	.pipe(browserSync.stream()) // Триггерим Browsersync для обновления страницы
+	return src([`${defpath}/js/common.js`,])
+		// .pipe(newer(`${defpath}js/common.min.js`))
+		// .pipe(babel({presets: ["@babel/preset-env"]}))
+		.pipe(concat('common.min.js')) // Конкатенируем в один файл
+		// .pipe(uglify()) // Сжимаем JavaScript
+		.pipe(terser())
+		.pipe(dest(`${defpath}js/`)) // Выгружаем готовый файл в папку назначения
+		.pipe(browserSync.stream()) // Триггерим Browsersync для обновления страницы
 }
 
 function styles() {
@@ -103,13 +112,12 @@ function buildcopy() {
 function cleandist() {
 	return del('dist/**/*', { force: true }) // Удаляем всё содержимое папки "dist/"
 }
-
+exports.assets				= assets
 exports.images        = images;
 exports.styles        = styles;
 exports.scripts       = scripts;
 exports.cleanimg      = cleanimg;
 exports.browsersync   = browsersync;
 
-exports.build         = series(cleandist, styles, scripts, images, buildcopy);
-exports.default       = parallel(styles, scripts, browsersync, startwatch);
-
+exports.build         = series(cleandist, styles, assets, scripts, images, buildcopy);
+exports.default       = parallel(styles, assets, scripts, browsersync, startwatch);

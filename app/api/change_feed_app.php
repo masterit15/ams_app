@@ -20,7 +20,7 @@ if (CModule::IncludeModule('iblock')) {
     'datetime' => date('d.m.Y в H:i:s'),
     'userId' => '',
   );
-  if($_REQUEST['status']){
+  if($_REQUEST['action'] == 'change_status'){
     $PROP['STATUS'] = Array("VALUE" => $_REQUEST['status']);
 
     $oldStatus = getStatus($_REQUEST['element']);
@@ -28,16 +28,42 @@ if (CModule::IncludeModule('iblock')) {
     CIBlockElement::SetPropertyValuesEx($_REQUEST['element'], false, array(
       "STATUS" => array("VALUE" => $_REQUEST['status']),
     ));
-
+    switch ($_REQUEST['status']) {
+      case '16':
+        $color = '#f5b918';
+        break;
+      case '17':
+        $color = '#00c99c';
+        break;
+      case '15':
+        $color = '#fb7077';
+        break;
+    }
     $newStatus = getStatus($_REQUEST['element']);
-    $json['event'] = 'change_status';
-    $json['title'] = 'Статус изменился';
-    $json['desc'] = 'c "'.$oldStatus.'" на "'.$newStatus.'"';
-    $json['icon'] = 'fa-exchange';
-    $json['userId'] = CUser::IsAuthorized() ? $USER->GetID() : '';
+    $json['event']    = 'change_status';
+    $json['title']    = 'Статус изменился';
+    $json['desc']     = 'c "'.$oldStatus.'" на "'.$newStatus.'"';
+    $json['icon']     = 'fa-exchange';
+    $json['color']    = $color;
+    $json['userId']   = CUser::IsAuthorized() ? $USER->GetID() : '';
 		$json['userName'] = CUser::IsAuthorized() ? $arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'] : '';
     addTimeline($_REQUEST['element'], $json);
     $result['result'] = 'Сменился статус обращения № '.$_REQUEST['element'].'-1 c "'.$oldStatus.'" на "'.$newStatus.'"';
+    $result['status'] = 'success';
+    $result['success'] = true;
+  }elseif($_REQUEST['action'] == 'add_responsible'){
+    CIBlockElement::SetPropertyValuesEx($_REQUEST['element'], false, array(
+      "RESPONSIBLE_DEPARTAMENT" => array("VALUE" => $_REQUEST['responsible']),
+    ));
+    $json['event']    = 'add_responsible';
+    $json['title']    = 'Назначен ответственный';
+    $json['desc']     = 'Ответственный департамент: '.$_REQUEST['responsible'];
+    $json['icon']     = 'fa-users';
+    $json['color']    = '';
+    $json['userId']   = CUser::IsAuthorized() ? $USER->GetID() : '';
+		$json['userName'] = CUser::IsAuthorized() ? $arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'] : '';
+    addTimeline($_REQUEST['element'], $json);
+    $result['result'] = 'Назначен ответственный на обращения № '.$_REQUEST['element'].'-1';
     $result['status'] = 'success';
     $result['success'] = true;
   }

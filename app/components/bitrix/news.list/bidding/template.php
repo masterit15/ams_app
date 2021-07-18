@@ -85,7 +85,7 @@ $this->AddDeleteAction($arItem['ID'], $arItem['DELETE_LINK'], CIBlock::GetArrayB
   <?endforeach;?>
   <?if(count($arItem["DISPLAY_PROPERTIES"]) > 1){?>
     <li class="folder-item js_folder-item download_zip">
-      <a class="folder-item-wrap" href="">
+      <div no-data-pjax class="folder-item-wrap">
         <div class="folder-item__icon"><i class="fa fa-file-archive-o" style="color:#f3aa16"></i></div>
         <div class="folder-item__details">
           <div class="folder-item__details__name">
@@ -93,7 +93,7 @@ $this->AddDeleteAction($arItem['ID'], $arItem['DELETE_LINK'], CIBlock::GetArrayB
           </div>
         </div>
         <div class="folder-item__size"><i class="fa fa-download"></i></div>
-      </a>
+      </div>
     </li>
   <?}?>
   </ul>
