@@ -20,7 +20,7 @@ if (CModule::IncludeModule('iblock')) {
     'datetime' => date('d.m.Y в H:i:s'),
     'userId' => '',
   );
-  if($_REQUEST['action'] == 'change_status'){
+  if($_REQUEST['action'] == 'change_status'){ // сменился статус
     $PROP['STATUS'] = Array("VALUE" => $_REQUEST['status']);
 
     $oldStatus = getStatus($_REQUEST['element']);
@@ -51,13 +51,39 @@ if (CModule::IncludeModule('iblock')) {
     $result['result'] = 'Сменился статус обращения № '.$_REQUEST['element'].'-1 c "'.$oldStatus.'" на "'.$newStatus.'"';
     $result['status'] = 'success';
     $result['success'] = true;
-  }elseif($_REQUEST['action'] == 'add_responsible'){
+  }elseif($_REQUEST['action'] == 'add_responsible'){ // назначен ответственный
     CIBlockElement::SetPropertyValuesEx($_REQUEST['element'], false, array(
       "RESPONSIBLE_DEPARTAMENT" => array("VALUE" => $_REQUEST['responsible']),
     ));
     $json['event']    = 'add_responsible';
-    $json['title']    = 'Назначен ответственный';
-    $json['desc']     = 'Ответственный департамент: '.$_REQUEST['responsible'];
+    $json['title']    = 'Назначен ответственный департамент';
+    $json['desc']     = ''.$_REQUEST['responsible'];
+    $json['icon']     = 'fa-users';
+    $json['color']    = '';
+    $json['userId']   = CUser::IsAuthorized() ? $USER->GetID() : '';
+		$json['userName'] = CUser::IsAuthorized() ? $arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'] : '';
+    addTimeline($_REQUEST['element'], $json);
+    $result['result'] = 'Назначен ответственный на обращения № '.$_REQUEST['element'].'-1';
+    $result['status'] = 'success';
+    $result['success'] = true;
+  }elseif($_REQUEST['action'] == 'add_answer'){ // дан ответ
+    // перебор файлов
+    for($i = 0; $i < count($_FILES["answer_files"]['name']); $i++){
+      $file = Array(
+        'name' 			=> $_FILES["answer_files"]['name'][$i],
+        'size' 			=> $_FILES["answer_files"]['size'][$i],
+        'tmp_name' 	=> $_FILES["answer_files"]['tmp_name'][$i],
+        'type' 			=> $_FILES["answer_files"]['type'][$i]
+      );
+      $arFiles[] = array('VALUE' => $file, 'DESCRIPTION' => '');
+    }
+    CIBlockElement::SetPropertyValuesEx($_REQUEST['element'], false, array(
+      "IN_CHARGE_TEXT_VALUE" => array("VALUE" => $_REQUEST['answer_text']),
+      "IN_CHARGE_FILES_VALUE" => array("VALUE" => $arFiles),
+    ));
+    $json['event']    = 'add_responsible';
+    $json['title']    = 'Назначен ответственный департамент';
+    $json['desc']     = ''.$_REQUEST['responsible'];
     $json['icon']     = 'fa-users';
     $json['color']    = '';
     $json['userId']   = CUser::IsAuthorized() ? $USER->GetID() : '';
