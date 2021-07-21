@@ -1,7 +1,8 @@
 <?
 include $_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_before.php";
 
-if (CModule::IncludeModule('iblock')) {
+if (CUser::IsAuthorized()) {
+  CModule::IncludeModule('iblock');
   $res = CIBlockElement::GetList(Array(), $arFilter, false, Array(), $arSelect);
   // function getProps($id){
   //   $db_props = CIBlockElement::GetProperty(102, $id, array("sort" => "asc"), array());
@@ -45,8 +46,8 @@ if (CModule::IncludeModule('iblock')) {
     $json['desc']     = 'c "'.$oldStatus.'" на "'.$newStatus.'"';
     $json['icon']     = 'fa-exchange';
     $json['color']    = $color;
-    $json['userId']   = CUser::IsAuthorized() ? $USER->GetID() : '';
-		$json['userName'] = CUser::IsAuthorized() ? $arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'] : '';
+    $json['userId']   = $USER->GetID();
+		$json['userName'] = $arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'];
     addTimeline($_REQUEST['element'], $json);
     $result['result'] = 'Сменился статус обращения № '.$_REQUEST['element'].'-1 c "'.$oldStatus.'" на "'.$newStatus.'"';
     $result['status'] = 'success';
@@ -60,8 +61,24 @@ if (CModule::IncludeModule('iblock')) {
     $json['desc']     = ''.$_REQUEST['responsible'];
     $json['icon']     = 'fa-users';
     $json['color']    = '';
-    $json['userId']   = CUser::IsAuthorized() ? $USER->GetID() : '';
-		$json['userName'] = CUser::IsAuthorized() ? $arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'] : '';
+    $json['userId']   = $USER->GetID();
+		$json['userName'] = $arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'];
+    addTimeline($_REQUEST['element'], $json);
+    $result['result'] = 'Назначен ответственный на обращения № '.$_REQUEST['element'].'-1';
+    $result['status'] = 'success';
+    $result['success'] = true;
+  }elseif($_REQUEST['action'] == 'change_responsible'){ // назначен ответственный
+    $oldResponsible = getOldProp($_REQUEST['element'], 'RESPONSIBLE_DEPARTAMENT');
+    CIBlockElement::SetPropertyValuesEx($_REQUEST['element'], false, array(
+      "RESPONSIBLE_DEPARTAMENT" => array("VALUE" => $_REQUEST['responsible']),
+    ));
+    $json['event']    = 'add_responsible';
+    $json['title']    = 'Изменен ответственный департамент';
+    $json['desc']     = 'с '.$oldResponsible.' на '.$_REQUEST['responsible'];
+    $json['icon']     = 'fa-users';
+    $json['color']    = '';
+    $json['userId']   = $USER->GetID();
+		$json['userName'] = $arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'];
     addTimeline($_REQUEST['element'], $json);
     $result['result'] = 'Назначен ответственный на обращения № '.$_REQUEST['element'].'-1';
     $result['status'] = 'success';
@@ -86,8 +103,8 @@ if (CModule::IncludeModule('iblock')) {
     $json['desc']     = ''.$_REQUEST['responsible'];
     $json['icon']     = 'fa-users';
     $json['color']    = '';
-    $json['userId']   = CUser::IsAuthorized() ? $USER->GetID() : '';
-		$json['userName'] = CUser::IsAuthorized() ? $arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'] : '';
+    $json['userId']   = $USER->GetID();
+		$json['userName'] = $arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'];
     addTimeline($_REQUEST['element'], $json);
     $result['result'] = 'Назначен ответственный на обращения № '.$_REQUEST['element'].'-1';
     $result['status'] = 'success';

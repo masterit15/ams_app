@@ -228,11 +228,11 @@
 								<textarea data-textarea="descriptionDetail" class="app_form_textarea" data-count="2000" data-text="Содержание обращения (не более 2000 символов)" rows="10" name="description_detail" id="app_form_claim_30" autocomplete="off" required></textarea>
 								<label>Содержание обращения (не более 2000 символов)*</label>
 							</div>
-							<div class="form_row__photo-previews">
-								<input type="file" name="files[]" multiple id="js-photo-upload">
-								<div class="add_photo-content">
-									<div class="add_photo-item"></div>
-									<ul id="uploadImagesList">
+							<div class="uploader_files">
+								<input class="uploader_files_input" type="file" name="files[]" multiple id="js-photo-upload">
+								<div class="uploader_files_content">
+									<div class="uploader_files_item"></div>
+									<ul class="uploader_files_list" id="uploadImagesList">
 										<li class="item">
 											<span class="img-wrap">
 												<img src="" alt="">

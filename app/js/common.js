@@ -212,65 +212,63 @@ function initializePlugins() {
     // функция повторной инициализации елементов формы обращения
     function loadFeedback(){
         $('.modal_loader').fadeIn(200)
-        $('.feed-detail-action-item').on('click', function(){
-            $('.feed-detail-action-content').html('')
-            let commentField = `<fieldset class="fieldgroup">
-                                    <legend>Комментарий</legend>
-                                    <textarea class="comment_field"></textarea>
-                                    <button class="add">Добавить</button>
-                                </fieldset>`
-            let responsibleSelect = `<fieldset class="fieldgroup">
-                                        <legend>Поиск ответственного</legend>
-                                        <div class="group">
-                                            <input id="" type="text" class="responsible_search"/>
-                                            <label>Ответственный</label>
-                                            <ul class="responsible_search_list"></ul>
-                                        </div>
-                                    </fieldset>`
-            if($(this).hasClass('addcomment')){
-                $('.feed-detail-action-content').append(commentField)
-            }else if($(this).hasClass('addresponsible')){
-                $('.feed-detail-action-content').append(responsibleSelect)
-                $('.responsible_search').on('input', function(){
-                    if($(this).val().length > 0){
-                        $(this).next().addClass('is_active') 
-                    }else{
-                        $(this).next().removeClass('is_active') 
-                    }
-                    $.ajax({
-                        type: "GET",
-                        url: '../bitrix/templates/app/api/person.php',
-                        data: {query: $(this).val()},
-                        beforeSend: function () {
-                            NProgress.start();
-                        },
-                        complete: function () {
-                            NProgress.done();
-                        },
-                        success: function (res) {
-                            $('.responsible_search_list').html('')
-                            if(res.success){
-                                res.departament.forEach(departament =>{
-                                    $('.responsible_search_list').append(`<li data-id="${departament.name}" data-val="${departament.name}">${departament.name}<span>${departament.cheif}</span></li>`)
-                                })
-                                $('.responsible_search_list').slideDown()
-                                $('.responsible_search_list li').on('click', function(){
-                                    $('.responsible_search').val($(this).data('val'))
-                                    changeAplication('add_responsible', $(this).data('id'))
-                                    $('.responsible_search_list').slideUp()
-                                })
-                            }
-                        },
-                        error: function (err) {
-                            mainToast(5000, "error", 'Ошибка загрузки!', err)
-                        }
-                    });
-                })
-            }else if($(this).hasClass('addanswer')){
-                $('.feed-detail-action-content').append(commentField)
+        $('.tab_item').on('click', function(){
+            if(!$(this).hasClass('active')){
+                $('.tab_item').removeClass('active')
+                $(this).addClass('active')
+                let activeTab = $('.tab_item.active').data('tab')
+                $(`.tab_content`).fadeOut()//.removeClass('active')
+                $(`.tab_content[data-tab-content="${activeTab}"]`).fadeIn()//.addClass('active')
+            }else{
+                $('.tab_item').removeClass('active')
+                $(`.tab_content`).fadeOut()//.removeClass('active')
             }
         })
-        
+        let filesArr = uploaderImg('#answer_file_input', false, false);
+        $('.responsible_search').on('input', function(){
+            if($(this).val().length > 0){
+                $(this).next().addClass('is_active') 
+            }else{
+                $(this).next().removeClass('is_active') 
+            }
+            $.ajax({
+                type: "GET",
+                url: '../bitrix/templates/app/api/person.php',
+                data: {query: $(this).val()},
+                beforeSend: function () {
+                    NProgress.start();
+                },
+                complete: function () {
+                    NProgress.done();
+                },
+                success: function (res) {
+                    $('.responsible_search_list').html('')
+                    if(res.success){
+                        res.departament.forEach(departament =>{
+                            $('.responsible_search_list').append(`<li data-id="${departament.name}" data-val="${departament.name}">${departament.name}<span>${departament.cheif}</span></li>`)
+                        })
+                        $('.responsible_search_list').slideDown()
+                        $('.responsible_search_list li').on('click', function(){
+                            $('.responsible_search').val($(this).data('val'))
+                            $('.responsible_search_list').slideUp()
+                        })
+                    }
+                },
+                error: function (err) {
+                    mainToast(5000, "error", 'Ошибка загрузки!', err)
+                }
+            });
+        })
+        $('.responsible_add').on('click', function(){
+            let input = $(this).parent().find('.responsible_search')
+            if($('.timeline').find('li[data-event="add_responsible"]').length > 0){
+                changeAplication('change_responsible', $(input).data('id'))
+            }else{
+                changeAplication('add_responsible', $(input).data('id'))
+            }
+            
+            
+        })
         $('.right_panel_content .group').each(function(){
             let label = $(this).find('label')
             let input = $(this).find('input')
@@ -1310,16 +1308,17 @@ function initializePlugins() {
         toastr[param](title, text)
     }
     // fileupload 
-    function uploaderImg(addButton, addInput, imgList, reset = false, edit = false) {
+    function uploaderImg(addInput, reset = false, edit = false) {
+        let addButton = $(addInput).parent('.uploader_files').find('.uploader_files_item')
+        let imgList = $(addInput).parent('.uploader_files').find('.uploader_files_list')
         $(addButton).on('click', function () {
             $(addInput).trigger('click');
         })
         var maxFileSize = 5 * 1024 * 1024; // (байт) Максимальный размер файла (2мб)
         var queue = {};
         var imagesList = $(imgList);
-        var filelist = $('.file_list').children().length;
-        // 'detach' подобно 'clone + remove'
         var itemPreviewTemplate = imagesList.find('.item').detach();
+        var filelist = imagesList.children().length;
         // Вычисление лимита
         function limitUpload() {
             if (filelist > 0 || edit) {
@@ -1344,7 +1343,7 @@ function initializePlugins() {
             $(addButton).html(sTxt);
         }
         function limitSize() {
-            $(addInput).bind('change', function () {
+            $(addInput).on('change', function () {
                 var total = 0;
                 for (var i = 0; i < this.files.length; i++) {
                     total = total + this.files[i].size;
@@ -1456,7 +1455,7 @@ function initializePlugins() {
         limitDisplay();
         return queue
     }
-    let filesArr = uploaderImg('.add_photo-item', '#js-photo-upload', '#uploadImagesList', false, false);
+    let filesArr = uploaderImg('#js-photo-upload', false, false);
     function getNewToken(){
         grecaptcha.ready(function () {
             grecaptcha.execute('6Lf3hssZAAAAAK2SOCPR9V8zAbClunlgAlNjYLKT', { action: "homepage" })
