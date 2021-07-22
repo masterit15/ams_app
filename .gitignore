@@ -1,5 +1,5 @@
 node_modules/
-.default/
+/.default/
 ddf/
 old/
 sass/

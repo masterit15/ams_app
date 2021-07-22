@@ -1,0 +1,24 @@
+.bx-filter-parameters-box-container .btn{
+	margin-top: 22px;
+	padding: 0 10px;
+}
+input{
+	display: inline-block;
+	height: 40px;
+	max-width: 220px;
+	padding: 0 20px;
+	position: relative;
+	margin-bottom: 11px;
+	color: #1c1c1c;
+	vertical-align: middle;
+	border: solid 1px transparent;
+	outline: none;
+	background-color: #dcecf6;
+	-webkit-appearance: none;
+	border-radius: 2px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	-webkit-transition: all ease 0.3s;
+	transition: all ease 0.3s;
+}

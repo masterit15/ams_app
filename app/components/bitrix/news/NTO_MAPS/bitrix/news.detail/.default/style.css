@@ -1,0 +1,43 @@
+/* style thumbs a bit */
+.thumbs {
+  text-align: center;
+  margin-top: 2px;
+  font-size: 1px;
+  line-height: 0;
+  margin-bottom: 20px;
+}
+
+.thumbs a {
+  visibility: visible;
+  text-decoration: none;
+  color: #34457b;
+}
+.thumbs a:hover {
+  color: #af1d05;
+}
+.thumbs img {
+  width: auto;
+  height: 100px;
+  border: 2px #fff solid;
+  opacity: .75;
+  transition: opacity .5s;
+}
+
+.thumbs a:hover img, .thumbs a.active img {
+  border-color: #00afea;
+  opacity: 1;
+  transition: none;
+}
+.object-map{
+	position: relative;
+	margin: 0 auto;
+	width: 600px;
+	overflow: hidden;
+}
+.nto-info{
+	padding: 0;
+	margin: 20px 0;
+}
+.nto-info li{
+	list-style-type: none;
+}
