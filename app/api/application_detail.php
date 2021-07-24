@@ -1,32 +1,49 @@
 <?
 include $_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_before.php";
 if (CModule::IncludeModule('iblock')) {
-
-  //$file = getFileArr($filesId[0]);
-  $arFilter = array(
-      'ID' => $_GET["id"],
-  );
-  $arSelect = array(
-    'ID',
-    'NAME',
-    'DATE_CREATE',
-    'DETAIL_TEXT',
-    'PREVIEW_TEXT',
-    'PROPERTY_FIO',
-    'PROPERTY_PHONE',
-    'PROPERTY_EMAIL',
-    'PROPERTY_PERSON',
-    'PROPERTY_STATUS',
-    'PROPERTY_DEPARTAMENT',
-    'PROPERTY_ORGANIZATION',
-    'PROPERTY_APPLICATION_TEXT',
-    'PROPERTY_APPLICATION_FILES',
-    'PROPERTY_APPLICATION_QUESTION'
-  );
-  $res = CIBlockElement::GetList(Array(), $arFilter, false, Array(), $arSelect);
-  while ($arr = $res->GetNext()) {
-    $arResult = $arr;
+  function getProps($id){
+    $db_props = CIBlockElement::GetProperty(102, $id, array("sort" => "asc"), Array());
+    $res = array();
+    while($ar_props = $db_props->Fetch()){
+      $res[] = $ar_props;
+    }
+    return $res;
   }
+  //$file = getFileArr($filesId[0]);
+  // $arFilter = array(
+  //     'ID' => $_GET["id"],
+  // );
+  // $arSelect = array(
+  //   'ID',
+  //   'NAME',
+  //   'DATE_CREATE',
+  //   'DETAIL_TEXT',
+  //   'PREVIEW_TEXT',
+  //   'PROPERTY_FIO',
+  //   'PROPERTY_PHONE',
+  //   'PROPERTY_EMAIL',
+  //   'PROPERTY_PERSON',
+  //   'PROPERTY_STATUS',
+  //   'PROPERTY_DEPARTAMENT',
+  //   'PROPERTY_ORGANIZATION',
+  //   'PROPERTY_APPLICATION_TEXT',
+  //   'PROPERTY_APPLICATION_FILES',
+  //   'PROPERTY_APPLICATION_QUESTION'
+  // );
+  // $res = CIBlockElement::GetList(Array(), $arFilter, false, Array(), $arSelect);
+  // while ($arr = $res->GetNext()) {
+  //   $arResult = $arr;
+
+  // }
+  $res = CIBlockElement::GetByID($_GET["id"]);
+  if($ar_res = $res->GetNext())
+    $arResult = $ar_res;
+    foreach(getProps($ar_res['ID']) as $prop){
+      $arResult['PROP'][$prop['CODE']][] = $prop['VALUE'];
+    }
+    
+
+  
   function getTimeline($id){
     $db_props = CIBlockElement::GetProperty(102, $id, array("sort" => "asc"), Array("CODE"=>"TIMELINE"));
       if($ar_props = $db_props->Fetch());
@@ -53,7 +70,7 @@ if (CModule::IncludeModule('iblock')) {
 <div class="feed-detail" data-elid="<?=$arResult['ID']?>">
     <!-- <span class="feed-detail-date"><?=$arResult['DATE_CREATE']?></span>
     <h3 class="feed-detail-title"><?=$arResult['NAME']?></h3> -->
-    <ul class="feed-detail-status-line" data-status-active="<?=$arResult['PROPERTY_STATUS_ENUM_ID']?>">
+    <ul class="feed-detail-status-line" data-status-active="<?=$arResult['PROP']['STATUS'][0]?>">
       <li data-status-id="15" data-elid="<?=$arResult['ID']?>">Не обработана</li>
       <li data-status-id="16" data-elid="<?=$arResult['ID']?>">В работе</li>
       <li data-status-id="17" data-elid="<?=$arResult['ID']?>">Закрыта</li>
@@ -65,26 +82,34 @@ if (CModule::IncludeModule('iblock')) {
         <legend>
           Данные об инициаторе
         </legend>
-        <div class="group">
-          <input type="text" disabled value="<?=$arResult['PROPERTY_FIO_VALUE'];?>">
-          <label>ФИО</label>
-        </div>
-        <div class="group">
-          <input type="text" disabled value="<?=$arResult['PROPERTY_PHONE_VALUE'];?>">
-          <label>Телефон</label>
-        </div>
-        <div class="group">
-          <input type="text" disabled value="<?=$arResult['PROPERTY_EMAIL_VALUE'];?>">
-          <label>Е-почта</label>
-        </div>
-        <div class="group">
-          <input type="text" disabled value="<?=$arResult['PROPERTY_ORGANIZATION_VALUE'];?>">
-          <label>Название организации</label>
-        </div>
+        <?if($arResult['PROP']['FIO'][0]){?>
+          <div class="group">
+            <input type="text" disabled value="<?=$arResult['PROP']['FIO'][0];?>">
+            <label>ФИО</label>
+          </div>
+        <?}?>
+        <?if($arResult['PROP']['PHONE'][0]){?>
+          <div class="group">
+            <input type="text" disabled value="<?=$arResult['PROP']['PHONE'][0];?>">
+            <label>Телефон</label>
+          </div>
+        <?}?>
+        <?if($arResult['PROP']['EMAIL'][0]){?>
+          <div class="group">
+            <input type="text" disabled value="<?=$arResult['PROP']['EMAIL'][0];?>">
+            <label>Е-почта</label>
+          </div>
+        <?}?>
+        <?if($arResult['PROP']['ORGANIZATION'][0]){?>
+          <div class="group">
+            <input type="text" disabled value="<?=$arResult['PROP']['ORGANIZATION'][0];?>">
+            <label>Название организации</label>
+          </div>
+        <?}?>
         </fieldset>
         <fieldset class="fieldgroup">
           <legend>
-            Суть и ткекст обращения
+            Суть и текст обращения
           </legend>
         <div class="group">
           <textarea class="app_form_textarea" type="text" disabled><?=$arResult['PREVIEW_TEXT'];?></textarea>
@@ -95,22 +120,35 @@ if (CModule::IncludeModule('iblock')) {
           <label>Тексть обращения</label>
         </div>
         </fieldset>
-        <fieldset class="fieldgroup">
-          <legend>
-            Прикрепленные файлы обращения
-          </legend>
-          <ul class="file_list">
-          <?foreach($arResult['PROPERTY_APPLICATION_FILES_VALUE'] as $fileId){
-          $file = getFileArr($fileId);
-          ?>
-          <li class="file">
-            <a href="<?=$file['path']?>" target="_blank" rel="noopener noreferrer" download title="<?=$file['name']?>">
-            <?=$file['icon']?>
-            </a>
-          </li>
-          <?}?>
-          </ul>
-        </fieldset>
+        <?if($arResult['PROP']['APPLICATION_FILES'][0]){?>
+          <fieldset class="fieldgroup">
+            <legend>
+              Прикрепленные файлы обращения
+            </legend>
+            <?if(count($arResult['PROP']['APPLICATION_FILES'][0]) > 1){?>]
+              <ul class="file_list">
+              <?foreach($arResult['PROP']['APPLICATION_FILES'][0] as $fileId){
+              $file = getFileArr($fileId);
+              ?>
+                <li class="file">
+                  <a href="<?=$file['path']?>" target="_blank" rel="noopener noreferrer" download title="<?=$file['name']?>">
+                  <?=$file['icon']?>
+                  </a>
+                </li>
+              <?}?>
+              </ul>
+            <?}else{?>
+              <ul class="file_list">
+              <?$file = getFileArr($arResult['PROP']['APPLICATION_FILES'][0]);?>
+                <li class="file">
+                  <a href="<?=$file['path']?>" target="_blank" rel="noopener noreferrer" download title="<?=$file['name']?>">
+                  <?=$file['icon']?>
+                  </a>
+                </li>
+              </ul>
+            <?}?>
+          </fieldset>
+        <?}?>
       </div>
     </div>
     <div class="col-12 col-xl-6">

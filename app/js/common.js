@@ -156,18 +156,21 @@ function initializePlugins() {
     // right panel
     $('[data-panel]').on('click', function () {
         $('.right_panel').remove()
-        let panelHtml = `<div class="right_panel">
-                            <div class="modal_loader"> <svg version="1.1" id="L7" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
-                                    <path fill="#fff" d="M31.6,3.5C5.9,13.6-6.6,42.7,3.5,68.4c10.1,25.7,39.2,38.3,64.9,28.1l-3.1-7.9c-21.3,8.4-45.4-2-53.8-23.3c-8.4-21.3,2-45.4,23.3-53.8L31.6,3.5z" transform="rotate(312.597 50 50)">
-                                        <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="2s" from="0 50 50" to="360 50 50" repeatCount="indefinite"></animateTransform>
-                                    </path>
-                                    <path fill="#fff" d="M42.3,39.6c5.7-4.3,13.9-3.1,18.1,2.7c4.3,5.7,3.1,13.9-2.7,18.1l4.1,5.5c8.8-6.5,10.6-19,4.1-27.7c-6.5-8.8-19-10.6-27.7-4.1L42.3,39.6z" transform="rotate(-265.194 50 50)">
-                                        <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="-360 50 50" repeatCount="indefinite"></animateTransform>
-                                    </path>
-                                    <path fill="#fff" d="M82,35.7C74.1,18,53.4,10.1,35.7,18S10.1,46.6,18,64.3l7.6-3.4c-6-13.5,0-29.3,13.5-35.3s29.3,0,35.3,13.5L82,35.7z" transform="rotate(312.597 50 50)">
-                                        <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="2s" from="0 50 50" to="360 50 50" repeatCount="indefinite"></animateTransform>
-                                    </path>
-                                </svg> </div>
+        let panelHtml = `<div class="right_panel_overlay"></div>
+                            <div class="right_panel"> 
+                                <div class="modal_loader">
+                                    <svg version="1.1" id="L7">
+                                        <path fill="#fff" d="M31.6,3.5C5.9,13.6-6.6,42.7,3.5,68.4c10.1,25.7,39.2,38.3,64.9,28.1l-3.1-7.9c-21.3,8.4-45.4-2-53.8-23.3c-8.4-21.3,2-45.4,23.3-53.8L31.6,3.5z" transform="rotate(312.597 50 50)">
+                                            <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="2s" from="0 50 50" to="360 50 50" repeatCount="indefinite"></animateTransform>
+                                        </path>
+                                        <path fill="#fff" d="M42.3,39.6c5.7-4.3,13.9-3.1,18.1,2.7c4.3,5.7,3.1,13.9-2.7,18.1l4.1,5.5c8.8-6.5,10.6-19,4.1-27.7c-6.5-8.8-19-10.6-27.7-4.1L42.3,39.6z" transform="rotate(-265.194 50 50)">
+                                            <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="-360 50 50" repeatCount="indefinite"></animateTransform>
+                                        </path>
+                                        <path fill="#fff" d="M82,35.7C74.1,18,53.4,10.1,35.7,18S10.1,46.6,18,64.3l7.6-3.4c-6-13.5,0-29.3,13.5-35.3s29.3,0,35.3,13.5L82,35.7z" transform="rotate(312.597 50 50)">
+                                            <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="2s" from="0 50 50" to="360 50 50" repeatCount="indefinite"></animateTransform>
+                                        </path>
+                                    </svg> 
+                                </div>
                             <div class="right_panel_close"><i class="fa fa-times"></i></div>
                             <header class="right_panel_header">
                             <h2 class="right_panel_title">${$(this).data('title')}</h2>
@@ -176,6 +179,7 @@ function initializePlugins() {
                             <div class="right_panel_content"></div>
                         </div>`
         $('body').append(panelHtml)
+        $('body').addClass('fixed')
         let panel = $('.right_panel')
         let thisTitle = $(this).children('.item_title').text()
         let title = $(panel).children('.right_panel_title')
@@ -189,19 +193,20 @@ function initializePlugins() {
             url: url,
             data: data,
             beforeSend: function () {
-                NProgress.start();
+                // NProgress.start();
             },
             complete: function () {
-                NProgress.done();
                 $('.modal_loader').fadeOut(200)
             },
             success: function (res) {
                 $(title).text(thisTitle)
                 $(content).html(res);
-                $('.right_panel_close').on('click', function () {
+                $('.right_panel_close, .right_panel_overlay').on('click', function () {
                     $('.right_panel').removeClass('open')
-                    $('.right_panel').remove()
+                    $('.right_panel, .right_panel_overlay').remove()
+                    $('body').removeClass('fixed')
                 })
+                
                 loadFeedback()
             },
             error: function (err) {
@@ -226,20 +231,24 @@ function initializePlugins() {
         })
         let filesArr = uploaderImg('#answer_file_input', false, false);
         $('.responsible_search').on('input', function(){
+            let parrent = $(this).parent('.group')
             if($(this).val().length > 0){
                 $(this).next().addClass('is_active') 
+                $(parrent).addClass('input_loader')
             }else{
                 $(this).next().removeClass('is_active') 
+                $(this).removeClass('input_loader')
             }
             $.ajax({
                 type: "GET",
                 url: '../bitrix/templates/app/api/person.php',
                 data: {query: $(this).val()},
                 beforeSend: function () {
-                    NProgress.start();
+                    // $('.modal_loader').fadeIn(200)
                 },
                 complete: function () {
-                    NProgress.done();
+                    // $('.modal_loader').fadeOut(200)
+                    // $('.responsible_search').removeClass('input_loader')
                 },
                 success: function (res) {
                     $('.responsible_search_list').html('')
@@ -251,6 +260,7 @@ function initializePlugins() {
                         $('.responsible_search_list li').on('click', function(){
                             $('.responsible_search').val($(this).data('val'))
                             $('.responsible_search_list').slideUp()
+                            $(parrent).removeClass('input_loader')
                         })
                     }
                 },
@@ -302,10 +312,10 @@ function initializePlugins() {
             url: '../bitrix/templates/app/api/application_detail.php',
             data: { id: id },
             beforeSend: function () {
-                NProgress.start();
+                // NProgress.start();
             },
             complete: function () {
-                NProgress.done();
+                // NProgress.done();
             },
             success: function (res) {
                 $('.right_panel_content').html(res)
@@ -1539,8 +1549,10 @@ function initializePlugins() {
             $(".js_toggle-folder").not(this).each(function () {
                 $(this).parent().removeClass("active");
                 $(this).removeClass("active");
-                tl.to($(this).find('.fa-folder'), { opacity: 1, duration: 0.01 })
-                tl.to($(this).find('.fa-folder-open'), { opacity: 0, duration: 0.01 })   
+                if($(this).find('.fa-folder').length > 0){
+                    tl.to($(this).find('.fa-folder'), { opacity: 1, duration: 0.01 })
+                    tl.to($(this).find('.fa-folder-open'), { opacity: 0, duration: 0.01 })  
+                } 
                 top = $(this).innerHeight()
             });
             $(this).parent().toggleClass("active");
@@ -1548,17 +1560,17 @@ function initializePlugins() {
             if ($(this).hasClass('active')) {
                 $('.folder-content').slideUp(200)
                 $('.folder.active').children('.folder-content').slideDown(200)
-                tl.to($(icon), { opacity: 0, duration: 0.01 })
-                tl.to($(iconOpen), { opacity: 1, duration: 0.01 })
-                tl.to($('.folder.active').children('.folder-content').children('.folder-item'), { y: 0, opacity: 1, stagger: 0.1, duration: .2, })
-                .then(function (res) {
-                    let offsetFromScreenTop = $('.folder.active').offset().top - $(window).scrollTop();
-                    if(offsetFromScreenTop >= 200 && Math.sign(offsetFromScreenTop) != -1){
-                        $('html, body').animate({ scrollTop: parseInt($('.folder.active').offset().top) - 50 }, 300);
-                    }else if(Math.sign(offsetFromScreenTop) == -1){
-                        $('html, body').animate({ scrollTop: parseInt($('.folder.active').offset().top) - 50 }, 300);
-                    }
-                })
+                    tl.to($(icon), { opacity: 0, duration: 0.01 })
+                    tl.to($(iconOpen), { opacity: 1, duration: 0.01 })
+                    tl.to($('.folder.active').children('.folder-content').children('.folder-item'), { y: 0, opacity: 1, stagger: 0.1, duration: .2, })
+                    .then(function (res) {
+                        let offsetFromScreenTop = $('.folder.active').offset().top - $(window).scrollTop();
+                        if(offsetFromScreenTop >= 200 && Math.sign(offsetFromScreenTop) != -1){
+                            $('html, body').animate({ scrollTop: parseInt($('.folder.active').offset().top) - 50 }, 300);
+                        }else if(Math.sign(offsetFromScreenTop) == -1){
+                            $('html, body').animate({ scrollTop: parseInt($('.folder.active').offset().top) - 50 }, 300);
+                        }
+                    })
             } else {
                 tl.to($('.folder.active').children('.folder-content').children('.folder-item'), { y: -20, opacity: 0, stagger: 0.1, duration: 0.02, })
                     .then(function (res) {

@@ -23,9 +23,7 @@ if (CUser::IsAuthorized()) {
   );
   if($_REQUEST['action'] == 'change_status'){ // сменился статус
     $PROP['STATUS'] = Array("VALUE" => $_REQUEST['status']);
-
     $oldStatus = getStatus($_REQUEST['element']);
-
     CIBlockElement::SetPropertyValuesEx($_REQUEST['element'], false, array(
       "STATUS" => array("VALUE" => $_REQUEST['status']),
     ));

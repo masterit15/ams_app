@@ -17,7 +17,7 @@ if (CModule::IncludeModule('iblock')) {
     'userCreate' => ''
   );
 	$chaptcha = returnReCaptcha($_POST['token']);
-	if ($chaptcha['success']) {
+	// if ($chaptcha['success']) {
 	//if (CUser::IsAuthorized()) { //if auth
 
 				// $rsUser = CUser::GetByID(CUser::GetID());
@@ -65,14 +65,14 @@ if (CModule::IncludeModule('iblock')) {
 			// Создаем письмо
 			$mail = new PHPMailer();
 			$mail->isSMTP();                   // Отправка через SMTP
-			$mail->Host   = 'smtp.yandex.ru';  // Адрес SMTP сервера
-			$mail->SMTPAuth   = true;          // Enable SMTP authentication
+			$mail->Host   		= 'smtp.yandex.ru';  // Адрес SMTP сервера
+			$mail->SMTPAuth   	= true;          // Enable SMTP authentication
 			// $mail->Username   = 'vladikavkaz';  // ваше имя пользователя (без домена и @)
 			// $mail->Password   = 'vatikan34vatikan';  // ваш пароль
-			$mail->Username   = 'masterit15';  // ваше имя пользователя (без домена и @)
-			$mail->Password   = '4emilamazi';  // ваш пароль
-			$mail->SMTPSecure = 'ssl';         // шифрование ssl
-			$mail->Port   = 465;               // порт подключения
+			$mail->Username   	= 'masterit15';  // ваше имя пользователя (без домена и @)
+			$mail->Password   	= '4emilamazi';  // ваш пароль
+			$mail->SMTPSecure 	= 'ssl';         // шифрование ssl
+			$mail->Port   		= 465;               // порт подключения
 			// // от кого (email и имя)
 			// $mail->setFrom('vladikavkaz@rso-a.ru', 'Администрация Местного Самоуправления г. Владикавказ'); 
 			// // кому (email и имя)
@@ -89,32 +89,29 @@ if (CModule::IncludeModule('iblock')) {
 				$DEPARTAMENT =  $ar_res['NAME'];
 			if($PROP['ORGANIZATION']){
 				$html = '<html>
-									<body>
-									<p><b>Название организации:</b> '.$PROP['ORGANIZATION'].'</p>
-									<p><b>ФИО руководителя:</b> '.$PROP['FIO'].'</p>
-									<p><b>Телефон организации:</b> '.$PROP['PHONE'].'</p>
-									<p><b>E-почта организации:</b> '.$PROP['EMAIL'].'</p>
-									<p><b>Адреc организации:</b> '.$PROP['ADDRESS'].'</p>
-									<p><b>Получатель обращения (Адресат):</b> '.$DEPARTAMENT.'</p>
-									<div><b>Суть обращения:</b><br> <p>'.strip_tags($_REQUEST['description']).'</p></div>
-									<div><b>Текст обращения:</b><br> <p>'.strip_tags($_REQUEST['description_detail']).'</p></div>
-									</body>
-								</html>
-								';
+							<body>
+							<p><b>Название организации:</b> '.$PROP['ORGANIZATION'].'</p>
+							<p><b>ФИО руководителя:</b> '.$PROP['FIO'].'</p>
+							<p><b>Телефон организации:</b> '.$PROP['PHONE'].'</p>
+							<p><b>E-почта организации:</b> '.$PROP['EMAIL'].'</p>
+							<p><b>Адреc организации:</b> '.$PROP['ADDRESS'].'</p>
+							<p><b>Получатель обращения (Адресат):</b> '.$DEPARTAMENT.'</p>
+							<div><b>Суть обращения:</b><br> <p>'.strip_tags($_REQUEST['description']).'</p></div>
+							<div><b>Текст обращения:</b><br> <p>'.strip_tags($_REQUEST['description_detail']).'</p></div>
+							</body>
+						</html>';
 			}else{
 				$html = '<html>
-									<body>
-									<p><b>Название организации:</b> '.$PROP['ORGANIZATION'].'</p>
-									<p><b>ФИО:</b> '.$PROP['FIO'].'</p>
-									<p><b>Телефон:</b> '.$PROP['PHONE'].'</p>
-									<p><b>E-почта:</b> '.$PROP['EMAIL'].'</p>
-									<p><b>Адреc:</b> '.$PROP['ADDRESS'].'</p>
-									<p><b>Получатель обращения (Адресат):</b> '.$DEPARTAMENT.'</p>
-									<div><b>Суть обращения:</b><br> <p>'.strip_tags($_REQUEST['description']).'</p></div>
-									<div><b>Текст обращения:</b><br> <p>'.strip_tags($_REQUEST['description_detail']).'</p></div>
-									</body>
-								</html>
-								';
+							<body>
+							<p><b>ФИО:</b> '.$PROP['FIO'].'</p>
+							<p><b>Телефон:</b> '.$PROP['PHONE'].'</p>
+							<p><b>E-почта:</b> '.$PROP['EMAIL'].'</p>
+							<p><b>Адреc:</b> '.$PROP['ADDRESS'].'</p>
+							<p><b>Получатель обращения (Адресат):</b> '.$DEPARTAMENT.'</p>
+							<div><b>Суть обращения:</b><br> <p>'.strip_tags($_REQUEST['description']).'</p></div>
+							<div><b>Текст обращения:</b><br> <p>'.strip_tags($_REQUEST['description_detail']).'</p></div>
+							</body>
+						</html>';
 			}
 			// html текст письма
 			$mail->msgHTML($html);
@@ -157,6 +154,10 @@ if (CModule::IncludeModule('iblock')) {
 				$json['userId'] = CUser::IsAuthorized() ? $USER->GetID() : '';
 				$json['userName'] = CUser::IsAuthorized() ? $arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'] : $PROP['FIO'];
 				addTimeline($ID, $json);
+				$data = $ID.','.$PROP['FIO'].','.$PROP['PHONE'].','.$PROP['EMAIL'];
+				CIBlockElement::SetPropertyValuesEx($ID, false, array(
+				"ENCODE_LINK" => array("VALUE" => encript($data)),
+				));
 				$result['title'] = 'Ваше обращение под № '.$ID.'-1 принято!';
 				$result['desc'] = 'Для уточнения информации по обращению звоните по номеру 30-30-30 или пишите на электроннию почту vladikavkaz@rso-a.ru';
 				$result['status'] = 'success';
@@ -172,10 +173,10 @@ if (CModule::IncludeModule('iblock')) {
 		// 	$result['result'] = "Вы не Авторизованы!";
 		// 	$result['status'] = 'warning';
 		// }
-	} else {
-		$result['title'] = 'Вы подозрительный пользователь для google: ' . json_encode($chaptcha);
-		$result['status'] = 'warning';
-	}
+	// } else {
+	// 	$result['title'] = 'Вы подозрительный пользователь для google: ' . json_encode($chaptcha);
+	// 	$result['status'] = 'warning';
+	// }
 }
 header('Access-Control-Allow-Origin: *');
 header('Content-type: application/json');
