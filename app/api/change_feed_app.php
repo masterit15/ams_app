@@ -3,13 +3,11 @@ include $_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_before.
 
 if (CUser::IsAuthorized()) {
   CModule::IncludeModule('iblock');
-  $res = CIBlockElement::GetList(Array(), $arFilter, false, Array(), $arSelect);
-  // function getProps($id){
-  //   $db_props = CIBlockElement::GetProperty(102, $id, array("sort" => "asc"), array());
-  //   while ($ar_props = $db_props->Fetch()) {
-  //     PR($ar_props);
-  //   }
-  // }
+  function getSectionName($id){
+    $res = CIBlockSection::GetByID($id);
+    if($ar_res = $res->GetNext())
+    return $ar_res['NAME'];
+  }
   $rsUser = CUser::GetByID($USER->GetID());
 	$arUser = $rsUser->Fetch();
   $result = array('success' => false, 'result' => '', 'status' => 'warning');
@@ -22,12 +20,12 @@ if (CUser::IsAuthorized()) {
     'userId' => '',
   );
   if($_REQUEST['action'] == 'change_status'){ // сменился статус
-    $PROP['STATUS'] = Array("VALUE" => $_REQUEST['status']);
+    $PROP['STATUS'] = Array("VALUE" => $_REQUEST['value']);
     $oldStatus = getStatus($_REQUEST['element']);
     CIBlockElement::SetPropertyValuesEx($_REQUEST['element'], false, array(
-      "STATUS" => array("VALUE" => $_REQUEST['status']),
+      "STATUS" => array("VALUE" => $_REQUEST['value']),
     ));
-    switch ($_REQUEST['status']) {
+    switch ($_REQUEST['value']) {
       case '16':
         $color = '#f5b918';
         break;
@@ -48,38 +46,45 @@ if (CUser::IsAuthorized()) {
 		$json['userName'] = $arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'];
     addTimeline($_REQUEST['element'], $json);
     $result['result'] = 'Сменился статус обращения № '.$_REQUEST['element'].'-1 c "'.$oldStatus.'" на "'.$newStatus.'"';
-    $result['status'] = 'success';
     $result['success'] = true;
   }elseif($_REQUEST['action'] == 'add_responsible'){ // назначен ответственный
     CIBlockElement::SetPropertyValuesEx($_REQUEST['element'], false, array(
-      "RESPONSIBLE_DEPARTAMENT" => array("VALUE" => $_REQUEST['responsible']),
+      "RESPONSIBLE_DEPARTAMENT" => array("VALUE" => $_REQUEST['value']),
     ));
     $json['event']    = 'add_responsible';
     $json['title']    = 'Назначен ответственный департамент';
-    $json['desc']     = ''.$_REQUEST['responsible'];
+    $json['desc']     = ''.getSectionName($_REQUEST['value']);
     $json['icon']     = 'fa-users';
-    $json['color']    = '';
+    $json['color']    = '#0984e3';
     $json['userId']   = $USER->GetID();
 		$json['userName'] = $arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'];
     addTimeline($_REQUEST['element'], $json);
     $result['result'] = 'Назначен ответственный на обращения № '.$_REQUEST['element'].'-1';
-    $result['status'] = 'success';
     $result['success'] = true;
-  }elseif($_REQUEST['action'] == 'change_responsible'){ // назначен ответственный
+  }elseif($_REQUEST['action'] == 'change_responsible'){ // сменился ответственный
     $oldResponsible = getOldProp($_REQUEST['element'], 'RESPONSIBLE_DEPARTAMENT');
     CIBlockElement::SetPropertyValuesEx($_REQUEST['element'], false, array(
-      "RESPONSIBLE_DEPARTAMENT" => array("VALUE" => $_REQUEST['responsible']),
+      "RESPONSIBLE_DEPARTAMENT" => array("VALUE" => $_REQUEST['value']),
     ));
     $json['event']    = 'add_responsible';
     $json['title']    = 'Изменен ответственный департамент';
-    $json['desc']     = 'с '.$oldResponsible.' на '.$_REQUEST['responsible'];
+    $json['desc']     = 'с '.getSectionName($oldResponsible).' на '.getSectionName($_REQUEST['value']);
     $json['icon']     = 'fa-users';
-    $json['color']    = '';
+    $json['color']    = '#0984e3';
     $json['userId']   = $USER->GetID();
 		$json['userName'] = $arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'];
     addTimeline($_REQUEST['element'], $json);
     $result['result'] = 'Назначен ответственный на обращения № '.$_REQUEST['element'].'-1';
-    $result['status'] = 'success';
+    $result['success'] = true;
+  }elseif($_REQUEST['action'] == 'add_comment'){ // дан комментарий
+    $json['event']    = 'add_comment';
+    $json['title']    = 'Комментарий';
+    $json['desc']     = ''.$_REQUEST['value'];
+    $json['icon']     = 'fa-comment';
+    $json['color']    = '#ffeaa7';
+    $json['userId']   = $USER->GetID();
+		$json['userName'] = $arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'];
+    addTimeline($_REQUEST['element'], $json);
     $result['success'] = true;
   }elseif($_REQUEST['action'] == 'add_answer'){ // дан ответ
     // перебор файлов
@@ -93,14 +98,14 @@ if (CUser::IsAuthorized()) {
       $arFiles[] = array('VALUE' => $file, 'DESCRIPTION' => '');
     }
     CIBlockElement::SetPropertyValuesEx($_REQUEST['element'], false, array(
-      "IN_CHARGE_TEXT_VALUE" => array("VALUE" => $_REQUEST['answer_text']),
+      "IN_CHARGE_TEXT_VALUE" => array("VALUE" => $_REQUEST['value']),
       "IN_CHARGE_FILES_VALUE" => array("VALUE" => $arFiles),
     ));
-    $json['event']    = 'add_responsible';
-    $json['title']    = 'Назначен ответственный департамент';
-    $json['desc']     = ''.$_REQUEST['responsible'];
-    $json['icon']     = 'fa-users';
-    $json['color']    = '';
+    $json['event']    = 'add_answer';
+    $json['title']    = 'Дан ответ';
+    $json['desc']     = ''.$_REQUEST['value'];
+    $json['icon']     = 'fa-handshake-o';
+    $json['color']    = '#00b894';
     $json['userId']   = $USER->GetID();
 		$json['userName'] = $arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'];
     addTimeline($_REQUEST['element'], $json);

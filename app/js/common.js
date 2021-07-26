@@ -1,5 +1,5 @@
 jQuery(function ($) {
-    if ('serviceWorker' in navigator) {
+    if (('serviceWorker' in navigator) && ('PushManager' in window)) {
         navigator.serviceWorker.register('/bitrix/templates/app/js/sw.js')
             .then((reg) => {
             // регистрация сработала
@@ -7,6 +7,8 @@ jQuery(function ($) {
             }).catch((error) => {
                 console.log(error)
             });
+    }else{
+        alert('Не поддерживаются уведомления!')
     }
     $(document).pjax('a:not("[no-data-pjax]"), #demo-list li a', '#pjax-container', { fragment: '#pjax-container', "timeout": 5000 });
     $('#pjax-container').on('pjax:success', function () {
@@ -254,11 +256,12 @@ function initializePlugins() {
                     $('.responsible_search_list').html('')
                     if(res.success){
                         res.departament.forEach(departament =>{
-                            $('.responsible_search_list').append(`<li data-id="${departament.name}" data-val="${departament.name}">${departament.name}<span>${departament.cheif}</span></li>`)
+                            $('.responsible_search_list').append(`<li data-id="${departament.id}" data-val="${departament.name}">${departament.name}<span>${departament.cheif}</span></li>`)
                         })
                         $('.responsible_search_list').slideDown()
                         $('.responsible_search_list li').on('click', function(){
                             $('.responsible_search').val($(this).data('val'))
+                            $('.responsible_search').data('elid',$(this).data('id'))
                             $('.responsible_search_list').slideUp()
                             $(parrent).removeClass('input_loader')
                         })
@@ -272,9 +275,9 @@ function initializePlugins() {
         $('.responsible_add').on('click', function(){
             let input = $(this).parent().find('.responsible_search')
             if($('.timeline').find('li[data-event="add_responsible"]').length > 0){
-                changeAplication('change_responsible', $(input).data('id'))
+                changeAplication('change_responsible', $(input).data('elid'))
             }else{
-                changeAplication('add_responsible', $(input).data('id'))
+                changeAplication('add_responsible', $(input).data('elid'))
             }
             
             
@@ -303,6 +306,17 @@ function initializePlugins() {
                 changeAplication('change_status', $(this).data('status-id'))
             })
         })
+        $('.add_comment').on('click', function(){
+            let comment = $(this).parent().find('.comment_field')
+            if($(comment).val().length > 0){
+                changeAplication('add_comment', $(comment).val())
+            }
+        })
+        $('.add_answer').on('click', function(){
+            let textarea = $(this).parent().find('textarea')
+            console.log(filesArr);
+            answerApplication('add_answer', $(textarea).val(), '')
+        })
         $('.modal_loader').fadeOut(200)
     }
     // функция подгрузки обращения при изменении
@@ -326,12 +340,42 @@ function initializePlugins() {
             }
         });
     }
-    // функция смены статуса
-    function changeAplication(action, status){
+    function answerApplication(action, text, files){
+        
+        let data = new FormData({action, element: $('.feed-detail').data('elid'), text})
+        for(let i=0; i > files; i++ ){
+            data.append('answer_files[]', files[i])
+        }
+        // for (var id in filesArr) {
+        //     data.append('files[]', filesArr[id]);
+        // }
         $.ajax({
             type: "POST",
             url: '../bitrix/templates/app/api/change_feed_app.php',
-            data: {action, element: $('.feed-detail').data('elid'), status: status},
+            data: data,
+            beforeSend: function () {
+                NProgress.start();
+            },
+            complete: function () {
+                NProgress.done();
+            },
+            success: function (res) {
+                if(res.success){
+                    loadApplication($('.feed-detail').data('elid'))
+                }
+                // mainToast(5000, res.status, ``, res.result)
+            },
+            error: function (err) {
+                mainToast(5000, "error", 'Ошибка загрузки!', err)
+            }
+        });
+    }
+    // функция смены статуса
+    function changeAplication(action, value){
+        $.ajax({
+            type: "POST",
+            url: '../bitrix/templates/app/api/change_feed_app.php',
+            data: {action, element: $('.feed-detail').data('elid'), value},
             beforeSend: function () {
                 NProgress.start();
             },

@@ -9,41 +9,12 @@ if (CModule::IncludeModule('iblock')) {
     }
     return $res;
   }
-  //$file = getFileArr($filesId[0]);
-  // $arFilter = array(
-  //     'ID' => $_GET["id"],
-  // );
-  // $arSelect = array(
-  //   'ID',
-  //   'NAME',
-  //   'DATE_CREATE',
-  //   'DETAIL_TEXT',
-  //   'PREVIEW_TEXT',
-  //   'PROPERTY_FIO',
-  //   'PROPERTY_PHONE',
-  //   'PROPERTY_EMAIL',
-  //   'PROPERTY_PERSON',
-  //   'PROPERTY_STATUS',
-  //   'PROPERTY_DEPARTAMENT',
-  //   'PROPERTY_ORGANIZATION',
-  //   'PROPERTY_APPLICATION_TEXT',
-  //   'PROPERTY_APPLICATION_FILES',
-  //   'PROPERTY_APPLICATION_QUESTION'
-  // );
-  // $res = CIBlockElement::GetList(Array(), $arFilter, false, Array(), $arSelect);
-  // while ($arr = $res->GetNext()) {
-  //   $arResult = $arr;
-
-  // }
   $res = CIBlockElement::GetByID($_GET["id"]);
   if($ar_res = $res->GetNext())
     $arResult = $ar_res;
     foreach(getProps($ar_res['ID']) as $prop){
       $arResult['PROP'][$prop['CODE']][] = $prop['VALUE'];
     }
-    
-
-  
   function getTimeline($id){
     $db_props = CIBlockElement::GetProperty(102, $id, array("sort" => "asc"), Array("CODE"=>"TIMELINE"));
       if($ar_props = $db_props->Fetch());
@@ -164,7 +135,7 @@ if (CModule::IncludeModule('iblock')) {
               <fieldset class="fieldgroup">
                   <legend>Комментарий</legend>
                   <textarea class="comment_field"></textarea>
-                  <button class="btn add">Добавить</button>
+                  <button class="btn add_comment">Добавить</button>
               </fieldset>
             </div>
 
@@ -172,7 +143,7 @@ if (CModule::IncludeModule('iblock')) {
               <fieldset class="fieldgroup">
                   <legend>Назначение ответственного</legend>
                   <div class="group">
-                      <input id="" type="text" class="responsible_search"/>
+                      <input data-elid="0" type="text" class="responsible_search"/>
                       <label>Ответственный</label>
                       <button class="btn responsible_add">Добавить</button>
                       <ul class="responsible_search_list"></ul>
@@ -182,8 +153,8 @@ if (CModule::IncludeModule('iblock')) {
 
             <div class="tab_content" data-tab-content="addanswer">
               <fieldset class="fieldgroup">
-                <legend>Комментарий</legend>
-                <textarea class="comment_field"></textarea>
+                <legend>Ответ на обращение</legend>
+                <textarea class="answer_field"></textarea>
                 <div class="uploader_files">
                     <input class="uploader_files_input" type="file" name="files[]" multiple id="answer_file_input">
                     <div class="uploader_files_content">
@@ -205,7 +176,7 @@ if (CModule::IncludeModule('iblock')) {
                     <div class="errormassege"></div>
                     <p class="app_form_comments">Не более 5 файлов, Допустимые форматы: jpeg,jpg,png,tif,gif,pdf,doc,docx,xls,xlsx,zip,rar Максимальный допустимый размер: 5МБ</p>
                 </div>
-                <button class="btn add">Добавить</button>
+                <button class="btn add_answer">Добавить</button>
               </fieldset>
             </div>
           </div>
