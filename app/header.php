@@ -22,7 +22,7 @@
 		Bitrix\Main\Page\Asset::getInstance()->addJs(SITE_TEMPLATE_PATH . "/assets/js/libs.min.js");
 		Bitrix\Main\Page\Asset::getInstance()->addJs("https://api-maps.yandex.ru/2.1/?apikey=256e028a-94b5-496f-b948-394772dc151a&lang=ru_RU");
 		Bitrix\Main\Page\Asset::getInstance()->addJs("https://www.google.com/recaptcha/api.js?render=6Lf3hssZAAAAAK2SOCPR9V8zAbClunlgAlNjYLKT");
-		Bitrix\Main\Page\Asset::getInstance()->addJs(SITE_TEMPLATE_PATH . "/js/common.min.js");
+		Bitrix\Main\Page\Asset::getInstance()->addJs(SITE_TEMPLATE_PATH . "/js/common.js");
 		// Bitrix\Main\Page\Asset::getInstance()->addJs(SITE_TEMPLATE_PATH . "/js/app_form.js");
 		$GLOBALS["IS_HOME"] = $APPLICATION->GetCurPage(true) === SITE_DIR . "index.php";
 		CModule::IncludeModule('iblock');

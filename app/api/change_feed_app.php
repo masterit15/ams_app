@@ -98,17 +98,20 @@ if (CUser::IsAuthorized()) {
       $arFiles[] = array('VALUE' => $file, 'DESCRIPTION' => '');
     }
     CIBlockElement::SetPropertyValuesEx($_REQUEST['element'], false, array(
-      "IN_CHARGE_TEXT_VALUE" => array("VALUE" => $_REQUEST['value']),
-      "IN_CHARGE_FILES_VALUE" => array("VALUE" => $arFiles),
+      "ANSWER_TEXT" => array("VALUE" => $_REQUEST['text']),
+      "ANSWER_FILES" => $arFiles,
     ));
+    $files = getOldProp($_REQUEST['element'], 'ANSWER_FILES');
     $json['event']    = 'add_answer';
     $json['title']    = 'Дан ответ';
-    $json['desc']     = ''.$_REQUEST['value'];
+    $json['desc']     = $_REQUEST['text'];
     $json['icon']     = 'fa-handshake-o';
     $json['color']    = '#00b894';
+    $json['files']    = $files;
     $json['userId']   = $USER->GetID();
 		$json['userName'] = $arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'];
     addTimeline($_REQUEST['element'], $json);
+    $result['files'] = $files;
     $result['result'] = 'Назначен ответственный на обращения № '.$_REQUEST['element'].'-1';
     $result['status'] = 'success';
     $result['success'] = true;

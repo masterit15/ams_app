@@ -314,8 +314,7 @@ function initializePlugins() {
         })
         $('.add_answer').on('click', function(){
             let textarea = $(this).parent().find('textarea')
-            console.log(filesArr);
-            answerApplication('add_answer', $(textarea).val(), '')
+            answerApplication('add_answer', $(textarea).val(), filesArr)
         })
         $('.modal_loader').fadeOut(200)
     }
@@ -342,17 +341,21 @@ function initializePlugins() {
     }
     function answerApplication(action, text, files){
         
-        let data = new FormData({action, element: $('.feed-detail').data('elid'), text})
-        for(let i=0; i > files; i++ ){
-            data.append('answer_files[]', files[i])
+        let data = new FormData()
+        data.append('action', action)
+        data.append('element', $('.feed-detail').data('elid'))
+        data.append('text', text)
+        let filesArr = Object.values(files)
+        console.log(Object.values(files));
+        for(var id in files){
+            data.append('answer_files[]', files[id]);
         }
-        // for (var id in filesArr) {
-        //     data.append('files[]', filesArr[id]);
-        // }
         $.ajax({
             type: "POST",
             url: '../bitrix/templates/app/api/change_feed_app.php',
             data: data,
+            contentType: false,
+            processData: false,
             beforeSend: function () {
                 NProgress.start();
             },

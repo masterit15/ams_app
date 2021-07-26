@@ -30,6 +30,14 @@ if (CModule::IncludeModule('iblock')) {
               echo '<div class="timeline_item_content" style="border-color: '.$timeline['color'].'">';
                 echo '<h3 class="timeline_item_title">' .$timeline['title']. '</h3>';
                 echo '<p class="timeline_item_desc">' .$timeline['desc']. '</p>';
+                echo '<ul class="timeline_item_files file_list">';
+                foreach($timeline['files'] as $fileId){
+                  $file = getFileArr($fileId);
+                  echo '<li class="file">';
+                    echo '<a href="'.$file['path'].'" target="_blank" rel="noopener noreferrer" download title="'.$file['name'].'">'.$file['icon'].'</a>';
+                  echo '</li>';
+                }
+                echo '</ul>';
                 echo '<span class="timeline_item_ava">' . getAvatarText($timeline['userName']) . '</span>';
                 echo '<span class="timeline_item_date">' .$timeline['datetime']. '</span>';
               echo '</div>';

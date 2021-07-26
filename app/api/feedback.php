@@ -5,6 +5,74 @@ include($_SERVER["DOCUMENT_ROOT"]."/bitrix/templates/app/modules/PHPMailer/Excep
 include($_SERVER["DOCUMENT_ROOT"]."/bitrix/templates/app/modules/PHPMailer/SMTP.php");
 use PHPMailer\PHPMailer\PHPMailer;
 
+function sendMailFromIniciator($prop){
+	// Создаем письмо
+	$mail = new PHPMailer();
+	$mail->CharSet = "UTF-8";
+	$mail->isSMTP();                   			// Отправка через SMTP
+	$mail->Host   		= 'smtp.yandex.ru';  	// Адрес SMTP сервера
+	$mail->SMTPAuth   	= true;          		// Enable SMTP authentication
+	// $mail->Username   	= 'vladikavkaz';  		// ваше имя пользователя (без домена и @)
+	// $mail->Password   	= 'vatikan34vatikan';  	// ваш пароль
+	$mail->Username   	= 'masterit15';  // ваше имя пользователя (без домена и @)
+	$mail->Password   	= '4emilamazi';  // ваш пароль
+	$mail->SMTPSecure 	= 'ssl';         		// шифрование ssl
+	$mail->Port   		= 465;               	// порт подключения
+	// от кого (email и имя)
+	$mail->setFrom('masterit15@yandex.ru', 'Администрация Местного Самоуправления г. Владикавказ'); 
+	// кому (email и имя)
+	$mail->addAddress($prop['EMAIL'], $prop['FIO']); 
+	// тема письма
+	$mail->Subject = 'Ответ на ваше обращение от ' . $prop['CREATE_DATE'] . ' под номером №' . $prop['ID'] . '-1';
+	$html = '<html>
+				<head>
+					<style>
+						.block{
+							width: 100%;
+							max-width: 600px;
+							background-color: #eee;
+							padding: 20px;
+							border-radius: 5px;
+							margin: auto;
+						}
+						.text_block {
+							width: 100%;
+							margin-bottom: 50px;
+						}
+						.link {
+							display: block;
+							color: #fff;
+							padding: 10px 25px;
+							background-color: rgb(114, 236, 252);
+							border-radius: 5px;
+							width: 140px;
+							margin: auto;
+							text-align: center;
+							text-decoration: none;
+							font-weight: bold;
+						}
+						.link:hover{
+							color: #fff;
+							text-decoration: none;
+						}
+					</style>
+				</head>
+				<body>
+					<div class="block">
+						<div class="text_block">Далеко-далеко за словесными горами в стране гласных и согласных живут рыбные тексты. Пунктуация пор выйти запятых даже обеспечивает! Назад снова даль выйти на берегу. Запятых на берегу всеми но своих вопроса которое выйти меня!</div>
+						<a class="link" href="'.$prop['ENCODE_LINK'].'">Посмотреть</a>
+					</div>
+				</body>
+			</html>';
+	// html текст письма
+	$mail->msgHTML($html);
+	if(!$mail->send()) {
+		return '11111 Сообщение не отправлено. Ошибка: ' . $mail->ErrorInfo;
+	} else {
+		return '11111 Сообщение отправлено!';
+	}
+}
+
 if (CModule::IncludeModule('iblock')) {
 	$result = array('success' => false, 'title' => '', 'desc'=> '', 'status' => '');
 	$json = array(
@@ -17,7 +85,7 @@ if (CModule::IncludeModule('iblock')) {
     'userCreate' => ''
   );
 	$chaptcha = returnReCaptcha($_POST['token']);
-	// if ($chaptcha['success']) {
+	//if ($chaptcha['success']) {
 	//if (CUser::IsAuthorized()) { //if auth
 
 				// $rsUser = CUser::GetByID(CUser::GetID());
@@ -64,6 +132,7 @@ if (CModule::IncludeModule('iblock')) {
 
 			// Создаем письмо
 			$mail = new PHPMailer();
+			$mail->CharSet = "UTF-8";
 			$mail->isSMTP();                   // Отправка через SMTP
 			$mail->Host   		= 'smtp.yandex.ru';  // Адрес SMTP сервера
 			$mail->SMTPAuth   	= true;          // Enable SMTP authentication
@@ -72,7 +141,7 @@ if (CModule::IncludeModule('iblock')) {
 			$mail->Username   	= 'masterit15';  // ваше имя пользователя (без домена и @)
 			$mail->Password   	= '4emilamazi';  // ваш пароль
 			$mail->SMTPSecure 	= 'ssl';         // шифрование ssl
-			$mail->Port   		= 465;               // порт подключения
+			$mail->Port   		= 465;           // порт подключения
 			// // от кого (email и имя)
 			// $mail->setFrom('vladikavkaz@rso-a.ru', 'Администрация Местного Самоуправления г. Владикавказ'); 
 			// // кому (email и имя)
@@ -150,14 +219,24 @@ if (CModule::IncludeModule('iblock')) {
 				$json['event'] = 'add_application';
 				$json['title'] = 'Создано обращение';
 				$json['desc'] = CUser::IsAuthorized() ? 'Обращение от пользователя' .$arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'] : 'Обращение от пользователя '. $PROP['FIO'] .' с IP адресом: ' .$_SERVER['REMOTE_ADDR'];
-				$json['icon'] = 'fa-exclamation';
+				$json['icon'] = 'fa-envelope-o';
 				$json['userId'] = CUser::IsAuthorized() ? $USER->GetID() : '';
+				$json['userName'] = CUser::IsAuthorized() ? $arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'] : $PROP['FIO'];
+				addTimeline($ID, $json);
+				$json['event']    = 'add_status';
+				$json['title']    = 'Статус обращения';
+				$json['desc']     = 'Не обработана';
+				$json['icon']     = 'fa-exclamation';
+				$json['color']    = '#fb7077';
+				$json['userId']   = $USER->GetID();
 				$json['userName'] = CUser::IsAuthorized() ? $arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'] : $PROP['FIO'];
 				addTimeline($ID, $json);
 				$data = $ID.','.$PROP['FIO'].','.$PROP['PHONE'].','.$PROP['EMAIL'];
 				CIBlockElement::SetPropertyValuesEx($ID, false, array(
 				"ENCODE_LINK" => array("VALUE" => encript($data)),
 				));
+				$PROP['ENCODE_LINK'] = 'http://localhost:3000/feedback/obrashchenie-detalno/?application='.encript($data);
+				$result['femail'] = sendMailFromIniciator($PROP);
 				$result['title'] = 'Ваше обращение под № '.$ID.'-1 принято!';
 				$result['desc'] = 'Для уточнения информации по обращению звоните по номеру 30-30-30 или пишите на электроннию почту vladikavkaz@rso-a.ru';
 				$result['status'] = 'success';
