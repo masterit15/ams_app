@@ -104,7 +104,7 @@ if (CModule::IncludeModule('iblock')) {
             <legend>
               Прикрепленные файлы обращения
             </legend>
-            <?if(count($arResult['PROP']['APPLICATION_FILES'][0]) > 1){?>]
+            <?if(count($arResult['PROP']['APPLICATION_FILES'][0]) > 1){?>
               <ul class="file_list">
               <?foreach($arResult['PROP']['APPLICATION_FILES'][0] as $fileId){
               $file = getFileArr($fileId);
