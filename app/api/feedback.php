@@ -15,8 +15,8 @@ function sendMailToIniciator($prop){
 	// $mail->Username   	= 'vladikavkaz';  		// ваше имя пользователя (без домена и @)
 	// $mail->Password   	= 'vatikan34vatikan';  	// ваш пароль
 	$mail->Username   	= 'masterit15';  // ваше имя пользователя (без домена и @)
-	$mail->Password   	= '4emilamazi';  // ваш пароль
-	$mail->SMTPSecure 	= 'ssl';         		// шифрование ssl
+	$mail->Password   	= 'w2n{HADrG@VT';  // ваш пароль
+	$mail->SMTPSecure 	= 'TLS';         		// шифрование ssl
 	$mail->Port   		= 465;               	// порт подключения
 	// от кого (email и имя)
 	$mail->setFrom('masterit15@yandex.ru', 'Администрация Местного Самоуправления г. Владикавказ'); 
@@ -163,8 +163,8 @@ if (CModule::IncludeModule('iblock')) {
 				// $mail->Username   = 'vladikavkaz';  // ваше имя пользователя (без домена и @)
 				// $mail->Password   = 'vatikan34vatikan';  // ваш пароль
 				$mail->Username   	= 'masterit15';  // ваше имя пользователя (без домена и @)
-				$mail->Password   	= '4emilamazi';  // ваш пароль
-				$mail->SMTPSecure 	= 'ssl';         // шифрование ssl
+				$mail->Password   	= 'w2n{HADrG@VT';  // ваш пароль
+				$mail->SMTPSecure 	= 'TLS';         // шифрование ssl
 				$mail->Port   		= 465;           // порт подключения
 				// // от кого (email и имя)
 				// $mail->setFrom('vladikavkaz@rso-a.ru', 'Администрация Местного Самоуправления г. Владикавказ'); 
