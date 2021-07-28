@@ -107,6 +107,24 @@ function initializePlugins() {
             $(parrent).removeClass('active')
         }
     })
+    function initPopup(){
+
+        $('.timeline_item_file_img').magnificPopup({
+            type: 'image',
+            closeOnContentClick: true,
+            closeBtnInside: false,
+            fixedContentPos: true,
+            mainClass: 'mfp-no-margins mfp-with-zoom', // class to remove default margin from left and right side
+            image: {
+                verticalFit: true
+            },
+            zoom: {
+                enabled: true,
+                duration: 300 // don't foget to change the duration also in CSS
+            }
+        });
+    }
+    initPopup()
     $('.popup-gallery').magnificPopup({
         delegate: 'a',
         type: 'image',
@@ -124,7 +142,6 @@ function initializePlugins() {
             }
         }
     });
-    
     // mmenu 
     $('body').removeAttr('class');
     $('#mobile-menu').removeAttr('class');
@@ -174,6 +191,7 @@ function initializePlugins() {
                                     </svg> 
                                 </div>
                             <div class="right_panel_close"><i class="fa fa-times"></i></div>
+                            <div class="right_panel_print_btn"><i class="fa fa-print"></i></div>
                             <header class="right_panel_header">
                             <h2 class="right_panel_title">${$(this).data('title')}</h2>
                             <span class="right_panel_date">${$(this).data('date')}</span>
@@ -279,8 +297,6 @@ function initializePlugins() {
             }else{
                 changeAplication('add_responsible', $(input).data('elid'))
             }
-            
-            
         })
         $('.right_panel_content .group').each(function(){
             let label = $(this).find('label')
@@ -300,10 +316,12 @@ function initializePlugins() {
                 $(li).nextAll().addClass('is_none')
             }
             $(elLi).on('click', function(){
-                $(this).nextAll().addClass('is_none')
-                $(this).removeClass('is_none')
-                $('.modal_loader').fadeIn(200)
-                changeAplication('change_status', $(this).data('status-id'))
+                if($(this).data('status-id') != id){
+                    $(this).nextAll().addClass('is_none')
+                    $(this).removeClass('is_none')
+                    $('.modal_loader').fadeIn(200)
+                    changeAplication('change_status', $(this).data('status-id'))
+                }
             })
         })
         $('.add_comment').on('click', function(){
@@ -317,6 +335,45 @@ function initializePlugins() {
             answerApplication('add_answer', $(textarea).val(), filesArr)
         })
         $('.modal_loader').fadeOut(200)
+        initPopup()
+        $('.right_panel_print_btn').on('click', function(){
+            let block = $(this).parent().find('.block_to_print')
+            PrintDiv(block)
+        })
+        // timeline item action
+        $('.timeline_item_action_btn').on('click', function(){
+            $('.timeline_item_action').removeClass('active')
+            $(this).next().addClass('active')
+            
+        })
+        $('.timeline_item_action li').on('click', function(){
+            timelineItemAction('delete_timeline', $(this).data('id'))
+        })
+        $(document).on("click", function(event) {
+            if (!$(event.target).hasClass('outsideclick') && $(event.target).closest(".outsideclick").length === 0) {
+                $(".outsideclick").removeClass('active')
+            }else{
+                
+            }
+        });
+    }
+    // функция обработки событий на item таймлайна
+    function timelineItemAction(action, id){
+        $.ajax({
+            type: "POST",
+            url: '../bitrix/templates/app/api/change_feed_app.php',
+            data: {action, element: $('.feed-detail').data('elid'), id},
+            // contentType: false,
+            // processData: false,
+            success: function (res) {
+                if(res.success){
+                    loadApplication($('.feed-detail').data('elid'))
+                }
+            },
+            error: function (err) {
+                mainToast(5000, "error", 'Ошибка загрузки!', err)
+            }
+        });
     }
     // функция подгрузки обращения при изменении
     function loadApplication(id){
@@ -325,10 +382,10 @@ function initializePlugins() {
             url: '../bitrix/templates/app/api/application_detail.php',
             data: { id: id },
             beforeSend: function () {
-                // NProgress.start();
+                $('.modal_loader').fadeIn()
             },
             complete: function () {
-                // NProgress.done();
+                $('.modal_loader').fadeOut()
             },
             success: function (res) {
                 $('.right_panel_content').html(res)
@@ -339,14 +396,12 @@ function initializePlugins() {
             }
         });
     }
+    // функция отправки ответа
     function answerApplication(action, text, files){
-        
         let data = new FormData()
         data.append('action', action)
         data.append('element', $('.feed-detail').data('elid'))
         data.append('text', text)
-        let filesArr = Object.values(files)
-        console.log(Object.values(files));
         for(var id in files){
             data.append('answer_files[]', files[id]);
         }
@@ -356,14 +411,9 @@ function initializePlugins() {
             data: data,
             contentType: false,
             processData: false,
-            beforeSend: function () {
-                NProgress.start();
-            },
-            complete: function () {
-                NProgress.done();
-            },
             success: function (res) {
                 if(res.success){
+                    console.log(res);
                     loadApplication($('.feed-detail').data('elid'))
                 }
                 // mainToast(5000, res.status, ``, res.result)
@@ -379,14 +429,9 @@ function initializePlugins() {
             type: "POST",
             url: '../bitrix/templates/app/api/change_feed_app.php',
             data: {action, element: $('.feed-detail').data('elid'), value},
-            beforeSend: function () {
-                NProgress.start();
-            },
-            complete: function () {
-                NProgress.done();
-            },
             success: function (res) {
                 if(res.success){
+                    console.log(res);
                     loadApplication($('.feed-detail').data('elid'))
                 }
                 // mainToast(5000, res.status, ``, res.result)
@@ -396,14 +441,6 @@ function initializePlugins() {
             }
         });
     }
-
-    // let filterParams = {
-    //     name: '',
-    //     sex: '',
-    //     petsType: '',
-    //     dateFrom: '',
-    //     dateTo: '',
-    // }
     let filterParams = { 
         iblock: null,
         section: null, 
@@ -436,6 +473,7 @@ function initializePlugins() {
             return Reflect.set(target, prop, value);
         }
     });
+    
     // document filter
     $('#filter_document').each(function () {
         let iblock = $('.document_list').data('iblock') ? $('.document_list').data('iblock') : null
@@ -797,9 +835,9 @@ function initializePlugins() {
     });
     let activeTab = []
     // Маска для поля телефон
-    $('#app_form_persondata_23').mask('+7 (000) 000-00-00', {
+    $('#app_form_persondata_phone').mask('+7 (000) 000-00-00', {
         onChange: function (cep) {
-            $('#app_form_persondata_23').next('.error_message').remove()
+            $('#app_form_persondata_phone').next('.error_message').remove()
         },
         onInvalid: function (val, e, f, invalid, options) {
             let error = invalid[0];
@@ -813,7 +851,7 @@ function initializePlugins() {
         return regex.test(email);
     }
     // Поле Е-почты
-    $('#app_form_persondata_24').on('input', function () {
+    $('#app_form_persondata_email').on('input', function () {
         let valid = isEmail($(this).val())
         if (valid) {
             $(this).next('.error_message').remove()
@@ -847,7 +885,7 @@ function initializePlugins() {
             $('.app_form .select2-container .select2-selection--single').css({'border-color' : '#62d4bd'})
         }
     });
-    // Проверка по клико всей формы на валидность
+    // Проверка по клику всей формы на валидность
     $('.btn_submit_disabled').on('click', function(){
         let selectVal = $('select#app_form_departament').val() 
         let select = $('.app_form .select2-selection--single')
@@ -909,7 +947,7 @@ function initializePlugins() {
         let input = $(this).find('input[required]')
         let departament = $(this).find('select#app_form_departament')
         let person = $(this).find('select#person')
-        let check = $(this).find('input#app_form_persondata_18')
+        let juristic = $(this).find('input#app_form_persondata_juristic')
         let need_person = $(this).find('input#need_person')
         let tabNumber = $(this).data('event-num')
         let consent = $(this).find('#app_form_consent')
@@ -929,7 +967,7 @@ function initializePlugins() {
 
             let inputValidCount = inputStatus.filter(inp=> inp.status === true).length // если юр лицо значение 6 если нет то 5 или меньше
             // проверка от физ \ юр лица
-            if ($(check).is(':checked')) {
+            if ($(juristic).is(':checked')) {
                 if (inputValidCount === 6) {
                     formTab(that,true)
                 } else {
@@ -943,9 +981,6 @@ function initializePlugins() {
                 }
             }
         })
-
-        
-
         $(textarea).each(function () {
             if (this.value.length == 0) {
                 textareaStatus.push({textarea: $(this).data('textarea'), status: false});
@@ -953,14 +988,13 @@ function initializePlugins() {
             else {
                 textareaStatus.push({textarea: $(this).data('textarea'), status: true});
             }
-            let textareaValidCount = textareaStatus.filter(textarea=> textarea.status === true).length // если юр лицо значение 6 если нет то 5 или меньше
+            let textareaValidCount = textareaStatus.filter(textarea=> textarea.status === true).length
             if (textareaValidCount === 2) {
                 formTab(that,true)
             }else{
                 formTab(that)
             }
         })
-        
         $(departament).each(function () {
             if (this.value != '#' && this.value != '') {
                 formTab(that,true)
@@ -982,7 +1016,6 @@ function initializePlugins() {
                 formTab(that)
             }
         })
-
         if ($(this).hasClass('is_valid')) {
             if (!activeTab.includes(tabNumber)) {
                 activeTab.push(tabNumber);
@@ -993,7 +1026,6 @@ function initializePlugins() {
                 activeTab.splice(index, 1);
             }
         }
-        
         if (activeTab.length >= 4) {
             $('.form_tab').addClass('is_valid')
             $('.form_submit').addClass('is_valid')
@@ -1008,7 +1040,7 @@ function initializePlugins() {
         }
     })
     // Подсказка поля адрес
-    $('#app_form_persondata_25').suggestions({
+    $('#app_form_persondata_address').suggestions({
         token: "fd6932ba741e45fb66a5724df848eb4a15478eda",
         type: "ADDRESS",
         onSelect: function(suggestion) {
@@ -1016,62 +1048,31 @@ function initializePlugins() {
         }
     });
     // Подсказка поля е-почта
-    $('#app_form_persondata_24').suggestions({
+    $('#app_form_persondata_email').suggestions({
         token: "fd6932ba741e45fb66a5724df848eb4a15478eda",
         type: "EMAIL",
         onSelect: function(res) {
-            $('#app_form_persondata_24').next('.error_message').remove()
+            $('#app_form_persondata_email').next('.error_message').remove()
         }
     });
-    // Подсказка поля ФИО имя
-    $('#app_form_persondata_20').suggestions({
-        token: "fd6932ba741e45fb66a5724df848eb4a15478eda",
-        type: "NAME",
-        onSelect: function(res) {
-            
-        }
-    });
-    // Подсказка поля ФИО фамилия
-    $('#app_form_persondata_21').suggestions({
-        token: "fd6932ba741e45fb66a5724df848eb4a15478eda",
-        type: "NAME",
-        onSelect: function(res) {
-            
-        }
-    });
-    // Подсказка поля ФИО фамилия
-    $('#app_form_persondata_22').suggestions({
-        token: "fd6932ba741e45fb66a5724df848eb4a15478eda",
-        type: "NAME",
-        onSelect: function(res) {
-            
-        }
-    });
-
     // Изменение фомы под ЮР-лицо
-    $('input#app_form_persondata_18').on('change', function () {
-        let orgNameInput = `<div class="group" id="orgname">
-                                <input required data-input="orgname" type="text" name="orgname" id="app_form_persondata_19" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input">
-                                <label>Название организации*</label>
-                            </div>`
-        let firstname = $('input#app_form_persondata_20')
-        let name = $('input#app_form_persondata_21')
-        let lastname = $('input#app_form_persondata_22')
-        let email = $('input#app_form_persondata_24')
-        let address = $('input#app_form_persondata_25')
-        let phone = $('input#app_form_persondata_23') 
+    $('input#app_form_persondata_juristic').on('change', function () {
+        let firstname = $('input#app_form_persondata_firstname')
+        let name = $('input#app_form_persondata_name')
+        let lastname = $('input#app_form_persondata_lastname')
+        let email = $('input#app_form_persondata_email')
+        let address = $('input#app_form_persondata_address')
+        let phone = $('input#app_form_persondata_phone') 
         if ($(this).is(':checked')) {
-            if($('#orgname')){
-                $('#orgname').remove()
-            }
-            $(this).parent().after(orgNameInput)
+            $('#orgname').fadeIn()
+            $('#orgname').find('input').attr('required', true)
             $(firstname).parent().children('label').text('Фамилия руководителя*')
             $(name).parent().children('label').text('Имя руководителя*')
             $(lastname).parent().children('label').text('Отчество руководителя')
             $(email).parent().children('label').text('Е-почта организации*')
             $(phone).parent().children('label').text('Контактный телефон*')
             $(address).parent().children('label').text('Адрес организации*')
-            $('#app_form_persondata_19').suggestions({
+            $('#app_form_persondata_orgname').suggestions({
                 token: "fd6932ba741e45fb66a5724df848eb4a15478eda",
                 type: "PARTY",
                 onSelect: function(suggestion) {
@@ -1085,12 +1086,12 @@ function initializePlugins() {
                                 manager = suggestion.data.management.name.split(' ')
                                 break;
                         }
-                        $('#app_form_persondata_19').parent('.group').children('label').addClass('is_active')
-                        $('#app_form_persondata_20').val(manager[0]).parent('.group').children('label').addClass('is_active')
-                        $('#app_form_persondata_21').val(manager[1]).parent('.group').children('label').addClass('is_active')
-                        $('#app_form_persondata_22').val(manager[2]).parent('.group').children('label').addClass('is_active')
+                        $('#app_form_persondata_orgname').parent('.group').children('label').addClass('is_active')
+                        $('#app_form_persondata_firstname').val(manager[0]).parent('.group').children('label').addClass('is_active')
+                        $('#app_form_persondata_name').val(manager[1]).parent('.group').children('label').addClass('is_active')
+                        $('#app_form_persondata_lastname').val(manager[2]).parent('.group').children('label').addClass('is_active')
                     }
-                    $('#app_form_persondata_25').val(suggestion.data.address.value).parent('.group').children('label').addClass('is_active')
+                    $('#app_form_persondata_address').val(suggestion.data.address.value).parent('.group').children('label').addClass('is_active')
                 }
             });
         } else {
@@ -1100,7 +1101,8 @@ function initializePlugins() {
             $(email).parent().children('label').text('Е-почта*')
             $(phone).parent().children('label').text('Контактный телефон*')
             $(address).parent().children('label').text('Адрес*')
-            $('#orgname').remove()
+            $('#orgname').fadeOut()
+            $('#orgname').find('input').attr('required', false)
         }
     })
     // Подчеркивание заполненых полей
@@ -1145,7 +1147,80 @@ function initializePlugins() {
             }
         })
     })
-
+    let filesArr = uploaderImg('#js-photo-upload', false, false);
+    function getNewToken(){
+        grecaptcha.ready(function () {
+            grecaptcha.execute('6Lf3hssZAAAAAK2SOCPR9V8zAbClunlgAlNjYLKT', { action: "homepage" })
+            .then(async token => {
+                document.getElementById('token').value = await token
+            });
+        });
+    }
+    getNewToken()
+    $('.app_form').on('submit', function (event) {
+        event.preventDefault();
+        $('.btn_submit').hide()
+        $('#clock').show()
+        let method = $(this).attr('method')
+        let action = $(this).attr('action')
+        let label = $('label')
+        let inputText = $(this).find('input[type="text"]')
+        let inputEmail = $(this).find('input[type="email"]')
+        let textarea = $(this).find('textarea')
+        let formData = new FormData(this)
+        for (var id in filesArr) {
+            formData.append('files[]', filesArr[id]);
+        }
+        $.ajax({
+            url: action,
+            type: method,
+            data: formData,
+            contentType: false,
+            processData: false,
+            beforeSend: function () {
+                NProgress.start();
+            },
+            complete: function () {
+                NProgress.done();
+                $('#modal_app_form').iziModal('close')
+            },
+            success: function (res) {
+                let appMessage = `<div class="app_form_message">
+                                    <span class="app_form_message_close">
+                                        <i class="fa fa-times"></i>
+                                    </span>
+                                    <h3 class="app_form_message_title">${res.title}</h3>
+                                    <p>${res.desc}</p>
+                                  </div>`
+                $('.app_form_message').remove()
+                $('body').append(appMessage).fadeIn(200)
+                $('.app_form_message_close').on('click', function(){
+                    $('.app_form_message').remove()
+                })
+                $('.form_tab').each(function() {
+                    if(Number($(this).data('event-num')) != 4){
+                        $(this).find('.form_tab_event').html($(this).data('event-num'))
+                        $(this).removeClass('is_valid')
+                    }
+                })
+                $("select#app_form_departament").select2("val", "#");
+                $(label).removeClass('is_active')
+                $(inputText).removeClass('valid')
+                $(inputEmail).removeClass('valid')
+                $(textarea).removeClass('valid')
+                $(inputText).val('')  
+                $(inputEmail).val('')
+                $(textarea).val('')
+                $('#app_form_persondata_juristic').prop('checked', false)
+                $('#app_form_consent').prop('checked', true) 
+                $('#orgname').fadeOut()
+                $('#clock').hide()
+            },
+            error: function (err) {
+                 mainToast(time = 5000, param = 'error', err, text = 'Обращение не отправлено!')
+            }
+        })
+    });
     // Форма обращений \
 
 
@@ -1242,64 +1317,6 @@ function initializePlugins() {
             $('#search_params').removeClass('active')
         }
     })
-    // let searchParams = { search: '', iblocktype: null, iblockid: null, PAGEN_1: 1 }
-    // function getSearchResult(data) {
-    //     $.ajax({
-    //         url: '/bitrix/templates/app/api/search.php',
-    //         type: 'GET',
-    //         data: data,
-    //         beforeSend: function () {
-    //             NProgress.start();
-    //         },
-    //         complete: function () {
-    //             NProgress.done();
-    //         },
-    //         success: function (res) {
-    //             $('.search_result').html('')
-    //             $('.search_result').show()
-    //             let search_item = [...$(res)]
-    //             let interVal = 0
-    //             search_item.forEach((item) => {
-    //                 interVal += 100
-    //                 setTimeout(() => {
-    //                     animateCSS(item, 'fadeInUp')
-    //                     $('.search_result').append(item)
-    //                 }, interVal)
-    //             })
-    //         },
-    //         error: function (xhr, ajaxOptions, thrownError) {
-    //             console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-    //             mainToast(5000, "error", 'Ошибка загрузки!', thrownError)
-    //         }
-    //     })
-    // }
-    // $('.search_result').bind('DOMSubtreeModified', function () {
-    //     $('.paginationjs-page').on('click', function () {
-    //         searchParams.PAGEN_1 = $(this).attr('data-pagenum');
-    //         getSearchResult(searchParams);
-    //         $('html, body').animate({ scrollTop: 0 }, 'slow');
-    //     });
-    //     $('.act').on('click', function () {
-    //         searchParams.PAGEN_1 = $(this).attr('data-pagenum');
-    //         getSearchResult(searchParams);
-    //         $('html, body').animate({ scrollTop: 0 }, 'slow');
-    //     });
-    // })
-    // $('.search_form').on('submit', function (event) {
-    //     // event.preventDefault()
-    //     searchParams.search = $('input#search').val()
-    //     searchParams.iblocktype = $('input[name="iblocktype"]:checked').val()
-    //     searchParams.PAGEN_1 = 1
-    //     getSearchResult(searchParams)
-    // })
-    // $('input[name="iblocktype"]').on('input', function () {
-    //     searchParams.search = $('input#search').val()
-    //     searchParams.iblocktype = $('input[name="iblocktype"]:checked').val()
-    //     searchParams.PAGEN_1 = 1
-    //     if ($('#search').val().length) {
-    //         getSearchResult(searchParams)
-    //     }
-    // })
     function changeButton(param = 'search') {
         if (param == 'search') {
             $('.search_btn').addClass('active')
@@ -1512,80 +1529,6 @@ function initializePlugins() {
         limitDisplay();
         return queue
     }
-    let filesArr = uploaderImg('#js-photo-upload', false, false);
-    function getNewToken(){
-        grecaptcha.ready(function () {
-            grecaptcha.execute('6Lf3hssZAAAAAK2SOCPR9V8zAbClunlgAlNjYLKT', { action: "homepage" })
-            .then(async token => {
-                document.getElementById('token').value = await token
-            });
-        });
-    }
-    getNewToken()
-    $('.app_form').on('submit', function (event) {
-        event.preventDefault();
-        $('.btn_submit').hide()
-        $('#clock').show()
-        let method = $(this).attr('method')
-        let action = $(this).attr('action')
-        let label = $('label')
-        let inputText = $(this).find('input[type="text"]')
-        let inputEmail = $(this).find('input[type="email"]')
-        let textarea = $(this).find('textarea')
-        let formData = new FormData(this)
-        for (var id in filesArr) {
-            formData.append('files[]', filesArr[id]);
-        }
-        $.ajax({
-            url: action,
-            type: method,
-            data: formData,
-            contentType: false,
-            processData: false,
-            beforeSend: function () {
-                NProgress.start();
-            },
-            complete: function () {
-                NProgress.done();
-                $('#modal_app_form').iziModal('close')
-            },
-            success: function (res) {
-                let appMessage = `<div class="app_form_message">
-                                    <span class="app_form_message_close">
-                                        <i class="fa fa-times"></i>
-                                    </span>
-                                    <h3 class="app_form_message_title">${res.title}</h3>
-                                    <p>${res.desc}</p>
-                                  </div>`
-                $('.app_form_message').remove()
-                $('body').append(appMessage).fadeIn(200)
-                $('.app_form_message_close').on('click', function(){
-                    $('.app_form_message').remove()
-                })
-                $('.form_tab').each(function() {
-                    if(Number($(this).data('event-num')) != 4){
-                        $(this).find('.form_tab_event').html($(this).data('event-num'))
-                        $(this).removeClass('is_valid')
-                    }
-                })
-                $("select#app_form_departament").select2("val", "#");
-                $(label).removeClass('is_active')
-                $(inputText).removeClass('valid')
-                $(inputEmail).removeClass('valid')
-                $(textarea).removeClass('valid')
-                $(inputText).val('')  
-                $(inputEmail).val('')
-                $(textarea).val('')
-                $('#app_form_persondata_18').prop('checked', false)
-                $('#app_form_consent').prop('checked', true) 
-                $('#orgname').remove()
-                $('#clock').hide()
-            },
-            error: function (err) {
-                 mainToast(time = 5000, param = 'error', err, text = 'Обращение не отправлено!')
-            }
-        })
-    });
     // folder animation
     function folderAnimation(){
         $(".js_toggle-folder").on('click', function () {

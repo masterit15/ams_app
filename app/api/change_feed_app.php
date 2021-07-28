@@ -11,21 +11,13 @@ if (CUser::IsAuthorized()) {
   $rsUser = CUser::GetByID($USER->GetID());
 	$arUser = $rsUser->Fetch();
   $result = array('success' => false, 'result' => '', 'status' => 'warning');
-  $json = array(
-    'event'=> '', 
-    'title' => '', 
-    'desc'=> '', 
-    'icon' => '', 
-    'datetime' => date('d.m.Y в H:i:s'),
-    'userId' => '',
-  );
-  if($_REQUEST['action'] == 'change_status'){ // сменился статус
-    $PROP['STATUS'] = Array("VALUE" => $_REQUEST['value']);
-    $oldStatus = getStatus($_REQUEST['element']);
-    CIBlockElement::SetPropertyValuesEx($_REQUEST['element'], false, array(
-      "STATUS" => array("VALUE" => $_REQUEST['value']),
+  if($_POST['action'] == 'change_status'){ // сменился статус
+    $json = array();
+    $oldStatus = getStatus($_POST['element']);
+    CIBlockElement::SetPropertyValuesEx($_POST['element'], false, array(
+      "STATUS" => array("VALUE" => $_POST['value']),
     ));
-    switch ($_REQUEST['value']) {
+    switch ($_POST['value']) {
       case '16':
         $color = '#f5b918';
         break;
@@ -36,57 +28,65 @@ if (CUser::IsAuthorized()) {
         $color = '#fb7077';
         break;
     }
-    $newStatus = getStatus($_REQUEST['element']);
+    $newStatus = getStatus($_POST['element']);
     $json['event']    = 'change_status';
     $json['title']    = 'Статус изменился';
     $json['desc']     = 'c "'.$oldStatus.'" на "'.$newStatus.'"';
     $json['icon']     = 'fa-exchange';
     $json['color']    = $color;
+    $json['datetime'] = date('d.m.Y в H:i:s');
     $json['userId']   = $USER->GetID();
 		$json['userName'] = $arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'];
-    addTimeline($_REQUEST['element'], $json);
-    $result['result'] = 'Сменился статус обращения № '.$_REQUEST['element'].'-1 c "'.$oldStatus.'" на "'.$newStatus.'"';
+    addTimeline($_POST['element'], $json);
+    $result['result'] = 'Сменился статус обращения № '.$_POST['element'].'-1 c "'.$oldStatus.'" на "'.$newStatus.'"';
     $result['success'] = true;
-  }elseif($_REQUEST['action'] == 'add_responsible'){ // назначен ответственный
-    CIBlockElement::SetPropertyValuesEx($_REQUEST['element'], false, array(
-      "RESPONSIBLE_DEPARTAMENT" => array("VALUE" => $_REQUEST['value']),
+  }elseif($_POST['action'] == 'add_responsible'){ // назначен ответственный
+    $json = array();
+    CIBlockElement::SetPropertyValuesEx($_POST['element'], false, array(
+      "RESPONSIBLE_DEPARTAMENT" => array("VALUE" => $_POST['value']),
     ));
     $json['event']    = 'add_responsible';
     $json['title']    = 'Назначен ответственный департамент';
-    $json['desc']     = ''.getSectionName($_REQUEST['value']);
+    $json['desc']     = ''.getSectionName($_POST['value']);
     $json['icon']     = 'fa-users';
     $json['color']    = '#0984e3';
+    $json['datetime'] = date('d.m.Y в H:i:s');
     $json['userId']   = $USER->GetID();
 		$json['userName'] = $arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'];
-    addTimeline($_REQUEST['element'], $json);
-    $result['result'] = 'Назначен ответственный на обращения № '.$_REQUEST['element'].'-1';
+    addTimeline($_POST['element'], $json);
+    $result['result'] = 'Назначен ответственный на обращения № '.$_POST['element'].'-1';
     $result['success'] = true;
-  }elseif($_REQUEST['action'] == 'change_responsible'){ // сменился ответственный
-    $oldResponsible = getOldProp($_REQUEST['element'], 'RESPONSIBLE_DEPARTAMENT');
-    CIBlockElement::SetPropertyValuesEx($_REQUEST['element'], false, array(
-      "RESPONSIBLE_DEPARTAMENT" => array("VALUE" => $_REQUEST['value']),
+  }elseif($_POST['action'] == 'change_responsible'){ // сменился ответственный
+    $json = array();
+    $oldResponsible = getOldProp($_POST['element'], 'RESPONSIBLE_DEPARTAMENT');
+    CIBlockElement::SetPropertyValuesEx($_POST['element'], false, array(
+      "RESPONSIBLE_DEPARTAMENT" => array("VALUE" => $_POST['value']),
     ));
     $json['event']    = 'add_responsible';
     $json['title']    = 'Изменен ответственный департамент';
-    $json['desc']     = 'с '.getSectionName($oldResponsible).' на '.getSectionName($_REQUEST['value']);
+    $json['desc']     = 'с '.getSectionName($oldResponsible).' на '.getSectionName($_POST['value']);
     $json['icon']     = 'fa-users';
     $json['color']    = '#0984e3';
+    $json['datetime'] = date('d.m.Y в H:i:s');
     $json['userId']   = $USER->GetID();
 		$json['userName'] = $arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'];
-    addTimeline($_REQUEST['element'], $json);
-    $result['result'] = 'Назначен ответственный на обращения № '.$_REQUEST['element'].'-1';
+    addTimeline($_POST['element'], $json);
+    $result['result'] = 'Назначен ответственный на обращения № '.$_POST['element'].'-1';
     $result['success'] = true;
-  }elseif($_REQUEST['action'] == 'add_comment'){ // дан комментарий
+  }elseif($_POST['action'] == 'add_comment'){ // дан комментарий
+    $json = array();
     $json['event']    = 'add_comment';
     $json['title']    = 'Комментарий';
-    $json['desc']     = ''.$_REQUEST['value'];
+    $json['desc']     = ''.$_POST['value'];
     $json['icon']     = 'fa-comment';
-    $json['color']    = '#ffeaa7';
+    $json['color']    = '#00ABA9';
+    $json['datetime'] = date('d.m.Y в H:i:s');
     $json['userId']   = $USER->GetID();
 		$json['userName'] = $arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'];
-    addTimeline($_REQUEST['element'], $json);
+    addTimeline($_POST['element'], $json);
     $result['success'] = true;
-  }elseif($_REQUEST['action'] == 'add_answer'){ // дан ответ
+  }elseif($_POST['action'] == 'add_answer'){ // дан ответ
+    $json = array();
     // перебор файлов
     for($i = 0; $i < count($_FILES["answer_files"]['name']); $i++){
       $file = Array(
@@ -97,26 +97,35 @@ if (CUser::IsAuthorized()) {
       );
       $arFiles[] = array('VALUE' => $file, 'DESCRIPTION' => '');
     }
-    CIBlockElement::SetPropertyValuesEx($_REQUEST['element'], false, array(
-      "ANSWER_TEXT" => array("VALUE" => $_REQUEST['text']),
+    CIBlockElement::SetPropertyValuesEx($_POST['element'], false, array(
+      "ANSWER_TEXT" => array("VALUE" => $_POST['text']),
       "ANSWER_FILES" => $arFiles,
     ));
-    $files = getOldProp($_REQUEST['element'], 'ANSWER_FILES');
+    $files = getOldProp($_POST['element'], 'ANSWER_FILES');
     $json['event']    = 'add_answer';
     $json['title']    = 'Дан ответ';
-    $json['desc']     = $_REQUEST['text'];
+    $json['desc']     = $_POST['text'];
     $json['icon']     = 'fa-handshake-o';
     $json['color']    = '#00b894';
+    $json['datetime'] = date('d.m.Y в H:i:s');
     $json['files']    = $files;
     $json['userId']   = $USER->GetID();
 		$json['userName'] = $arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'];
-    addTimeline($_REQUEST['element'], $json);
-    $result['files'] = $files;
-    $result['result'] = 'Назначен ответственный на обращения № '.$_REQUEST['element'].'-1';
+    addTimeline($_POST['element'], $json);
+    $result['result'] = 'Дан ответ на обращения № '.$_POST['element'].'-1';
     $result['status'] = 'success';
     $result['success'] = true;
+  }elseif($_POST['action'] == 'delete_timeline'){ // удаление елемента таймлайна
+    deleteTimeline($_POST['element'], $_POST['id']);
+    $result['success'] = true;
+  }else{
+    $result['success'] = false;
   }
+}else{
+  $result = array('success' => false, 'status' => 'warning');
 }
+$result['POST'] = $_POST;
+$_POST = null;
 header('Access-Control-Allow-Origin: *');
 header('Content-type: application/json');
 echo json_encode($result);

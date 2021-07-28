@@ -1,6 +1,7 @@
 {
     "require": {
         "ekapusta/oauth2-esia": "^1.4",
-        "minishlink/web-push": "^5.2"
+        "phpmailer/phpmailer": "^6.5",
+        "mpdf/mpdf": "^8.0"
     }
 }

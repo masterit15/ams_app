@@ -53,15 +53,7 @@
   width: 100%;
   height: auto;
 }
-.print_btn{
-  width: 35px;
-  height: 35px;
-  color: #6654e2;
-  border: 1px solid #6654e2;
-  border-radius: 100%;
-  text-align: center;
-  line-height: 35px;
-}
+
 input.err, textarea.err, span.select2-selection.select2-selection--single.err{
   border-color: #e25460;
 }
