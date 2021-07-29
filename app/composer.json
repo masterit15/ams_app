@@ -1,7 +1,0 @@
-{
-    "require": {
-        "ekapusta/oauth2-esia": "^1.4",
-        "phpmailer/phpmailer": "^6.5",
-        "mpdf/mpdf": "^8.0"
-    }
-}
