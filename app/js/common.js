@@ -280,6 +280,7 @@ function initializePlugins() {
                         $('.responsible_search_list li').on('click', function(){
                             $('.responsible_search').val($(this).data('val'))
                             $('.responsible_search').data('elid',$(this).data('id'))
+                            $('.responsible_search').next().addClass('is_active')
                             $('.responsible_search_list').slideUp()
                             $(parrent).removeClass('input_loader')
                         })
