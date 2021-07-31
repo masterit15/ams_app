@@ -1,6 +1,0 @@
-{
-    "require": {
-        "ekapusta/oauth2-esia": "^1.4",
-        "minishlink/web-push": "^5.2"
-    }
-}
