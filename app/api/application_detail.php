@@ -15,6 +15,43 @@ if (CModule::IncludeModule('iblock')) {
     foreach(getProps($ar_res['ID']) as $prop){
       $arResult['PROP'][$prop['CODE']][] = $prop['VALUE'];
     }
+    function printTimeline($id){
+      $db_props = CIBlockElement::GetProperty(102, $id, array("sort" => "asc"), Array("CODE"=>"TIMELINE"));
+        if($ar_props = $db_props->Fetch());
+          $json = json_decode($ar_props['VALUE'], true);
+          foreach($json as $timeline){
+            echo '<li class="timeline_item" data-id="' . $timeline['id'] .'">';
+            if($timeline['color']){
+              echo '<span class="timeline_item_icon" style="color: #fff"><i class="fa ' .$timeline['icon']. '"></i></span>';
+            }else{
+              echo '<span class="timeline_item_icon" ><i class="fa ' .$timeline['icon']. '"></i></span>';
+            }
+              echo '<div class="timeline_item_wrap">';
+                echo '<div class="timeline_item_content">';
+                echo '<header class="timeline_item_header">';
+                  echo '<h3 class="timeline_item_title">' . $timeline['title']. '</h3>';
+                  echo '<span class="timeline_item_ava">' . $timeline['userName'] . '</span>';
+                echo '</header>';
+                  echo '<div class="timeline_item_middle">';
+                    echo '<p class="timeline_item_desc">' .$timeline['desc']. '</p>';
+                    echo '<ul class="timeline_item_files file_list">';
+                    foreach($timeline['files'] as $fileId){
+                      $file = getFileArr($fileId);
+                      echo '<li class="file">';
+                        echo '<a href="'.$file['path'].'" target="_blank" rel="noopener noreferrer" download title="'.$file['name'].'">'.$file['icon'].'</a>';
+                      echo '</li>';
+                    }
+                    echo '</ul>';
+                  echo '</div>';
+                  echo '<footer class="timeline_item_footer">';
+                    echo '<span class="timeline_item_date">' .$timeline['datetime']. '</span>';
+                  echo '</footer>';
+                echo '</div>';
+              echo '</div>';
+              echo '<hr>';
+            echo '</li>';
+          }
+    }
     function getTimeline($id){
       $db_props = CIBlockElement::GetProperty(102, $id, array("sort" => "asc"), Array("CODE"=>"TIMELINE"));
         if($ar_props = $db_props->Fetch());
@@ -38,6 +75,7 @@ if (CModule::IncludeModule('iblock')) {
                     foreach($timeline['files'] as $fileId){
                       $file = getFileArr($fileId);
                       $format = mb_strtolower(pathinfo($file['path'], PATHINFO_EXTENSION));
+                      $pictures = array('jpg', 'gif', 'jpeg', 'png');
                       if ($format == 'pdf') {
                         $imgPath 		= explode('.', $file['path']);
                         $pdf 				= $_SERVER['DOCUMENT_ROOT'] . $file['path'];
@@ -55,6 +93,12 @@ if (CModule::IncludeModule('iblock')) {
                           echo '</a>';
                           echo '<a no-data-pjax class="timeline_item_file_lnk" target="_blank" href="' . $file['path'] . '">Скачать</a>';
                         echo '</div>';
+                      }elseif(in_array($format, $pictures)){
+                        echo '<div class="timeline_item_file">';
+                          echo '<a class="timeline_item_file_img" href="' . $file['path'] . '" data-source="' . $file['path'] . '" title="'. $file['name'] .'">';
+                            echo '<img src="' . $file['path'] . '" class="image-popup" style="max-width: 100%; max-height: 100%; height: 100%; box-shadow: rgba(0, 0, 0, 0.25) 0px 2px 10px 0px;">';
+                          echo '</a>';
+                        echo '</div>';
                       }else{
                         echo '<li class="file">';
                           echo '<a href="'.$file['path'].'" target="_blank" rel="noopener noreferrer" download title="'.$file['name'].'">'.$file['icon'].'</a>';
@@ -65,26 +109,23 @@ if (CModule::IncludeModule('iblock')) {
                   echo '</div>';
                   echo '<footer class="timeline_item_footer">';
                     echo '<span class="timeline_item_date">' .$timeline['datetime']. '</span>';
-                    echo '<button class="timeline_item_action_btn outsideclick"><i class="fa fa-ellipsis-v"></i></button>';
-                    echo '<ul class="timeline_item_action outsideclick">';
-                      echo '<li data-action="delete" data-id="' . $timeline['id'] .'">Удалить</li>';
-                    echo '</ul>';
+                    $events = array(
+                      'add_application',
+                      'add_status'
+                    );
+                    if(!in_array($timeline['event'] ,$events)){
+                      echo '<button class="timeline_item_action_btn outsideclick"><i class="fa fa-ellipsis-v"></i></button>';
+                      echo '<ul class="timeline_item_action outsideclick">';
+                        echo '<li data-action="delete" data-id="' . $timeline['id'] .'">Удалить</li>';
+                      echo '</ul>';
+                    }
                   echo '</footer>';
                 echo '</div>';
               echo '</div>';
             echo '</li>';
           }
     }
-
-
-
-
-    // $db_props = CIBlockElement::GetProperty(102, $arResult['ID'], array("sort" => "asc"), Array("CODE"=>"TIMELINE"));
-    // if($ar_props = $db_props->Fetch()){
-    //   $timeline = json_decode($ar_props['VALUE'], true);
-    //   PR($timeline);
-    // }
-    
+    // PR($arResult);
 ?>
 <div class="feed-detail" data-elid="<?=$arResult['ID']?>">
     <!-- <span class="feed-detail-date"><?=$arResult['DATE_CREATE']?></span>
@@ -121,21 +162,21 @@ if (CModule::IncludeModule('iblock')) {
         <?}?>
         <?if($arResult['PROP']['ORGANIZATION'][0]){?>
           <div class="group">
-            <input type="text" disabled value="<?=$arResult['PROP']['ORGANIZATION'][0];?>">
+            <input type="text" disabled value="<?=str_replace('"', '', $arResult['PROP']['ORGANIZATION'][0])?>">
             <label>Название организации</label>
           </div>
         <?}?>
         </fieldset>
         <fieldset class="fieldgroup">
           <legend>
-            Суть и текст обращения
+            Тема обращения
           </legend>
         <div class="group">
-          <textarea class="app_form_textarea" type="text" disabled><?=strip_tags($arResult['PREVIEW_TEXT']);?></textarea>
+          <textarea class="app_form_textarea" rows="2" type="text" disabled><?=strip_tags($arResult['PREVIEW_TEXT']);?></textarea>
           <label>Суть вопроса</label>
         </div>
         <div class="group">
-          <textarea class="app_form_textarea" type="text" disabled><?=strip_tags($arResult['DETAIL_TEXT'], '<br />');?></textarea>
+          <textarea class="app_form_textarea" rows="10" type="text" disabled><?=strip_tags($arResult['DETAIL_TEXT'], '<br />');?></textarea>
           <label>Тексть обращения</label>
         </div>
         </fieldset>
@@ -145,14 +186,13 @@ if (CModule::IncludeModule('iblock')) {
               Прикрепленные файлы обращения
             </legend>
             
-            <?
-            if(count($arResult['PROP']['APPLICATION_FILES'][0]) > 1){?>]
+            <?if(count($arResult['PROP']['APPLICATION_FILES']) > 1){?>
               <ul class="file_list">
-              <?foreach($arResult['PROP']['APPLICATION_FILES'][0] as $fileId){
+              <?foreach($arResult['PROP']['APPLICATION_FILES'] as $fileId){
               $file = getFileArr($fileId);
               ?>
                 <li class="file">
-                  <a href="<?=$file['path']?>" target="_blank" rel="noopener noreferrer" download title="<?=$file['name']?>">
+                  <a href="<?=$file['path']?>" target="_blank" title="<?=$file['name']?>">
                   <?=$file['icon']?>
                   </a>
                 </li>
@@ -162,7 +202,7 @@ if (CModule::IncludeModule('iblock')) {
               <ul class="file_list">
               <?$file = getFileArr($arResult['PROP']['APPLICATION_FILES'][0]);?>
                 <li class="file">
-                  <a href="<?=$file['path']?>" target="_blank" rel="noopener noreferrer" download title="<?=$file['name']?>">
+                  <a href="<?=$file['path']?>" target="_blank" title="<?=$file['name']?>">
                   <?=$file['icon']?>
                   </a>
                 </li>
@@ -237,29 +277,5 @@ if (CModule::IncludeModule('iblock')) {
       </div>
     </div>
   </div>
-		<div class="block_to_print" style="display:none; ">
-      <?
-      $date = explode(' ', $arResult['DATE_CREATE']);
-      ?>
-			<div class="block_to_print_head">
-				<h3 class="block_to_print_title" style="text-align:center;"><?=$arResult['NAME']?></h3>
-				<span class="block_to_print_number" style="display:block;float:left;">№ <?=$arResult['ID']?>-1</span>
-				<span class="block_to_print_date" style="display:block;float:right;"><strong>Дата подачи:</strong> <?=$date[0].' в '.$date[1];?></span>
-			</div>
-			<br>
-			<hr>
-			<div class="block_to_print_text">
-				<ul style="margin:0;padding:0;list-style:none;">
-					<li><strong>ФИО:</strong> <?=$arResult['PROP']['FIO'][0]?></li>
-					<li><strong>Телефон:</strong> <?=$arResult['PROP']['PHONE'][0]?></li>
-					<li><strong>Е-почта:</strong> <?=$arResult['PROP']['EMAIL'][0]?></li>
-					<li><strong>Адрес:</strong> <?=$arResult['PROP']['ADDRESS'][0]?></li>
-					<li><strong>Название организации:</strong> <?=$arResult['PROP']['ORGANIZATION'][0]?></li>
-					<li><strong>Статус:</strong> <?//=getStatus($arResult['PROP']['STATUS'][0])?></li>
-				</ul>
-				<p class="block_to_print_quest"><strong>Тема обращения:</strong></br> <?=strip_tags($arResult['PREVIEW_TEXT'])?></p>
-				<p class="block_to_print_feedtext"><strong>Текст обращения:</strong></br> <?=strip_tags($arResult['DETAIL_TEXT'])?></p>
-			</div>
-		</div>
 </div>
 <?} // if(CModule::IncludeModule('iblock'))?>

@@ -17,7 +17,7 @@ if (CModule::IncludeModule('iblock')) {
     'userCreate' => ''
   );
 	$chaptcha = returnReCaptcha($_POST['token']);
-	//if ($chaptcha['success']) {
+	if ($chaptcha['success']) {
 		if (!empty($_REQUEST['name']) and !empty($_REQUEST['description']) and !empty($_REQUEST['email']) and !empty($_REQUEST['first_name'])) {
 			//Погнали 
 			$el = new CIBlockElement;
@@ -57,7 +57,7 @@ if (CModule::IncludeModule('iblock')) {
 					// "IBLOCK_SECTION" => $_POST['CATEGORY'], //ID разделов
 					"IBLOCK_ID" => $iblock_id, //ID информационного блока он 24-ый
 					"PROPERTY_VALUES" => $PROP, // Передаем массив значении для свойств
-					"NAME" => CUser::IsAuthorized() ? 'Обращение от пользователя' .$arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'] : 'Обращение от пользователя '. $PROP['FIO'] .' с IP адресом: ' .$_SERVER['REMOTE_ADDR'],
+					"NAME" => 'Обращение от пользователя '. $PROP['FIO'],
 					"ACTIVE" => "N", //поумолчанию делаем активным или ставим N для отключении поумолчанию
 					"PREVIEW_TEXT" => strip_tags($_REQUEST['description']), // Тема обращения
 					"DETAIL_TEXT" => strip_tags($_REQUEST['description_detail']), // Содержание обращения
@@ -67,7 +67,7 @@ if (CModule::IncludeModule('iblock')) {
 			if ($ID = $el->Add($fields)) {
 				$json['event'] = 'add_application';
 				$json['title'] = 'Создано обращение';
-				$json['desc'] = CUser::IsAuthorized() ? 'Обращение от пользователя' .$arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'] : 'Обращение от пользователя '. $PROP['FIO'] .' с IP адресом: ' .$_SERVER['REMOTE_ADDR'];
+				$json['desc'] = 'Обращение от пользователя '. $PROP['FIO'];
 				$json['icon'] = 'fa-envelope-o';
 				$json['userId'] = CUser::IsAuthorized() ? $USER->GetID() : '';
 				$json['userName'] = CUser::IsAuthorized() ? $arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'] : $PROP['FIO'];
@@ -79,7 +79,7 @@ if (CModule::IncludeModule('iblock')) {
 				$json['icon']     = 'fa-exclamation';
 				$json['color']    = '#fb7077';
 				$json['datetime'] = date('d.m.Y в H:i:s');
-				$json['userId']   = $USER->GetID();
+				$json['userId']   = CUser::IsAuthorized() ? $USER->GetID() : '';
 				$json['userName'] = CUser::IsAuthorized() ? $arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'] : $PROP['FIO'];
 				addTimeline($ID, $json);
 				$data = $ID.','.$PROP['FIO'].','.$PROP['PHONE'].','.$PROP['EMAIL'];
@@ -90,19 +90,19 @@ if (CModule::IncludeModule('iblock')) {
 				$PROP['ID'] = $ID;
 				$result['mail_to_ams'] = sendMailToAMS($PROP, $_FILES);
 				$result['mail_to_iniciator'] = sendMailToIniciator($PROP);
-				$result['title'] = 'Ваше обращение под № '.$ID.'-1 принято!';
-				$result['desc'] = 'Для уточнения информации по обращению звоните по номеру 30-30-30 или пишите на электроннию почту vladikavkaz@rso-a.ru';
+				$result['title'] 	= 'Ваше обращение под № '.$ID.'-1 принято!';
+				$result['desc'] 	= 'Вам будет направлено письмо c разъяснениями, на указанную е-почту '.$PROP['EMAIL'].' Для уточнения информации по обращению звоните по номеру 30-30-30 или пишите на электроннию почту vladikavkaz@rso-a.ru';
 				$result['status'] = 'success';
 			} else {
-				$result['title'] = 'Вы не заполнили обязательные поля.';
-				$result['desc'] = 'Заполните все обязательные поля и попробуйте отправить обращение повторно.';
+				$result['title'] 	= 'Вы не заполнили обязательные поля.';
+				$result['desc'] 	= 'Заполните все обязательные поля и попробуйте отправить обращение повторно.';
 				$result['status'] = 'warning';
 			}
 		}
-	// } else {
-	// 	$result['title'] = 'Вы подозрительный пользователь для google: ' . json_encode($chaptcha);
-	// 	$result['status'] = 'warning';
-	// }
+	} else {
+		$result['title'] = 'Google rechaptcha распознала Вас как подозрительного пользователя, перзагрузите страницу и попробуйте еще раз.';
+		$result['status'] = 'warning';
+	}
 }
 header('Access-Control-Allow-Origin: *');
 header('Content-type: application/json');
