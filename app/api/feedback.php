@@ -46,9 +46,9 @@ if (CModule::IncludeModule('iblock')) {
 			$PROP['STATUS'] = Array("VALUE" => 15);
 			$PROP['CONSENT'] = $_POST['userconsent']; // Пользовательское соглашение
 			$PROP['ADDRESS'] = $_POST['address']; // Адрес
-			$PROP['DEPARTAMENT']	= $_POST['departament']; // Получатель обращения (Департамент)
 			$PROP['ORGANIZATION']	= $_POST['orgname']; // Название организации
 			$PROP['APPLICATION_FILES'] = $arFiles; // Прикрепленные файлы
+			$PROP['RESPONSIBLE_DEPARTAMENT']	= $_POST['departament']; // Получатель обращения (Департамент)
 
 			//Основные поля элемента
 			$fields = array(

@@ -109,7 +109,7 @@ function initializePlugins() {
     })
     function initPopup(){
 
-        $('.timeline_item_file_img').magnificPopup({
+        $('.popup').magnificPopup({
             type: 'image',
             closeOnContentClick: true,
             closeBtnInside: false,

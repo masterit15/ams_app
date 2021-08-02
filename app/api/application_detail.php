@@ -9,135 +9,129 @@ if (CModule::IncludeModule('iblock')) {
     }
     return $res;
   }
+  $pictures = array('jpg', 'gif', 'jpeg', 'png');
   $res = CIBlockElement::GetByID($_GET["id"]);
   if($ar_res = $res->GetNext())
     $arResult = $ar_res;
-    foreach(getProps($ar_res['ID']) as $prop){
-      $arResult['PROP'][$prop['CODE']][] = $prop['VALUE'];
-    }
-    function printTimeline($id){
-      $db_props = CIBlockElement::GetProperty(102, $id, array("sort" => "asc"), Array("CODE"=>"TIMELINE"));
-        if($ar_props = $db_props->Fetch());
-          $json = json_decode($ar_props['VALUE'], true);
-          foreach($json as $timeline){
-            echo '<li class="timeline_item" data-id="' . $timeline['id'] .'">';
-            if($timeline['color']){
-              echo '<span class="timeline_item_icon" style="color: #fff"><i class="fa ' .$timeline['icon']. '"></i></span>';
-            }else{
-              echo '<span class="timeline_item_icon" ><i class="fa ' .$timeline['icon']. '"></i></span>';
-            }
-              echo '<div class="timeline_item_wrap">';
-                echo '<div class="timeline_item_content">';
-                echo '<header class="timeline_item_header">';
-                  echo '<h3 class="timeline_item_title">' . $timeline['title']. '</h3>';
-                  echo '<span class="timeline_item_ava">' . $timeline['userName'] . '</span>';
-                echo '</header>';
-                  echo '<div class="timeline_item_middle">';
-                    echo '<p class="timeline_item_desc">' .$timeline['desc']. '</p>';
-                    echo '<ul class="timeline_item_files file_list">';
-                    foreach($timeline['files'] as $fileId){
-                      $file = getFileArr($fileId);
-                      echo '<li class="file">';
-                        echo '<a href="'.$file['path'].'" target="_blank" rel="noopener noreferrer" download title="'.$file['name'].'">'.$file['icon'].'</a>';
+  foreach(getProps($ar_res['ID']) as $prop){
+    $arResult['PROP'][$prop['CODE']][] = $prop['VALUE'];
+  }
+  function printTimeline($id){
+    $db_props = CIBlockElement::GetProperty(102, $id, array("sort" => "asc"), Array("CODE"=>"TIMELINE"));
+      if($ar_props = $db_props->Fetch());
+        $json = json_decode($ar_props['VALUE'], true);
+        foreach($json as $timeline){
+          echo '<li class="timeline_item" data-id="' . $timeline['id'] .'">';
+          if($timeline['color']){
+            echo '<span class="timeline_item_icon" style="color: #fff"><i class="fa ' .$timeline['icon']. '"></i></span>';
+          }else{
+            echo '<span class="timeline_item_icon" ><i class="fa ' .$timeline['icon']. '"></i></span>';
+          }
+            echo '<div class="timeline_item_wrap">';
+              echo '<div class="timeline_item_content">';
+              echo '<header class="timeline_item_header">';
+                echo '<h3 class="timeline_item_title">' . $timeline['title']. '</h3>';
+                echo '<span class="timeline_item_ava">' . $timeline['userName'] . '</span>';
+              echo '</header>';
+                echo '<div class="timeline_item_middle">';
+                  echo '<p class="timeline_item_desc">' .$timeline['desc']. '</p>';
+                  echo '<ul class="timeline_item_files file_list">';
+                  foreach($timeline['files'] as $fileId){
+                    $file = getFileArr($fileId);
+                    echo '<li class="file">';
+                      echo '<a href="'.$file['path'].'" target="_blank" rel="noopener noreferrer" download title="'.$file['name'].'">'.$file['icon'].'</a>';
+                    echo '</li>';
+                  }
+                  echo '</ul>';
+                echo '</div>';
+                echo '<footer class="timeline_item_footer">';
+                  echo '<span class="timeline_item_date">' .$timeline['datetime']. '</span>';
+                echo '</footer>';
+              echo '</div>';
+            echo '</div>';
+            echo '<hr>';
+          echo '</li>';
+        }
+  }
+  function getTimeline($id){
+    $pictures = array('jpg', 'gif', 'jpeg', 'png');
+    $db_props = CIBlockElement::GetProperty(102, $id, array("sort" => "asc"), Array("CODE"=>"TIMELINE"));
+      if($ar_props = $db_props->Fetch());
+        $json = json_decode($ar_props['VALUE'], true);
+        foreach($json as $timeline){
+          echo '<li class="timeline_item" data-id="' . $timeline['id'] .'" data-event="'.$timeline['event'].'" style="background-color: '.$timeline['color'].'">';
+          if($timeline['color']){
+            echo '<span class="timeline_item_icon" style="color: #fff"><i class="fa ' .$timeline['icon']. '"></i></span>';
+          }else{
+            echo '<span class="timeline_item_icon" ><i class="fa ' .$timeline['icon']. '"></i></span>';
+          }
+            echo '<div class="timeline_item_wrap">';
+              echo '<div class="timeline_item_content" style="border-color: '.$timeline['color'].'">';
+              echo '<header class="timeline_item_header">';
+                echo '<h3 class="timeline_item_title">' . $timeline['title']. '</h3>';
+                echo '<span class="timeline_item_ava">' . getAvatarText($timeline['userName']) . '</span>';
+              echo '</header>';
+                echo '<div class="timeline_item_middle">';
+                  echo '<p class="timeline_item_desc">' .$timeline['desc']. '</p>';
+                  echo '<ul class="timeline_item_files file_list">';
+                  foreach($timeline['files'] as $fileId){
+                    $file = getFileArr($fileId);
+                    if(in_array($file['type'], $pictures)){
+                      echo '<li class="file_item">';
+                        echo '<a no-data-pjax class="file_item_link popup" href="' . $file['path'] . '" data-source="' . $file['path'] . '" title="'. $file['name'] .'">';
+                          echo '<span class="file_item_link_icon"><img src="' . $file['path'] . '"></span>';
+                          echo '<span class="file_item_link_name">'.$file['name'].'</span>';
+                        echo '</a>';
+                      echo '</li>';
+                    }else{
+                      echo '<li class="file_item">';
+                        echo '<a no-data-pjax class="file_item_link" href="'.$file['path'].'" download title="'.$file['name'].'">';
+                          echo '<span class="file_item_link_icon">'.$file['icon'].'</span>';
+                          echo '<span class="file_item_link_name">'.$file['name'].'</span>';
+                        echo '</a>';
                       echo '</li>';
                     }
-                    echo '</ul>';
-                  echo '</div>';
-                  echo '<footer class="timeline_item_footer">';
-                    echo '<span class="timeline_item_date">' .$timeline['datetime']. '</span>';
-                  echo '</footer>';
+                  }
+                  echo '</ul>';
                 echo '</div>';
-              echo '</div>';
-              echo '<hr>';
-            echo '</li>';
-          }
-    }
-    function getTimeline($id){
-      $db_props = CIBlockElement::GetProperty(102, $id, array("sort" => "asc"), Array("CODE"=>"TIMELINE"));
-        if($ar_props = $db_props->Fetch());
-          $json = json_decode($ar_props['VALUE'], true);
-          foreach($json as $timeline){
-            echo '<li class="timeline_item" data-id="' . $timeline['id'] .'" data-event="'.$timeline['event'].'" style="background-color: '.$timeline['color'].'">';
-            if($timeline['color']){
-              echo '<span class="timeline_item_icon" style="color: #fff"><i class="fa ' .$timeline['icon']. '"></i></span>';
-            }else{
-              echo '<span class="timeline_item_icon" ><i class="fa ' .$timeline['icon']. '"></i></span>';
-            }
-              echo '<div class="timeline_item_wrap">';
-                echo '<div class="timeline_item_content" style="border-color: '.$timeline['color'].'">';
-                echo '<header class="timeline_item_header">';
-                  echo '<h3 class="timeline_item_title">' . $timeline['title']. '</h3>';
-                  echo '<span class="timeline_item_ava">' . getAvatarText($timeline['userName']) . '</span>';
-                echo '</header>';
-                  echo '<div class="timeline_item_middle">';
-                    echo '<p class="timeline_item_desc">' .$timeline['desc']. '</p>';
-                    echo '<ul class="timeline_item_files file_list">';
-                    foreach($timeline['files'] as $fileId){
-                      $file = getFileArr($fileId);
-                      $format = mb_strtolower(pathinfo($file['path'], PATHINFO_EXTENSION));
-                      $pictures = array('jpg', 'gif', 'jpeg', 'png');
-                      if ($format == 'pdf') {
-                        $imgPath 		= explode('.', $file['path']);
-                        $pdf 				= $_SERVER['DOCUMENT_ROOT'] . $file['path'];
-                        $save_to    = $_SERVER['DOCUMENT_ROOT'] . $imgPath[0] . ".jpg";
-                        if (file_exists($save_to)) { } else {
-                          $imagick = new Imagick();
-                          $imagick->readImage($pdf);
-                          $imagick->setImageFormat("jpg");
-                          $imagick->writeImages($save_to, false);
-                        }
-                        $prevImg = $imgPath[0] . ".jpg";
-                        echo '<div class="timeline_item_file">';
-                          echo '<a class="timeline_item_file_img" href="' . $prevImg . '" data-source="' . $prevImg . '" title="'. $file['name'] .'">';
-                            echo '<img src="' . $prevImg . '" class="image-popup" style="max-width: 100%; max-height: 100%; height: 100%; box-shadow: rgba(0, 0, 0, 0.25) 0px 2px 10px 0px;">';
-                          echo '</a>';
-                          echo '<a no-data-pjax class="timeline_item_file_lnk" target="_blank" href="' . $file['path'] . '">Скачать</a>';
-                        echo '</div>';
-                      }elseif(in_array($format, $pictures)){
-                        echo '<div class="timeline_item_file">';
-                          echo '<a class="timeline_item_file_img" href="' . $file['path'] . '" data-source="' . $file['path'] . '" title="'. $file['name'] .'">';
-                            echo '<img src="' . $file['path'] . '" class="image-popup" style="max-width: 100%; max-height: 100%; height: 100%; box-shadow: rgba(0, 0, 0, 0.25) 0px 2px 10px 0px;">';
-                          echo '</a>';
-                        echo '</div>';
-                      }else{
-                        echo '<li class="file">';
-                          echo '<a href="'.$file['path'].'" target="_blank" rel="noopener noreferrer" download title="'.$file['name'].'">'.$file['icon'].'</a>';
-                        echo '</li>';
-                      }
-                    }
+                echo '<footer class="timeline_item_footer">';
+                  echo '<span class="timeline_item_date">' .$timeline['datetime']. '</span>';
+                  $events = array(
+                    'add_application',
+                    'add_status'
+                  );
+                  if(!in_array($timeline['event'] ,$events)){
+                    echo '<button class="timeline_item_action_btn outsideclick"><i class="fa fa-ellipsis-v"></i></button>';
+                    echo '<ul class="timeline_item_action outsideclick">';
+                      echo '<li data-action="delete" data-id="' . $timeline['id'] .'">Удалить</li>';
                     echo '</ul>';
-                  echo '</div>';
-                  echo '<footer class="timeline_item_footer">';
-                    echo '<span class="timeline_item_date">' .$timeline['datetime']. '</span>';
-                    $events = array(
-                      'add_application',
-                      'add_status'
-                    );
-                    if(!in_array($timeline['event'] ,$events)){
-                      echo '<button class="timeline_item_action_btn outsideclick"><i class="fa fa-ellipsis-v"></i></button>';
-                      echo '<ul class="timeline_item_action outsideclick">';
-                        echo '<li data-action="delete" data-id="' . $timeline['id'] .'">Удалить</li>';
-                      echo '</ul>';
-                    }
-                  echo '</footer>';
-                echo '</div>';
+                  }
+                echo '</footer>';
               echo '</div>';
-            echo '</li>';
-          }
-    }
-    // PR($arResult);
+            echo '</div>';
+          echo '</li>';
+        }
+  }
+  // PR($arResult);
 ?>
 <div class="feed-detail" data-elid="<?=$arResult['ID']?>">
-    <!-- <span class="feed-detail-date"><?=$arResult['DATE_CREATE']?></span>
-    <h3 class="feed-detail-title"><?=$arResult['NAME']?></h3> -->
-    <ul class="feed-detail-status-line" data-status-active="<?=$arResult['PROP']['STATUS'][0]?>">
-      <li data-status-id="15" data-elid="<?=$arResult['ID']?>">Не обработана</li>
-      <li data-status-id="16" data-elid="<?=$arResult['ID']?>">В работе</li>
-      <li data-status-id="17" data-elid="<?=$arResult['ID']?>">Закрыта</li>
-    </ul>
+  <ul class="feed-detail-status-line" data-status-active="<?=$arResult['PROP']['STATUS'][0]?>">
+    <li data-status-id="15" data-elid="<?=$arResult['ID']?>">Не обработана</li>
+    <li data-status-id="16" data-elid="<?=$arResult['ID']?>">В работе</li>
+    <li data-status-id="17" data-elid="<?=$arResult['ID']?>">Закрыта</li>
+  </ul>
   <div class="row">
     <div class="col-12 col-xl-6">
       <div class="feed-detail-left">
+      <fieldset class="fieldgroup">
+        <legend>
+          Ответственный
+        </legend>
+        <div class="group">
+          <input type="text" disabled value="<?=getSectionName($arResult['PROP']['RESPONSIBLE_DEPARTAMENT'][0]);?>">
+          <label>Ответственный департамент</label>
+        </div>
+      </fieldset>
       <fieldset class="fieldgroup">
         <legend>
           Данные об инициаторе
@@ -171,45 +165,61 @@ if (CModule::IncludeModule('iblock')) {
           <legend>
             Тема обращения
           </legend>
-        <div class="group">
-          <textarea class="app_form_textarea" rows="2" type="text" disabled><?=strip_tags($arResult['PREVIEW_TEXT']);?></textarea>
-          <label>Суть вопроса</label>
-        </div>
-        <div class="group">
-          <textarea class="app_form_textarea" rows="10" type="text" disabled><?=strip_tags($arResult['DETAIL_TEXT'], '<br />');?></textarea>
-          <label>Тексть обращения</label>
-        </div>
+          <div class="group">
+            <textarea class="app_form_textarea" rows="2" type="text" disabled><?=strip_tags($arResult['PREVIEW_TEXT']);?></textarea>
+            <label>Суть вопроса</label>
+          </div>
+          <div class="group">
+            <textarea class="app_form_textarea" rows="10" type="text" disabled><?=strip_tags($arResult['DETAIL_TEXT'], '<br />');?></textarea>
+            <label>Тексть обращения</label>
+          </div>
         </fieldset>
-        <?if($arResult['PROP']['APPLICATION_FILES'][0]){?>
+        <?if($arResult['PROP']['APPLICATION_FILES']){?>
           <fieldset class="fieldgroup">
             <legend>
-              Прикрепленные файлы обращения
+              Прикрепленные файлы
             </legend>
-<<<<<<< HEAD
-            <?if(count($arResult['PROP']['APPLICATION_FILES'][0]) > 1){?>
-=======
             
             <?if(count($arResult['PROP']['APPLICATION_FILES']) > 1){?>
->>>>>>> f2b1c32d2d47b60f5d7a4158c03a7d165455c5a6
               <ul class="file_list">
               <?foreach($arResult['PROP']['APPLICATION_FILES'] as $fileId){
               $file = getFileArr($fileId);
               ?>
-                <li class="file">
-                  <a href="<?=$file['path']?>" target="_blank" title="<?=$file['name']?>">
-                  <?=$file['icon']?>
-                  </a>
-                </li>
+                <?if(in_array($file['type'], $pictures)){?>
+                  <li class="file_item">
+                    <a no-data-pjax class="file_item_link popup" href="<?=$file['path']?>" title="<?=$file['name']?>">
+                      <span class="file_item_link_icon"><?=$file['icon']?></span>
+                      <span class="file_item_link_name"><?=$file['name']?></span>
+                    </a>
+                  </li>
+                <?}else{?>
+                  <li class="file_item">
+                    <a no-data-pjax class="file_item_link" href="<?=$file['path']?>" download title="<?=$file['name']?>">
+                      <span class="file_item_link_icon"><?=$file['icon']?></span>
+                      <span class="file_item_link_name"><?=$file['name']?></span>
+                    </a>
+                  </li>
+                <?}?>
               <?}?>
               </ul>
             <?}else{?>
               <ul class="file_list">
               <?$file = getFileArr($arResult['PROP']['APPLICATION_FILES'][0]);?>
-                <li class="file">
-                  <a href="<?=$file['path']?>" target="_blank" title="<?=$file['name']?>">
-                  <?=$file['icon']?>
+              <?if(in_array($file['type'], $pictures)){?>
+                <li class="file_item">
+                  <a no-data-pjax class="file_item_link popup" href="<?=$file['path']?>" title="<?=$file['name']?>">
+                    <span class="file_item_link_icon"><?=$file['icon']?></span>
+                    <span class="file_item_link_name"><?=$file['name']?></span>
                   </a>
                 </li>
+              <?}else{?>
+                <li class="file_item">
+                  <a no-data-pjax class="file_item_link" href="<?=$file['path']?>" download title="<?=$file['name']?>">
+                    <span class="file_item_link_icon"><?=$file['icon']?></span>
+                    <span class="file_item_link_name"><?=$file['name']?></span>
+                  </a>
+                </li>
+              <?}?>
               </ul>
             <?}?>
           </fieldset>
