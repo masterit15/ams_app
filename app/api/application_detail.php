@@ -128,7 +128,7 @@ if (CModule::IncludeModule('iblock')) {
           Ответственный
         </legend>
         <div class="group">
-          <input type="text" disabled value="<?=getSectionName($arResult['PROP']['RESPONSIBLE_DEPARTAMENT'][0]);?>">
+          <input type="text" disabled value="<?=$arResult['PROP']['RESPONSIBLE_DEPARTAMENT'][0];?>">
           <label>Ответственный департамент</label>
         </div>
       </fieldset>

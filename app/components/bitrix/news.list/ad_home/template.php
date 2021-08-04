@@ -33,7 +33,7 @@ $this->setFrameMode(true);
 			<?if($arParams["DISPLAY_NAME"]!="N" && $arItem["NAME"]){?>
 				<h3 class="actual_title"><?echo $arItem["NAME"];?></h3>
 			<?}?>
-			<i class="fa fa-external-link""></i>
+			<!-- <i class="fa fa-external-link""></i> -->
 		</a>
 	</li>
 	<?endforeach;?>

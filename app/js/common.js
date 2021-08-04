@@ -173,67 +173,70 @@ function initializePlugins() {
         })
     }
     // right panel
-    $('[data-panel]').on('click', function () {
-        $('.right_panel').remove()
-        let panelHtml = `<div class="right_panel_overlay"></div>
-                            <div class="right_panel"> 
-                                <div class="modal_loader">
-                                    <svg version="1.1" id="L7">
-                                        <path fill="#fff" d="M31.6,3.5C5.9,13.6-6.6,42.7,3.5,68.4c10.1,25.7,39.2,38.3,64.9,28.1l-3.1-7.9c-21.3,8.4-45.4-2-53.8-23.3c-8.4-21.3,2-45.4,23.3-53.8L31.6,3.5z" transform="rotate(312.597 50 50)">
-                                            <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="2s" from="0 50 50" to="360 50 50" repeatCount="indefinite"></animateTransform>
-                                        </path>
-                                        <path fill="#fff" d="M42.3,39.6c5.7-4.3,13.9-3.1,18.1,2.7c4.3,5.7,3.1,13.9-2.7,18.1l4.1,5.5c8.8-6.5,10.6-19,4.1-27.7c-6.5-8.8-19-10.6-27.7-4.1L42.3,39.6z" transform="rotate(-265.194 50 50)">
-                                            <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="-360 50 50" repeatCount="indefinite"></animateTransform>
-                                        </path>
-                                        <path fill="#fff" d="M82,35.7C74.1,18,53.4,10.1,35.7,18S10.1,46.6,18,64.3l7.6-3.4c-6-13.5,0-29.3,13.5-35.3s29.3,0,35.3,13.5L82,35.7z" transform="rotate(312.597 50 50)">
-                                            <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="2s" from="0 50 50" to="360 50 50" repeatCount="indefinite"></animateTransform>
-                                        </path>
-                                    </svg> 
-                                </div>
-                            <div class="right_panel_close"><i class="fa fa-times"></i></div>
-                            <div class="right_panel_print_btn"><i class="fa fa-print"></i></div>
-                            <header class="right_panel_header">
-                            <h2 class="right_panel_title">${$(this).data('title')}</h2>
-                            <span class="right_panel_date">${$(this).data('date')}</span>
-                            </header>
-                            <div class="right_panel_content"></div>
-                        </div>`
-        $('body').append(panelHtml)
-        $('body').addClass('fixed')
-        let panel = $('.right_panel')
-        let thisTitle = $(this).children('.item_title').text()
-        let title = $(panel).children('.right_panel_title')
-        let content = $(panel).children('.right_panel_content')
-        $('.modal_loader').fadeIn(200)
-        $(panel).addClass('open')
-        let data = { id: $(this).data('id') }
-        let url = $(this).data('url')
-        $.ajax({
-            type: "GET",
-            url: url,
-            data: data,
-            beforeSend: function () {
-                // NProgress.start();
-            },
-            complete: function () {
-                $('.modal_loader').fadeOut(200)
-            },
-            success: function (res) {
-                $(title).text(thisTitle)
-                $(content).html(res);
-                $('.right_panel_close, .right_panel_overlay').on('click', function () {
-                    $('.right_panel').removeClass('open')
-                    $('.right_panel, .right_panel_overlay').remove()
-                    $('body').removeClass('fixed')
-                })
-                
-                loadFeedback()
-            },
-            error: function (err) {
-                mainToast(5000, "error", 'Ошибка загрузки!', err)
-            }
-        });
-    })
+    function rightPanelInit(){
+        $('[data-panel]').on('click', function () {
+            $('.right_panel').remove()
+            let panelHtml = `<div class="right_panel_overlay"></div>
+                                <div class="right_panel"> 
+                                    <div class="modal_loader">
+                                        <svg version="1.1" id="L7">
+                                            <path fill="#fff" d="M31.6,3.5C5.9,13.6-6.6,42.7,3.5,68.4c10.1,25.7,39.2,38.3,64.9,28.1l-3.1-7.9c-21.3,8.4-45.4-2-53.8-23.3c-8.4-21.3,2-45.4,23.3-53.8L31.6,3.5z" transform="rotate(312.597 50 50)">
+                                                <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="2s" from="0 50 50" to="360 50 50" repeatCount="indefinite"></animateTransform>
+                                            </path>
+                                            <path fill="#fff" d="M42.3,39.6c5.7-4.3,13.9-3.1,18.1,2.7c4.3,5.7,3.1,13.9-2.7,18.1l4.1,5.5c8.8-6.5,10.6-19,4.1-27.7c-6.5-8.8-19-10.6-27.7-4.1L42.3,39.6z" transform="rotate(-265.194 50 50)">
+                                                <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="-360 50 50" repeatCount="indefinite"></animateTransform>
+                                            </path>
+                                            <path fill="#fff" d="M82,35.7C74.1,18,53.4,10.1,35.7,18S10.1,46.6,18,64.3l7.6-3.4c-6-13.5,0-29.3,13.5-35.3s29.3,0,35.3,13.5L82,35.7z" transform="rotate(312.597 50 50)">
+                                                <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="2s" from="0 50 50" to="360 50 50" repeatCount="indefinite"></animateTransform>
+                                            </path>
+                                        </svg> 
+                                    </div>
+                                <div class="right_panel_close"><i class="fa fa-times"></i></div>
+                                <div class="right_panel_print_btn"><i class="fa fa-print"></i></div>
+                                <header class="right_panel_header">
+                                <h2 class="right_panel_title">${$(this).data('title')}</h2>
+                                <span class="right_panel_date">${$(this).data('date')}</span>
+                                </header>
+                                <div class="right_panel_content"></div>
+                            </div>`
+            $('body').append(panelHtml)
+            $('body').addClass('fixed')
+            let panel = $('.right_panel')
+            let thisTitle = $(this).children('.item_title').text()
+            let title = $(panel).children('.right_panel_title')
+            let content = $(panel).children('.right_panel_content')
+            $('.modal_loader').fadeIn(200)
+            $(panel).addClass('open')
+            let data = { id: $(this).data('id') }
+            let url = $(this).data('url')
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: data,
+                beforeSend: function () {
+                    // NProgress.start();
+                },
+                complete: function () {
+                    $('.modal_loader').fadeOut(200)
+                },
+                success: function (res) {
+                    $(title).text(thisTitle)
+                    $(content).html(res);
+                    $('.right_panel_close, .right_panel_overlay').on('click', function () {
+                        $('.right_panel').removeClass('open')
+                        $('.right_panel, .right_panel_overlay').remove()
+                        $('body').removeClass('fixed')
+                    })
+                    
+                    loadFeedback()
+                },
+                error: function (err) {
+                    mainToast(5000, "error", 'Ошибка загрузки!', err)
+                }
+            });
+        })
+    }
+    rightPanelInit()
     // функция повторной инициализации елементов формы обращения
     function loadFeedback(){
         $('.modal_loader').fadeIn(200)
@@ -442,6 +445,11 @@ function initializePlugins() {
             }
         });
     }
+
+
+    function getElementList(){
+
+    }
     let filterParams = { 
         iblock: null,
         section: null, 
@@ -528,9 +536,10 @@ function initializePlugins() {
 
     })
     function GetFilter(param) {
+        let url = $('.document_list').data('url') ? $('.document_list').data('url') : '/bitrix/templates/app/api/document.php';
         $.ajax({
             type: "GET",
-            url: '/bitrix/templates/app/api/document.php',
+            url: url,
             data: param,
             beforeSend: function () {
                 NProgress.start();
@@ -557,6 +566,7 @@ function initializePlugins() {
                 })
                 folderAnimation()
                 downloadZIP()
+                rightPanelInit()
             },
             error: function (err) {
                 mainToast(5000, "error", 'Ошибка загрузки!', err)
