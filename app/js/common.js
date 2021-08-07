@@ -1,15 +1,15 @@
 jQuery(function ($) {
-    if (('serviceWorker' in navigator) && ('PushManager' in window)) {
-        navigator.serviceWorker.register('/bitrix/templates/app/js/sw.js')
-            .then((reg) => {
-            // регистрация сработала
-                //console.log('Registration succeeded. Scope is ' + reg.scope);
-            }).catch((error) => {
-                console.log(error)
-            });
-    }else{
-        alert('Не поддерживаются уведомления!')
-    }
+    // if (('serviceWorker' in navigator) && ('PushManager' in window)) {
+    //     navigator.serviceWorker.register('/bitrix/templates/app/js/sw.js')
+    //         .then((reg) => {
+    //         // регистрация сработала
+    //             //console.log('Registration succeeded. Scope is ' + reg.scope);
+    //         }).catch((error) => {
+    //             console.log(error)
+    //         });
+    // }else{
+    //     alert('Не поддерживаются уведомления!')
+    // }
     $(document).pjax('a:not("[no-data-pjax]"), #demo-list li a', '#pjax-container', { fragment: '#pjax-container', "timeout": 5000 });
     $('#pjax-container').on('pjax:success', function () {
         return false;
@@ -1192,15 +1192,14 @@ function initializePlugins() {
         grecaptcha.ready(function () {
             grecaptcha.execute('6Lf3hssZAAAAAK2SOCPR9V8zAbClunlgAlNjYLKT', { action: "homepage" })
             .then(async token => {
-                document.getElementById('token').value = await token
+                if(document.getElementById('token')){
+                    document.getElementById('token').value = await token
+                }
             });
         });
     }
     getNewToken()
-    
     // Форма обращений \
-
-
     // home document list
     function showMore(list) {
         let container = $(list)
@@ -1581,8 +1580,12 @@ function initializePlugins() {
     ymaps.ready(init);
     function getCoords(street) {
         return new Promise((resolve, reject) => {
-            ymaps.geocode(street).then(function (res) {
+            ymaps.geocode(street)
+            .then(function (res) {
                 resolve(res.geoObjects.get(0).geometry.getCoordinates())
+            })
+            .catch(err=>{
+                reject(err)
             })
         })
     }

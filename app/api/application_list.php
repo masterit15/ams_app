@@ -1,5 +1,6 @@
 <?
 include $_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_before.php";
+if (CUser::IsAuthorized()) {
 if (CModule::IncludeModule('iblock')) {
   function getElementProps($id, $ibId){
     $arProp = CIBlockElement::GetProperty($ibId, $id, Array("sort"=>"asc"), Array("CODE"=>"APPLICATION_FILE"));
@@ -115,5 +116,8 @@ if (CModule::IncludeModule('iblock')) {
     } // foreach($res->arResult as $doc)
   } // if(!$res->arResult) }else{
 		$res->NavPrint("", false, "", "/bitrix/templates/app/api/pagination.php");
+}
+}else{
+  echo "Вы не авторизованы!";
 }
 ?>

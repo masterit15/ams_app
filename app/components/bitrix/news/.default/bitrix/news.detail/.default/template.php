@@ -14,8 +14,7 @@
 /** @var string $componentPath */
 /** @var CBitrixComponent $component */
 $this->setFrameMode(true);
-//$this->addExternalJS('https://api-maps.yandex.ru/2.1/?lang=ru_RU');
-
+// $this->addExternalJS('https://api-maps.yandex.ru/2.1/?apikey=256e028a-94b5-496f-b948-394772dc151a&lang=ru_RU');
 ?>
 <div class="row">
 <?if ($arResult['PROPERTIES']['interception']['VALUE']) {?>
