@@ -10,11 +10,12 @@
   width: 100%
   height: auto
 
-input.err, textarea.err, span.select2-selection.select2-selection--single.err
+span.select2-selection.select2-selection--single.error
   border-color: #e25460
-
+input.error, textarea.error,
+  border-color: #e25460!important
 input.valid, textarea.valid
-  border-color: #62d4bd
+  border-color: #62d4bd!important
 
 .app_form .btn.btn_submit_disabled
   border-color: #ccc
@@ -105,9 +106,6 @@ input.valid, textarea.valid
       color: $red
       width: 100%
       display: block
-    & span.error
-      font-size: 0.8rem
-      margin-top: -30px
     & #person
       display: none
     & .btn
@@ -188,7 +186,15 @@ input.valid, textarea.valid
     background-color: transparent
     border: 2px solid $green
     height: 1em
-
+.captcha
+  display: flex
+  position: relative
+  gap: 30px
+  .group
+    width: 100%
+  img
+    width: 200px
+    height: 50px
 .checkbox, .radio, .switch
   color: $blue
   margin: 0 0 12px 0
@@ -458,6 +464,9 @@ input.valid, textarea.valid
 .group
   position: relative
   margin-bottom: 25px
+  & span.error
+    font-size: 0.8rem
+    margin-top: -30px
   input, textarea
     font-size: 16px
     padding: 10px

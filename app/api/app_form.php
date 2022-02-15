@@ -1,5 +1,16 @@
 <?
 include $_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_before.php";
+include $_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/classes/general/captcha.php";
+
+$cpt = new CCaptcha();
+$captchaPass = COption::GetOptionString("main", "captcha_password", "");
+if(strlen($captchaPass) <= 0)
+{
+    $captchaPass = randString(10);
+    COption::SetOptionString("main", "captcha_password", $captchaPass);
+}
+$cpt->SetCodeCrypt($captchaPass);
+
 if (CModule::IncludeModule('iblock')) {
 ?>
 
@@ -44,47 +55,47 @@ if (CModule::IncludeModule('iblock')) {
                     </div>
                     <div class="col-xl-12">
                         <label for="app_form_persondata_juristic" class="checkbox" style="width: 0%;margin-right: 15px;">
-                        <input type="checkbox" data-input="juristic" name="app_form_persondata" id="app_form_persondata_juristic" placeholder="Обращение от юридического лица" autocomplete="off" value="18">
+                        <input type="checkbox" data-field="juristic" name="app_form_persondata" id="app_form_persondata_juristic" placeholder="Обращение от юридического лица" autocomplete="off" value="18">
                         <span>Обращение от юридического лица</span>
                         </label>
                         <div class="group" id="orgname">
-                            <input required data-input="orgname" type="text" name="orgname" id="app_form_persondata_orgname" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input">
+                            <input data-field="orgname" type="text" name="orgname" id="app_form_persondata_orgname" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input">
                             <label>Название организации*</label>
                         </div>
                     </div>
                     <div class="col-xl-4">
                         <div class="group">
-                            <input required data-input="firstName" type="text" name="first_name" id="app_form_persondata_firstname" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input" style="box-sizing: border-box;"><div class="suggestions-wrapper"><div class="suggestions-suggestions" style="display: none;"></div></div>
+                            <input required data-field="firstName" type="text" name="first_name" id="app_form_persondata_firstname" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input" style="box-sizing: border-box;"><div class="suggestions-wrapper"><div class="suggestions-suggestions" style="display: none;"></div></div>
                             <label>Фамилия*</label>
                         </div>
                     </div>
                     <div class="col-xl-4">
                         <div class="group">
-                            <input required data-input="name" type="text" name="name" id="app_form_persondata_name" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input" style="box-sizing: border-box;"><div class="suggestions-wrapper"><div class="suggestions-suggestions" style="display: none;"></div></div>
+                            <input required data-field="name" type="text" name="name" id="app_form_persondata_name" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input" style="box-sizing: border-box;"><div class="suggestions-wrapper"><div class="suggestions-suggestions" style="display: none;"></div></div>
                             <label>Имя*</label>
                         </div>
                     </div>
                     <div class="col-xl-4">
                         <div class="group">
-                            <input type="text" data-input="lastName" name="last_name" id="app_form_persondata_lastname" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input" style="box-sizing: border-box;"><div class="suggestions-wrapper"><div class="suggestions-suggestions" style="display: none;"></div></div>
+                            <input type="text" data-field="lastName" name="last_name" id="app_form_persondata_lastname" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input" style="box-sizing: border-box;"><div class="suggestions-wrapper"><div class="suggestions-suggestions" style="display: none;"></div></div>
                             <label>Отчество</label>
                         </div>
                     </div>
                     <div class="col-xl-5">
                         <div class="group">
-                            <input required data-input="phone" type="text" name="phone" id="app_form_persondata_phone" autocomplete="off" maxlength="18">
+                            <input required data-field="phone" type="text" name="phone" id="app_form_persondata_phone" autocomplete="off" maxlength="18">
                             <label>Контактный телефон*</label>
                         </div>
                     </div>
                     <div class="col-xl-7">
                         <div class="group">
-                            <input required data-input="email" type="email" name="email" id="app_form_persondata_email" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input" style="box-sizing: border-box;"><div class="suggestions-wrapper"><div class="suggestions-suggestions" style="display: none;"></div></div>
+                            <input required data-field="email" type="email" name="email" id="app_form_persondata_email" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="suggestions-input" style="box-sizing: border-box;"><div class="suggestions-wrapper"><div class="suggestions-suggestions" style="display: none;"></div></div>
                             <label>Е-почта*</label>
                         </div>
                     </div>
                     <div class="col-xl-12">
                         <div class="group">
-                            <input required  data-input="address" type="text" name="address" id="app_form_persondata_address" autocomplete="off">
+                            <input required  data-field="address" type="text" name="address" id="app_form_persondata_address" autocomplete="off">
                             <label>Адрес*</label>
                         </div>
                     </div>
@@ -95,11 +106,11 @@ if (CModule::IncludeModule('iblock')) {
                 <div class="col-xl-12">	
                     <legend class="app_form_title"><b>Содержание обращения</b></legend>
                     <div class="group">
-                        <textarea data-textarea="description" class="app_form_textarea" data-count="100" data-text="Тема обращеня (не более 100 символов)" rows="2" name="description" autocomplete="off" required></textarea>
+                        <textarea data-field="description" class="app_form_textarea" data-count="100" data-text="Тема обращеня (не более 100 символов)" rows="2" name="description" autocomplete="off" required></textarea>
                         <label>Тема обращеня (не более 100 символов)*</label>
                     </div>
                     <div class="group">
-                        <textarea data-textarea="descriptionDetail" class="app_form_textarea" data-count="2000" data-text="Содержание обращения (не более 2000 символов)" rows="10" name="description_detail" autocomplete="off" required></textarea>
+                        <textarea data-field="descriptionDetail" class="app_form_textarea" data-count="2000" data-text="Содержание обращения (не более 2000 символов)" rows="10" name="description_detail" autocomplete="off" required></textarea>
                         <label>Содержание обращения (не более 2000 символов)*</label>
                     </div>
                     <div class="uploader_files">
@@ -128,6 +139,7 @@ if (CModule::IncludeModule('iblock')) {
             <fieldset class="form_tab col-xl-12" data-event-num="4">
                 <span class="form_tab_event">4</span>
                 <div class="row">
+                    
                     <div class="col-12">
                         <legend class="app_form_title"><b>Пользовательское соглашение</b></legend>
                         <p class="app_form_comments"></p>
@@ -135,9 +147,20 @@ if (CModule::IncludeModule('iblock')) {
                     <div class="col-12">
                         <label for="app_form_consent" class="checkbox">
                             <p class="app_form_comments"></p>
-                            <input type="checkbox" name="userconsent" id="app_form_consent" placeholder="Я принимаю условия" autocomplete="off" value="36" required checked>
+                            <input data-field="consent" type="checkbox" name="userconsent" id="app_form_consent" placeholder="Я принимаю условия" autocomplete="off" value="36" required checked>
                             <span>Нажимая кнопку "Отправить", я принимаю <a href="/legal/" target="_blank" rel="noopener noreferrer">условия пользовательского соглашения.</a></span>
                         </label>
+                    </div>
+                    <div class="col-12">
+                        <input name="captcha_code" value="<?=htmlspecialchars($cpt->GetCodeCrypt());?>" type="hidden">
+                        <div class="captcha">
+                            <img src="/bitrix/tools/captcha.php?captcha_code=<?=htmlspecialchars($cpt->GetCodeCrypt());?>">
+                            <div class="group">
+                                <input data-field="captcha" id="captcha_word" name="captcha_word"  type="text" required>
+                                <label>Введите капчу*</label>
+                            </div>
+                            
+                        </div>
                     </div>
                 </div>
             </fieldset>
@@ -152,5 +175,6 @@ if (CModule::IncludeModule('iblock')) {
             </div>
         </div>
     </div>
+    
 </form>
 <?}?>

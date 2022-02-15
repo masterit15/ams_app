@@ -21,8 +21,6 @@ $this->setFrameMode(true);
 	<?
 	$this->AddEditAction($arItem['ID'], $arItem['EDIT_LINK'], CIBlock::GetArrayByID($arItem["IBLOCK_ID"], "ELEMENT_EDIT"));
 	$this->AddDeleteAction($arItem['ID'], $arItem['DELETE_LINK'], CIBlock::GetArrayByID($arItem["IBLOCK_ID"], "ELEMENT_DELETE"), array("CONFIRM" => GetMessage('CT_BNL_ELEMENT_DELETE_CONFIRM')));
-	
-	// PR($arItem["PROPERTIES"]["VIDEO"]["VALUE"]);
 	?>
 	<a class="news_item" href="<?=$arItem["DETAIL_PAGE_URL"]?>" id="<?=$this->GetEditAreaId($arItem['ID']);?>">
 		
@@ -39,12 +37,11 @@ $this->setFrameMode(true);
 			<div class="news_content">
 				<?if($arParams["DISPLAY_DATE"]!="N" && $arItem["DISPLAY_ACTIVE_FROM"]){?>
 					<div class="news_date">
-						<?//echo $arItem["DISPLAY_ACTIVE_FROM"];?>
 						<?=CIBlockFormatProperties::DateFormat("j F Y в H:i", MakeTimeStamp($arItem["ACTIVE_FROM"], CSite::GetDateFormat()))?>
 					</div>
 				<?}?>																	
 				<?if($arParams["DISPLAY_NAME"]!="N" && $arItem["NAME"]){?>
-					<h3 class="news_title"><?echo $arItem["NAME"];?></h3>
+					<h3 class="news_title"><?if(mb_strlen($arItem["NAME"],'UTF-8') > 60){ echo mb_strimwidth($arItem["NAME"], 0, 50, "..."); }else{ echo$arItem["NAME"]; }?></h3>
 				<?}?>
 				<?if($arParams["DISPLAY_PREVIEW_TEXT"]!="N" && $arItem["PREVIEW_TEXT"]){?>
 					<div class="news_text"><?echo $arItem["PREVIEW_TEXT"];?></div>

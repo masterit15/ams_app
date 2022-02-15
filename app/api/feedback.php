@@ -17,7 +17,10 @@ if (CModule::IncludeModule('iblock')) {
     'userCreate' => ''
   );
 	$chaptcha = returnReCaptcha($_POST['token']);
-	if ($chaptcha['success']) {
+	if(!$APPLICATION->CaptchaCheckCode($_POST["captcha_word"], $_POST["captcha_code"])){
+		$result['title'] = 'Вы не правильно ввели капчу, попробуйте открыть форму повторно';
+		$result['status'] = 'warning';
+	}else{
 		if (!empty($_REQUEST['name']) and !empty($_REQUEST['description']) and !empty($_REQUEST['email']) and !empty($_REQUEST['first_name'])) {
 			//Погнали 
 			$el = new CIBlockElement;
@@ -99,9 +102,6 @@ if (CModule::IncludeModule('iblock')) {
 				$result['status'] = 'warning';
 			}
 		}
-	} else {
-		$result['title'] = 'Google rechaptcha распознала Вас как подозрительного пользователя, перзагрузите страницу и попробуйте еще раз.';
-		$result['status'] = 'warning';
 	}
 }
 header('Access-Control-Allow-Origin: *');

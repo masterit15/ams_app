@@ -43,11 +43,12 @@
   margin-right: 3px
 
 .folder-summary
-  padding: 10px 15px 15px 15px
+  // padding: 10px 15px 15px 15px
   cursor: pointer
   display: -webkit-box
   display: flex
   justify-content: space-between
+  align-items: center
   line-height: 1
   height: 100px
   position: relative
@@ -55,7 +56,7 @@
 
 .folder-summary__start
   position: relative
-
+  width: 10%
 .folder-summary__file-count__amount
   color: #ffffff
   font-size: 12px
@@ -70,6 +71,7 @@
   width: 45px
   height: 45px
   text-align: center
+  margin: auto
   & svg, & .fa
     color: $blue
     height: 38px
@@ -82,8 +84,7 @@
         opacity: 0
 
 .folder-summary__details
-  padding: 2px 0 0 13px
-  width: 100%
+  width: 80%
 
 .folder-summary__details__name
   color: #393738
@@ -120,12 +121,14 @@
   font-weight: bold
   padding: 8px 15px
 .folder-summary__end
-  margin-left: 15px
-  
+  width: 10%
+  display: flex
+  justify-content: center
   svg
     width: 30px
     height: 30px
     fill: #c3c2c3
+    
     transition: all .3s ease
 
 .folder-summary::after

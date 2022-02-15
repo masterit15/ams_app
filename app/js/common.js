@@ -807,7 +807,6 @@ function initializePlugins() {
             success: function (res) {
                 $('.modal_content').html(res)
                 initAppFormElement()
-                getNewToken()
             },
             error: function (err) {
                 mainToast(5000, "error", 'Ошибка загрузки!', err)
@@ -844,30 +843,20 @@ function initializePlugins() {
             }
         })
         
-        // // Поле Е-почты
-        // $('#app_form_persondata_email').on('input', function () {
-        //     let valid = isEmail($(this).val())
-        //     if (valid) {
-        //         $(this).next('.error_message').remove()
-        //     } else {
-        //         $(this).next('.error_message').remove()
-        //         $(this).after(`<span class="error_message">Не валидная е-почта!</span>`)
-        //     }
-        // });
         // Поле пользовательское соглашение
-        $('#app_form_consent').each(function () {
-            let form_tab = $(this).closest('.form_tab')
-            let tabNumber = $(form_tab).data('event-num')
-            let event = $(form_tab).find('.form_tab_event')
-            if ($(this).is(':checked')) {
-                $(form_tab).addClass('is_valid')
-                $(event).html('<i class="fa fa-check"></i>')
-                activeTab.push(tabNumber)
-            } else {
-                $(form_tab).removeClass('is_valid')
-                $(event).html(tabNumber)
-            }
-        })
+        // $('#app_form_consent').each(function () {
+        //     let form_tab = $(this).closest('.form_tab')
+        //     let tabNumber = $(form_tab).data('event-num')
+        //     let event = $(form_tab).find('.form_tab_event')
+        //     if ($(this).is(':checked')) {
+        //         $(form_tab).addClass('is_valid')
+        //         $(event).html('<i class="fa fa-check"></i>')
+        //         activeTab.push(tabNumber)
+        //     } else {
+        //         $(form_tab).removeClass('is_valid')
+        //         $(event).html(tabNumber)
+        //     }
+        // })
         $('.btn_submit').hide()
         // Проверка выпадающего списка
         $('select#app_form_departament').on('select2:select', function (e) {
@@ -886,31 +875,32 @@ function initializePlugins() {
             let inputs = [...$('input[required]')]
             let textareas = [...$('textarea[required]')]
             if(selectVal == '#'){
-                $(select).addClass('err')
+                $(select).addClass('error')
                 $('.app_form .select2-container.select2-selection--single').css({'border-color' : '#e25460'})
             }else{
-                $(select).removeClass('err')
+                $(select).removeClass('error')
                 $('.app_form .select2-container.select2-selection--single').css({'border-color' : '#62d4bd'})
             }
 
             inputs.forEach(input => {
-                if($(input).val() == '' || $(input).val().length == 0 && !$(input).is(':checked')){
-                    $(input).addClass('err')
+                if($(input).val().length == 0 && !$(input).is(':checked')){
+                    $(input).addClass('error')
                 }else{
-                    $(input).removeClass('err')
+                    $(input).removeClass('error')
                 }
             });
             textareas.forEach(textarea => {
                 if($(textarea).val().length == 0){
-                    $(textarea).addClass('err')
+                    $(textarea).addClass('error')
                 }else{
-                    $(textarea).removeClass('err')
+                    $(textarea).removeClass('error')
                 }
             });
             
-            let errElement = $('.err')
+            let errElement = $('input.error, textarea.error')
 
             if(errElement.length > 0){
+                console.log($(errElement[0]));
                 let firstElPosition = $(errElement[0]).offset().top - $('.app_form').offset().top - $('.app_form').scrollTop() - 20 
                 $(this).parent().find('span.error').remove()
                 $(this).parent().append('<span class="error" style="text-align: center;">Возможно вы пропустили обязательные поля, перепроверьте все поля</span>')
@@ -941,13 +931,13 @@ function initializePlugins() {
             $(input).each(function () {
                 if (this.value !== '') {
                     $(this).addClass('valid')
-                    inputStatus.push({input: $(this).data('input'), status: true});
+                    inputStatus.push({input: $(this).data('field'), status: true});
                 }else {
                     $(this).removeClass('valid')
-                    inputStatus.push({input: $(this).data('input'), status: false});
+                    inputStatus.push({input: $(this).data('field'), status: false});
                 }
 
-
+                
                 let inputValidCount = inputStatus.filter(inp=> inp.status === true).length // если юр лицо значение 6 если нет то 5 или меньше
                 // проверка от физ \ юр лица
                 if ($(juristic).is(':checked')) {
@@ -956,20 +946,37 @@ function initializePlugins() {
                     } else {
                         formTab(that)
                     }
-                } else {
+                } else if(!$(juristic).is(':checked')){
                     if (inputValidCount === 5) {
                         formTab(that,true)
                     } else {
                         formTab(that)
                     }
                 }
+
+                if ($(need_person).is(':checked')) {
+                    if ($(person).val() != '#' && $(person).val() != '') {
+                        formTab(that,true)
+                    } else {
+                        formTab(that)
+                    }
+                }
+                // проверка соглашения и капчи
+                if ($(consent).is(':checked')) {
+                    if(inputValidCount === 2){
+                        formTab(that,true)
+                    }else{
+                        formTab(that)
+                    }
+                }
             })
+            // проверяем в секцию формы поля (Тема и Текс обращения)
             $(textarea).each(function () {
                 if (this.value.length == 0) {
-                    textareaStatus.push({textarea: $(this).data('textarea'), status: false});
+                    textareaStatus.push({textarea: $(this).data('field'), status: false});
                 }
                 else {
-                    textareaStatus.push({textarea: $(this).data('textarea'), status: true});
+                    textareaStatus.push({textarea: $(this).data('field'), status: true});
                 }
                 let textareaValidCount = textareaStatus.filter(textarea=> textarea.status === true).length
                 if (textareaValidCount === 2) {
@@ -978,6 +985,7 @@ function initializePlugins() {
                     formTab(that)
                 }
             })
+            // проверяем в секцию формы получателя
             $(departament).each(function () {
                 if (this.value != '#' && this.value != '') {
                     formTab(that,true)
@@ -992,13 +1000,7 @@ function initializePlugins() {
                     formTab(that)
                 }
             }
-            $(consent).each(function () {
-                if ($(this).is(':checked')) {
-                    formTab(that,true)
-                } else {
-                    formTab(that)
-                }
-            })
+            // проверяем в секцию формы если в ней все поля валидны
             if ($(this).hasClass('is_valid')) {
                 if (!activeTab.includes(tabNumber)) {
                     activeTab.push(tabNumber);
@@ -1085,7 +1087,7 @@ function initializePlugins() {
                 $(phone).parent().children('label').text('Контактный телефон*')
                 $(address).parent().children('label').text('Адрес*')
                 $('#orgname').fadeOut()
-                $('#orgname').find('input').attr('required', false)
+                $('#orgname').find('input').removeAttr('required').removeClass('error')
             }
         })
         // Подчеркивание заполненых полей
@@ -1155,9 +1157,6 @@ function initializePlugins() {
                 },
                 success: function (res) {
                     let appMessage = `<div class="app_form_message">
-                                        <span class="app_form_message_close">
-                                            <i class="fa fa-times"></i>
-                                        </span>
                                         <h3 class="app_form_message_title">${res.title}</h3>
                                         <p>${res.desc}</p>
                                     </div>`
@@ -1187,18 +1186,6 @@ function initializePlugins() {
             $(event).html(tabNumber)
         }
     }
-    // функция получения токена для рекаптчи
-    function getNewToken(){
-        grecaptcha.ready(function () {
-            grecaptcha.execute('6Lf3hssZAAAAAK2SOCPR9V8zAbClunlgAlNjYLKT', { action: "homepage" })
-            .then(async token => {
-                if(document.getElementById('token')){
-                    document.getElementById('token').value = await token
-                }
-            });
-        });
-    }
-    getNewToken()
     // Форма обращений \
     // home document list
     function showMore(list) {
@@ -1582,7 +1569,7 @@ function initializePlugins() {
         return new Promise((resolve, reject) => {
             ymaps.geocode(street)
             .then(function (res) {
-                resolve(res.geoObjects.get(0).geometry.getCoordinates())
+                resolve(res.geoObjects.get(0)?.geometry.getCoordinates())
             })
             .catch(err=>{
                 reject(err)
