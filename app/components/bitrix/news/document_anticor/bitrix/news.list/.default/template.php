@@ -8,7 +8,7 @@
 		<?
 	//PR($arItem['PROPERTIES']["APPLICATION_FILE"]['VALUE']);
 	//PR(array_column($arItem['PROPERTIES']["FILE"]['VALUE'], 'ID'));
-	if(count($arItem['PROPERTIES']["APPLICATION_FILE"]['VALUE']) > 1){
+	if(is_countable($arItem['PROPERTIES']["APPLICATION_FILE"]['VALUE']) && count($arItem['PROPERTIES']["APPLICATION_FILE"]['VALUE']) > 1){
 	?>
 	<div class="folder" id="<?=$this->GetEditAreaId($arItem['ID']);?>">
 		<div class="folder-summary js_toggle-folder">
@@ -69,23 +69,41 @@
 				</ul>
 			</div>
 		<?}else{?>
-			<?$file = getFileArr($arItem['PROPERTIES']["APPLICATION_FILE"]['VALUE'][0]);?>
-			<div class="doc_item item" title='<?echo $arItem['NAME'] ? $arItem['NAME'] : $file['name'];?>'>
-        <a href="<?=$file['path']?>" <?if($file['type'] != 'pdf'){?>download<?}?>>					
-          <span class="doc_icon">
-            <?=$file['icon']?>
-          </span>				
-          <div class="doc_detail">			
-            <div class="doc_title">
-							<?echo $arItem['NAME'] ? $arItem['NAME'] : $file['name'];?>
-            </div>
-            <span class="doc_date">
-							<?=$file['date'];?>
-            </span>
-          </div>
-          <span class="doc_size"><?=$file['size']?></span>
-        </a>
-      </div>
+			<?if($arItem['PROPERTIES']['LINK']['VALUE']){?>
+					<div class="doc_item item" title='<?echo $arItem['NAME'] ? $arItem['NAME'] : $file['name'];?>'>
+					<a href="<?=$arItem['PROPERTIES']['LINK']['VALUE']?>" target="_blank">					
+						<span class="doc_icon">
+						<i class="fa fa-external-link"></i>
+						</span>				
+						<div class="doc_detail">			
+							<div class="doc_title">
+								<?echo $arItem['NAME'] ? $arItem['NAME'] : $file['name'];?>
+							</div>
+							<span class="doc_date">
+								<?=$file['date'];?>
+							</span>
+						</div>
+					</a>
+				</div>
+				<?}else{?>
+				<?$file = getFileArr($arItem['PROPERTIES']["APPLICATION_FILE"]['VALUE'][0]);?>
+				<div class="doc_item item" title='<?echo $arItem['NAME'] ? $arItem['NAME'] : $file['name'];?>'>
+					<a href="<?=$file['path']?>" <?if($file['type'] != 'pdf'){?>download<?}?>>					
+						<span class="doc_icon">
+							<?=$file['icon']?>
+						</span>				
+						<div class="doc_detail">			
+							<div class="doc_title">
+								<?echo $arItem['NAME'] ? $arItem['NAME'] : $file['name'];?>
+							</div>
+							<span class="doc_date">
+								<?=$file['date'];?>
+							</span>
+						</div>
+						<span class="doc_size"><?=$file['size']?></span>
+					</a>
+				</div>
+				<?}?>
 			<?}?>
 		<?endforeach;?>          
 	</div>   

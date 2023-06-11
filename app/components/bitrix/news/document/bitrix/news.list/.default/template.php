@@ -15,7 +15,9 @@
 		<div class="doc_detail">			
     <div class="doc_title">
 			<?
-			if($arItem['NAME'] and $arItem['NAME'] != '-'){
+			if($arItem['DISPLAY_PROPERTIES']["FILE_NAME"]['VALUE']){
+				echo $arItem['DISPLAY_PROPERTIES']["FILE_NAME"]['VALUE'];
+			}elseif($arItem['NAME'] and $arItem['NAME'] != '-'){
 				echo $arItem['NAME'];
 			}else{
 				echo $file['name'];

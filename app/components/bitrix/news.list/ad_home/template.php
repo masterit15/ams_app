@@ -26,12 +26,14 @@ $this->setFrameMode(true);
 		<a href="<?=$arItem["DETAIL_PAGE_URL"]?>">
 			<?if($arParams["DISPLAY_DATE"]!="N" && $arItem["DISPLAY_ACTIVE_FROM"]){?>
 				<div class="actual_date">
+				<?//echo $arItem["DISPLAY_ACTIVE_FROM"];?>
 				<?=CIBlockFormatProperties::DateFormat("j F Y в H:i", MakeTimeStamp($arItem["ACTIVE_FROM"], CSite::GetDateFormat()))?>
 				</div>
 			<?}?>																	
 			<?if($arParams["DISPLAY_NAME"]!="N" && $arItem["NAME"]){?>
-				<h3 class="actual_title"><?if(mb_strlen($arItem["NAME"],'UTF-8') > 80){ echo mb_strimwidth($arItem["NAME"], 0, 80, "..."); }else{ echo$arItem["NAME"]; }?></h3>
+				<h3 class="actual_title"><?echo $arItem["NAME"];?></h3>
 			<?}?>
+			<i class="fa fa-external-link""></i>
 		</a>
 	</li>
 	<?endforeach;?>

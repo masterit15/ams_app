@@ -15,16 +15,16 @@ foreach($arResult as $itemIdex => $arItem):?>
 
 <?if ($arItem["IS_PARENT"]):?>
     <?if ($arItem["DEPTH_LEVEL"] == 1):?>
-    <li class="<?if ($arItem["SELECTED"]):?><?else:?>parent<?endif?> list"><span><?=$arItem["TEXT"]?></span>
+    <li class="<?if ($arItem["SELECTED"]):?><?else:?>parent<?endif?> list"><span><?=htmlspecialcharsbx($arItem["TEXT"])?></span>
         <ul class="items">
     <?else:?>
-    <li class="list"><span><?=$arItem["TEXT"]?></span>
+    <li class="list"><span><?=htmlspecialcharsbx($arItem["TEXT"])?></span>
         <ul class="items">
     <?endif?>
 <?else:?>
     <?if ($arItem["PERMISSION"] > "D"):?>
         <?if ($arItem["DEPTH_LEVEL"] == 1):?>
-        <li class="<?if ($arItem["SELECTED"]):?><?else:?>parent<?endif?> deep1"><a href="<?=$arItem["LINK"]?>" class="<?if ($arItem["SELECTED"]):?>parent-selected<?else:?>parent<?endif?>"><?=$arItem["TEXT"]?></a></li>
+        <li class="<?if ($arItem["SELECTED"]):?><?else:?>parent<?endif?> deep1"><a href="<?=htmlspecialcharsbx($arItem["LINK"])?>" class="<?if ($arItem["SELECTED"]):?>parent-selected<?else:?>parent<?endif?>"><?=htmlspecialcharsbx($arItem["TEXT"])?></a></li>
         <?else:
             $class = "";
             if ($arItem["SELECTED"])
@@ -36,13 +36,13 @@ foreach($arResult as $itemIdex => $arItem):?>
             if (strlen($class) > 0)
                 $class = ' class="'.$class.'"';
         ?>
-            <li  class="parent_deep"><a href="<?=$arItem["LINK"]?>"><?=$arItem["TEXT"]?></a></li>
+            <li  class="parent_deep"><a href="<?=htmlspecialcharsbx($arItem["LINK"])?>"><?=htmlspecialcharsbx($arItem["TEXT"])?></a></li>
         <?endif?>
     <?else:?>
         <?if ($arItem["DEPTH_LEVEL"] == 1):?>
-        <li class="<?if ($arItem["SELECTED"]):?><?else:?>parent<?endif?> deep2"><a href="" class="<?if ($arItem["SELECTED"]):?>parent-selected<?else:?>parent<?endif?>" title="<?=GetMessage("MENU_ITEM_ACCESS_DENIED")?>"><?=$arItem["TEXT"]?></a></li>
+        <li class="<?if ($arItem["SELECTED"]):?><?else:?>parent<?endif?> deep2"><a href="" class="<?if ($arItem["SELECTED"]):?>parent-selected<?else:?>parent<?endif?>" title="<?=GetMessage("MENU_ITEM_ACCESS_DENIED")?>"><?=htmlspecialcharsbx($arItem["TEXT"])?></a></li>
         <?else:?>
-        <li><a href=""  title="<?=GetMessage("MENU_ITEM_ACCESS_DENIED")?>"><?=$arItem["TEXT"]?></a></li><?endif?>
+        <li><a href=""  title="<?=GetMessage("MENU_ITEM_ACCESS_DENIED")?>"><?=htmlspecialcharsbx($arItem["TEXT"])?></a></li><?endif?>
     <?endif?>
 <?endif;
 

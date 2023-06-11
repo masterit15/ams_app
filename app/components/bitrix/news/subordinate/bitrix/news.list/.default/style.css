@@ -1,0 +1,14 @@
+.subordinate-item{
+  color: #6a7695;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.subordinate-item i{
+  width: 50px;
+  height: 50px;
+  font-size: 26px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+}

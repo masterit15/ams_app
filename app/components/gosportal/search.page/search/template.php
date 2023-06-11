@@ -43,7 +43,7 @@
 			<input type="submit" value="<?=GetMessage("SEARCH_GO")?>" />
 			<input type="hidden" name="how" value="<?echo $arResult["REQUEST"]["HOW"] == "d" ? "d" : "r" ?>" />
 		</div>
-		<a class="search-page-params" href="#" title="<?echo GetMessage('CT_BSP_ADDITIONAL_PARAMS') ?>"><i class="fa fa-sliders"></i></a>
+		<a class="search-page-params" href="#!" title="<?echo GetMessage('CT_BSP_ADDITIONAL_PARAMS') ?>"><i class="fa fa-sliders"></i></a>
 	</div>
 <?if ($arParams["SHOW_WHEN"]): ?>
 	<div id="search_params">
@@ -60,22 +60,25 @@
 				<?endforeach?>
 			</select>
 		<?endif;?>
-		<?
-// $APPLICATION->IncludeComponent(
-// 	'bitrix:main.calendar',
-// 	'',
-// 	array(
-// 		'SHOW_INPUT' => 'Y',
-// 		'INPUT_NAME' => 'from',
-// 		'INPUT_VALUE' => $arResult["REQUEST"]["~FROM"],
-// 		'INPUT_NAME_FINISH' => 'to',
-// 		'INPUT_VALUE_FINISH' => $arResult["REQUEST"]["~TO"],
-// 		'INPUT_ADDITIONAL_ATTR' => 'size="10"',
-// 	),
-// 	null,
-// 	array('HIDE_ICONS' => 'Y')
-// );
-?>
+
+	<div class="search_filter_sort">
+		<?if ($arResult["REQUEST"]["HOW"] == "d"): ?>
+			<div class="search_filter_sort_item">
+				<a href="<?=$arResult["URL"]?>&amp;how=r<?echo $arResult["REQUEST"]["FROM"] ? '&amp;from=' . $arResult["REQUEST"]["FROM"] : '' ?><?echo $arResult["REQUEST"]["TO"] ? '&amp;to=' . $arResult["REQUEST"]["TO"] : '' ?>"><?=GetMessage("SEARCH_SORT_BY_RANK")?></a>
+			</div>
+			<div class="search_filter_sort_item active">
+				<b><?=GetMessage("SEARCH_SORTED_BY_DATE")?></b>
+			</div>
+		<?else: ?>
+			<div class="search_filter_sort_item active">
+				<b><?=GetMessage("SEARCH_SORTED_BY_RANK")?></b>
+			</div> 
+			<div class="search_filter_sort_item">
+				<a href="<?=$arResult["URL"]?>&amp;how=d<?echo $arResult["REQUEST"]["FROM"] ? '&amp;from=' . $arResult["REQUEST"]["FROM"] : '' ?><?echo $arResult["REQUEST"]["TO"] ? '&amp;to=' . $arResult["REQUEST"]["TO"] : '' ?>"><?=GetMessage("SEARCH_SORT_BY_DATE")?></a>
+			</div>
+			
+		<?endif;?>
+	</div>
 	</div>
 <?endif?>
 
@@ -123,53 +126,119 @@ endif;?>
 	echo $arResult["NAV_STRING"];
 }
 ?>
-	<br /><hr />
-	<?foreach ($arResult["SEARCH"] as $arItem): ?>
-		<a href="<?echo $arItem["URL"] ?>"><?echo $arItem["TITLE_FORMATED"] ?></a>
-		<p><?echo $arItem["BODY_FORMATED"] ?></p>
-		<?if (
-	$arParams["SHOW_RATING"] == "Y"
-	&& strlen($arItem["RATING_TYPE_ID"]) > 0
-	&& $arItem["RATING_ENTITY_ID"] > 0
-): ?>
-			<div class="search-item-rate"><?
-$APPLICATION->IncludeComponent(
-	"bitrix:rating.vote", $arParams["RATING_TYPE"],
-	Array(
-		"ENTITY_TYPE_ID" => $arItem["RATING_TYPE_ID"],
-		"ENTITY_ID" => $arItem["RATING_ENTITY_ID"],
-		"OWNER_ID" => $arItem["USER_ID"],
-		"USER_VOTE" => $arItem["RATING_USER_VOTE_VALUE"],
-		"USER_HAS_VOTED" => $arItem["RATING_USER_VOTE_VALUE"] == 0 ? 'N' : 'Y',
-		"TOTAL_VOTES" => $arItem["RATING_TOTAL_VOTES"],
-		"TOTAL_POSITIVE_VOTES" => $arItem["RATING_TOTAL_POSITIVE_VOTES"],
-		"TOTAL_NEGATIVE_VOTES" => $arItem["RATING_TOTAL_NEGATIVE_VOTES"],
-		"TOTAL_VALUE" => $arItem["RATING_TOTAL_VALUE"],
-		"PATH_TO_USER_PROFILE" => $arParams["~PATH_TO_USER_PROFILE"],
-	),
-	$component,
-	array("HIDE_ICONS" => "Y")
-);?>
-			</div>
-		<?endif;?>
-		<small><?=GetMessage("SEARCH_MODIFIED")?> <?=$arItem["DATE_CHANGE"]?></small><br /><?
-if ($arItem["CHAIN_PATH"]): ?>
-			<small><?=GetMessage("SEARCH_PATH")?>&nbsp;<?=$arItem["CHAIN_PATH"]?></small><?
-endif;
-?><hr />
-	<?endforeach;?>
-	<?if ($arParams["DISPLAY_BOTTOM_PAGER"] != "N") {
-	echo $arResult["NAV_STRING"];
-}
-?>
 	<br />
-	<p>
-	<?if ($arResult["REQUEST"]["HOW"] == "d"): ?>
-		<a href="<?=$arResult["URL"]?>&amp;how=r<?echo $arResult["REQUEST"]["FROM"] ? '&amp;from=' . $arResult["REQUEST"]["FROM"] : '' ?><?echo $arResult["REQUEST"]["TO"] ? '&amp;to=' . $arResult["REQUEST"]["TO"] : '' ?>"><?=GetMessage("SEARCH_SORT_BY_RANK")?></a>&nbsp;|&nbsp;<b><?=GetMessage("SEARCH_SORTED_BY_DATE")?></b>
-	<?else: ?>
-		<b><?=GetMessage("SEARCH_SORTED_BY_RANK")?></b>&nbsp;|&nbsp;<a href="<?=$arResult["URL"]?>&amp;how=d<?echo $arResult["REQUEST"]["FROM"] ? '&amp;from=' . $arResult["REQUEST"]["FROM"] : '' ?><?echo $arResult["REQUEST"]["TO"] ? '&amp;to=' . $arResult["REQUEST"]["TO"] : '' ?>"><?=GetMessage("SEARCH_SORT_BY_DATE")?></a>
-	<?endif;?>
-	</p>
+	<?foreach ($arResult["SEARCH"] as $arItem):
+
+		?>
+		
+	<?
+		$filesId = getElementProps($arItem['ITEM_ID'], $arItem['PARAM2']);
+		// если это документы
+		if($filesId){
+		if(count($filesId) > 1){?>
+      <div class="folder">
+				<div class="folder-summary js_toggle-folder">
+					<div class="folder-summary__start">
+						<div class="folder-summary__file-count">
+								<span class="folder-summary__file-count__amount"><?=count($filesId)?></span>
+								<i class="fa fa-folder"></i>
+								<i class="fa fa-folder-open"></i>
+						</div>
+					</div>
+					<div class="folder-summary__details">
+						<div class="folder-summary__details__name">
+							<?=$arItem['TITLE_FORMATED']?>
+						</div>
+						<div class="folder-summary__details__share">
+              <?=$arItem['DATE_CHANGE'];?>
+						</div>
+					</div>
+					<div class="folder-summary__end">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+							<path d="M6 12c0 1.657-1.343 3-3 3s-3-1.343-3-3 1.343-3 3-3 3 1.343 3 3zm9 0c0 1.657-1.343 3-3 3s-3-1.343-3-3 1.343-3 3-3 3 1.343 3 3zm9 0c0 1.657-1.343 3-3 3s-3-1.343-3-3 1.343-3 3-3 3 1.343 3 3z" /></svg>
+					</div>
+				</div>	
+				<ul class="folder-content">
+          <?foreach ($filesId as $arProperty){
+          $file = getFileArr($arProperty);
+          ?>
+            <li class="folder-item js_folder-item">
+              <a no-data-pjax class="folder-item-wrap" href="<?=$file['path']?>" <?if ($file['type'] != 'pdf') {?>download<?}?>>
+                <div class="folder-item__icon"><?=$file['icon'];?></div>
+                <div class="folder-item__details">
+                  <div class="folder-item__details__name">
+                    <?=$file['desc'] ? $file['desc'] : $file['name'];?>
+                  </div>
+                  <!-- <div class="folder-item__details__date"><?//=$file['date'];?></div> -->
+                </div>
+                <div class="folder-item__size"><?=$file['size'];?></div>
+              </a>
+            </li>
+          <?}?>
+          <?if(count($filesId) > 1){?>
+            <li class="folder-item js_folder-item download_zip">
+              <div no-data-pjax class="folder-item-wrap">
+                <div class="folder-item__icon"><i class="fa fa-file-archive-o" style="color:#f3aa16"></i></div>
+                <div class="folder-item__details">
+                  <div class="folder-item__details__name">
+                    Скачать все файлы одним архивом
+                  </div>
+                </div>
+                <div class="folder-item__size"><i class="fa fa-download"></i></div>
+              </div>
+            </li>
+          <?}?>
+				</ul>
+		  </div>
+    <?}else{
+      $file = getFileArr($filesId[0]);
+      ?>
+      <div class="doc_item item" title='<?=$doc['NAME']?>'>
+        <a no-data-pjax href="<?=$file['path']?>" <?if($file['type'] != 'pdf'){?>download<?}?>>					
+          <span class="doc_icon">
+            <?=$file['icon']?>
+          </span>				
+          <div class="doc_detail">			
+            <div class="doc_title">
+              <?=$arItem['TITLE_FORMATED'] ? $arItem['TITLE_FORMATED'] : $file['name'];?>
+            </div>
+            <span class="doc_date">
+              <?=$arItem['DATE_CHANGE'];?>
+            </span>
+          </div>
+          <span class="doc_size"><?=$file['size']?></span>
+        </a>
+      </div>
+		<?}?>
+		<!-- если это документы -->
+		<?}elseif($arItem['PARAM2'] == 23 || $arItem['PARAM2'] == 24){
+			$arProp = CIBlockElement::GetProperty($arItem['PARAM2'], $arItem['ITEM_ID'], Array("sort"=>"asc"), Array('CODE'=>array('file_01', 'file_02')));
+			$arRes = array();
+			while ($arPropRes = $arProp->Fetch()){
+				$arRes[] = $arPropRes['VALUE'];
+			}
+
+foreach($arRes as $value){
+	$file = getFileArr($value);
+
+}
+
+		}else{?>
+		<div class="search_query_item">
+		<a href="<?echo $arItem["URL"] ?>"><?= $arItem["TITLE_FORMATED"] != '-' ? $arItem["TITLE_FORMATED"] : $arItem["BODY_FORMATED"]?></a>
+		<p><?= $arItem["TITLE_FORMATED"] == '-' ? $arItem["TITLE_FORMATED"] : $arItem["BODY_FORMATED"]?></p>
+		<!-- <small><?//=GetMessage("SEARCH_MODIFIED")?> <?//=$arItem["DATE_CHANGE"]?></small><br /> -->
+		</div>
+		<?}?>
+		
+	<?endforeach;?>
+	<?
+	if ($arParams["DISPLAY_BOTTOM_PAGER"] != "N") {
+		echo $arResult["NAV_STRING"];
+	}
+	?>
+	<br />
+
 <?else: ?>
 	<?ShowNote(GetMessage("SEARCH_NOTHING_TO_FOUND"));?>
 <?endif;?>

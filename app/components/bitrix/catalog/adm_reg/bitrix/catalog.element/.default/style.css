@@ -1,0 +1,79 @@
+﻿/* Additional */
+#head, #footer {
+	min-width: 800px;
+	text-align: center;
+	text-shadow: #fff 0 1px 0;}
+#head {
+	color: #555;
+	font-size: 40px;
+	font-weight: bold;
+	line-height: 40px;
+	margin: 100px 0 50px;}
+#footer {
+	font-size: 13px;
+	margin: 20px 0;}
+
+
+/* TABS */
+.tabs {
+    position: relative;
+    margin: 0 auto;
+	width: 100%;}
+.tabs label {
+	display: block;
+	float: left;
+	-moz-border-radius: 6px 6px 0 0;
+	-webkit-border-radius: 6px 6px 0 0;
+	border-radius: 6px 6px 0 0;
+	border-left: 1px solid #cdcdcd;
+    border-right: 1px solid #cdcdcd;
+	border-top: 2px solid #a6a6a6;
+	color: #a6a6a6;
+	cursor: pointer;
+	font-weight: bold;
+	font-size: 15px;
+	position: relative;
+	top: 2px;
+	width: auto;
+	padding:10px 20px;
+	height: 60px;
+	line-height: 45px;
+	text-align: center;
+	text-transform: uppercase;
+	text-shadow: #fff 0 1px 0;
+	z-index: 1;}
+.tabs input {
+	position: absolute;
+	left: -9999px;}
+#tab_1:checked  ~ #tab_l1,
+#tab_2:checked  ~ #tab_l2,
+#tab_3:checked  ~ #tab_l3 {
+    color: #3F98C4;
+	border-top: 2px solid #3F98C4;
+	top: 0;
+	z-index: 3;}
+
+.tabs_cont {
+	background: #fff;
+	-moz-border-radius: 0 6px 6px 6px;
+	-webkit-border-radius: 0 6px 6px 6px;
+	border-radius: 0 6px 6px 6px;
+	padding: 20px 25px;
+	position: relative;
+	z-index: 2;
+	height: auto;}
+.tabs_cont > div {
+	position: absolute;
+	left: -9999px;
+	top: 0;
+	opacity: 0;
+    -moz-transition: opacity .5s ease-in-out;
+    -webkit-transition: opacity .5s ease-in-out;
+	transition: opacity .5s ease-in-out;}
+
+#tab_1:checked ~ .tabs_cont #tab_c1,
+#tab_2:checked ~ .tabs_cont #tab_c2,
+#tab_3:checked ~ .tabs_cont #tab_c3 {
+	position: static;
+	left: 0;
+	opacity: 1;}

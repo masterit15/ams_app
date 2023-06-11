@@ -628,6 +628,20 @@ label[for="search"]
   max-width: 700px
   margin: auto
   position: relative
+.m_menu
+  display: none
+  &.mm-menu--opened
+    display: block
+.mm-panel
+  & .search_form
+    width: 100%
+    height: auto
+    display: block
+.mm-menu .search
+  position: relative
+  width: 100%
+  padding: 15px 0
+  font-size: 18px
 .search
   position: absolute
   width: 60px
@@ -756,3 +770,5 @@ a.search-page-params
 .search_filter_input
   position: relative
   width: 100%
+input#captcha
+  display: none

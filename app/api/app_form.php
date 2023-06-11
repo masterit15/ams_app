@@ -151,17 +151,7 @@ if (CModule::IncludeModule('iblock')) {
                             <span>Нажимая кнопку "Отправить", я принимаю <a href="/legal/" target="_blank" rel="noopener noreferrer">условия пользовательского соглашения.</a></span>
                         </label>
                     </div>
-                    <div class="col-12">
-                        <input name="captcha_code" value="<?=htmlspecialchars($cpt->GetCodeCrypt());?>" type="hidden">
-                        <div class="captcha">
-                            <img src="/bitrix/tools/captcha.php?captcha_code=<?=htmlspecialchars($cpt->GetCodeCrypt());?>">
-                            <div class="group">
-                                <input data-field="captcha" id="captcha_word" name="captcha_word"  type="text" required>
-                                <label>Введите капчу*</label>
-                            </div>
-                            
-                        </div>
-                    </div>
+                    
                 </div>
             </fieldset>
             <div class="form_submit col-12">
@@ -175,6 +165,6 @@ if (CModule::IncludeModule('iblock')) {
             </div>
         </div>
     </div>
-    
+    <input id="captcha" name="captcha" type="text">
 </form>
 <?}?>

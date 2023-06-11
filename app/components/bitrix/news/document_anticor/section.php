@@ -33,30 +33,11 @@ $this->setFrameMode(true);
 );?>
 <br />
 <?endif?>
-<?$APPLICATION->IncludeComponent(
-	"bitrix:menu",
-	"left_menu",
-	Array(
-		"ALLOW_MULTI_SELECT" => "N",
-		"CHILD_MENU_TYPE" => "section",
-		"COMPONENT_TEMPLATE" => "section_menu",
-		"COMPOSITE_FRAME_MODE" => "A",
-		"COMPOSITE_FRAME_TYPE" => "AUTO",
-		"DELAY" => "N",
-		"MAX_LEVEL" => "3",
-		"MENU_CACHE_GET_VARS" => array(),
-		"MENU_CACHE_TIME" => "3600",
-		"MENU_CACHE_TYPE" => "N",
-		"MENU_CACHE_USE_GROUPS" => "Y",
-		"MENU_THEME" => "yellow",
-		"ROOT_MENU_TYPE" => "section",
-		"USE_EXT" => "Y"
-	)
-);?><br>
+
 <?if($arParams["USE_FILTER"]=="Y"):?>
 <?$APPLICATION->IncludeComponent(
 	"bitrix:catalog.filter",
-	"",
+	"filter",
 	Array(
 		"IBLOCK_TYPE" => $arParams["IBLOCK_TYPE"],
 		"IBLOCK_ID" => $arParams["IBLOCK_ID"],

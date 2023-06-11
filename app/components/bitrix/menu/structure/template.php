@@ -4,10 +4,10 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();
 if (empty($arResult))return;
 CModule::IncludeModule('iblock')
 ?>
-<div class="view_btn">
+<!-- <div class="view_btn">
 	<button class="small" data-view="small"><i class="fa fa-outdent"></i></button>
 	<button class="utter" data-view="utter"><i class="fa fa-sitemap"></i></button>
-</div>
+</div> -->
 <div class="tree" data-view='small'>
 <ul>
 <?
@@ -46,16 +46,21 @@ function getWorker($lnk, $item){
 		}
 	}
 	if($worker){// рендерим элемент 
+		// PR($ar_res['NAME']);
 		if($worker['IMG']){
-			echo '<div class="tree_item" data-toggle="popover" data-trigger="hover" data-placement="right" title="'.$worker['PROPERTY_DUTY_VALUE'].'" data-content="<img src=\''.$worker['IMG'].'\'>">';
+			echo '<div class="tree_item" data-trigger="hover" data-placement="right" title="'.$worker['PROPERTY_DUTY_VALUE'].'" data-content="<img src=\''.$worker['IMG'].'\'>">';
 		}else{
 			echo '<div class="tree_item" data-toggle="popover" data-trigger="hover" data-placement="right" title="'.$worker['PROPERTY_DUTY_VALUE'].'">';
 		}
 			echo '<a href="?WORKER='.$worker['ID'].'" title="'.$worker['POST'].'">';
 				echo '<div class="tree_item_content">';
 					echo '<div class="tree_item_head">';
-						echo '<p>'.$item["TEXT"].'</p>';
-						echo '<h3>'.$worker['NAME'].'</h3>';
+						echo '<p>'.$ar_res['NAME'].'</p>';
+						// echo '<p>'.$worker['POST'].'</p>';
+						echo '<div class="mid">';
+							echo  $worker['POST'] ? '<p>'.$worker['POST'].':</p>': '';
+							echo '<h3>'.$worker['NAME'].'</h3>';
+						echo '</div>';
 					echo '</div>';
 					echo '<div class="tree_item_media">';
 					if($worker['IMG']){

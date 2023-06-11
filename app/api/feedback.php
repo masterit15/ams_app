@@ -16,8 +16,8 @@ if (CModule::IncludeModule('iblock')) {
     'userId' => '',
     'userCreate' => ''
   );
-	$chaptcha = returnReCaptcha($_POST['token']);
-	if(!$APPLICATION->CaptchaCheckCode($_POST["captcha_word"], $_POST["captcha_code"])){
+	$is_valid = $_POST['captcha'] == '' ? true : false;
+	if(!$is_valid){
 		$result['title'] = 'Вы не правильно ввели капчу, попробуйте открыть форму повторно';
 		$result['status'] = 'warning';
 	}else{
@@ -71,6 +71,7 @@ if (CModule::IncludeModule('iblock')) {
 				$json['event'] = 'add_application';
 				$json['title'] = 'Создано обращение';
 				$json['desc'] = 'Обращение от пользователя '. $PROP['FIO'];
+				$json['color']    = '#eb4d4b';
 				$json['icon'] = 'fa-envelope-o';
 				$json['userId'] = CUser::IsAuthorized() ? $USER->GetID() : '';
 				$json['userName'] = CUser::IsAuthorized() ? $arUser['FIRST_NAME'].' '.$arUser['NAME'].' '.$arUser['LAST_NAME'] : $PROP['FIO'];
@@ -92,10 +93,12 @@ if (CModule::IncludeModule('iblock')) {
 				$PROP['ENCODE_LINK'] = 'http://localhost:3000/feedback/obrashchenie-detalno/?application='.encript($data);
 				$PROP['ID'] = $ID;
 				$result['mail_to_ams'] = sendMailToAMS($PROP, $_FILES);
-				$result['mail_to_iniciator'] = sendMailToIniciator($PROP);
+				// $result['mail_to_iniciator'] = sendMailToIniciator($PROP);
 				$result['title'] 	= 'Ваше обращение под № '.$ID.'-1 принято!';
-				$result['desc'] 	= 'Вам будет направлено письмо c разъяснениями, на указанную е-почту '.$PROP['EMAIL'].' Для уточнения информации по обращению звоните по номеру 30-30-30 или пишите на электроннию почту vladikavkaz@rso-a.ru';
+				// $result['desc'] 	= 'Вам будет направлено письмо c разъяснениями, на указанную е-почту '.$PROP['EMAIL'].' Для уточнения информации по обращению звоните по номеру 30-30-30 или пишите на электроннию почту vladikavkaz@rso-a.ru';
+				$result['desc'] 	= 'Для уточнения информации по обращению звоните по номеру 30-30-30 или пишите на электроннию почту vladikavkaz@rso-a.ru';
 				$result['status'] = 'success';
+				$result['success'] = true;
 			} else {
 				$result['title'] 	= 'Вы не заполнили обязательные поля.';
 				$result['desc'] 	= 'Заполните все обязательные поля и попробуйте отправить обращение повторно.';

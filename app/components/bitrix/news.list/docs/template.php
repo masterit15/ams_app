@@ -6,9 +6,11 @@
 		$this->AddEditAction($arItem['ID'], $arItem['EDIT_LINK'], CIBlock::GetArrayByID($arItem["IBLOCK_ID"], "ELEMENT_EDIT"));
 		$this->AddDeleteAction($arItem['ID'], $arItem['DELETE_LINK'], CIBlock::GetArrayByID($arItem["IBLOCK_ID"], "ELEMENT_DELETE"), array("CONFIRM" => GetMessage('CT_BNL_ELEMENT_DELETE_CONFIRM')));
 		?>
-		<?$file = getFileArr($arItem['DISPLAY_PROPERTIES']["APPLICATION_FILE"]['FILE_VALUE']['ID']);?>
+		<?$file = getFileArr($arItem['DISPLAY_PROPERTIES']["APPLICATION_FILE"]['FILE_VALUE']['ID']);
+
+?>
 		<div class="doc_item item" title="<?=$doc['NAME']?>" id="<?=$this->GetEditAreaId($arItem['ID']);?>">
-		<a href="<?=$file['src']?>" <?if($file['type'] != 'pdf'){?>download<?}?>>				
+		<a href="<?=$file['path']?>" <?if($file['type'] != 'pdf'){?>download<?}?>>				
 	 	<span class="doc_icon">
       <?=$file['icon']?>
 		</span>				

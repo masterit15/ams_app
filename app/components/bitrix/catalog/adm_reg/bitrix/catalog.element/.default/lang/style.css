@@ -1,0 +1,115 @@
+﻿.catalog-price {
+	 color:red;
+}
+.yiiTab ul.tabs
+{
+    padding: 10px 0;
+    margin: 0;
+    border-bottom: 1px solid #4F81BD;
+    font: bold 12px Verdana, sans-serif;
+}
+
+.yiiTab ul.tabs li
+{
+    list-style: none;
+    margin: 0;
+    display: inline;
+}
+
+.yiiTab ul.tabs a
+{
+    padding: 10px 1.5em;
+    margin: 0 0 0 3px;
+    border: 1px solid #4F81BD;
+    border-bottom: none;
+    background: #d3dfee;
+    text-decoration: none;
+}
+
+.yiiTab ul.tabs a:link
+{
+	color: #667;
+}
+
+.yiiTab ul.tabs a:visited
+{
+	color: #667;
+}
+
+.yiiTab ul.tabs a:hover
+{
+    color: #000;
+    background: #E6F2FF;
+    border-color: #227;
+}
+
+.yiiTab ul.tabs a.active
+{
+    background: white;
+    border-bottom: 1px solid white;
+}
+
+.yiiTab div.view
+{
+    border-left: 1px solid #4F81BD;
+    border-right: 1px solid #4F81BD;
+    border-bottom: 1px solid #4F81BD;
+    padding: 8px;
+    margin: 0;
+}
+
+/*----------------------------------------------------------------------------------------------*/
+.tabs {
+    position: relative;
+    margin: 0 auto;
+    width: 800px;
+}
+.tabs label {
+    color: #555;
+    cursor: pointer;
+    display: block;
+    float: left;
+    width: 150px;
+    height: 45px;
+    line-height: 45px;
+    position: relative;
+    top: 2px;
+    text-align: center;
+}
+
+.tabs input {
+    position: absolute;
+    left: -9999px;
+}
+
+#tab_1:checked  ~ #tab_l1,
+#tab_2:checked  ~ #tab_l2,
+#tab_3:checked  ~ #tab_l3 {
+    background: #fff;
+    border-color: #fff;
+    top: 0;
+    z-index: 3;
+}
+
+.tabs_cont {
+    background: #fff;
+    position: relative;
+    z-index: 2;
+    height: 230px;
+}
+.tabs_cont > div {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    opacity: 0;
+    -moz-transition: opacity .5s ease-in-out;
+    -webkit-transition: opacity .5s ease-in-out;
+    transition: opacity .5s ease-in-out;
+}
+#tab_1:checked ~ .tabs_cont #tab_c1,
+#tab_2:checked ~ .tabs_cont #tab_c2,
+#tab_3:checked ~ .tabs_cont #tab_c3 {
+    position: static;
+    left: 0;
+    opacity: 1;
+}

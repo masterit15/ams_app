@@ -20,13 +20,14 @@ $this->setFrameMode(true);
 		$this->AddEditAction($arItem['ID'], $arItem['EDIT_LINK'], CIBlock::GetArrayByID($arItem["IBLOCK_ID"], "ELEMENT_EDIT"));
 		$this->AddDeleteAction($arItem['ID'], $arItem['DELETE_LINK'], CIBlock::GetArrayByID($arItem["IBLOCK_ID"], "ELEMENT_DELETE"), array("CONFIRM" => GetMessage('CT_BNL_ELEMENT_DELETE_CONFIRM')));
 		
-		$file = getFileArr($arItem['DISPLAY_PROPERTIES']["DOC_FILE"]['FILE_VALUE']['ID']);
+		$file = getFileArr($arItem['DISPLAY_PROPERTIES']["APPLICATION_FILE"]['FILE_VALUE']['ID']);
+		$link = $arItem['PROPERTIES']["LINK"]['VALUE'];
 		?>
 
 		<div class="doc_item item" title="<?=$arItem['NAME']?>" id="<?=$this->GetEditAreaId($arItem['ID']);?>">
-	 <a href="<?=$file['path']?>" download>					
+	 <a href="<?=$link ? $link : $file['path']?>" <?if(!$link){?>download<?}?>>					
 	 	<span class="doc_icon">
-      <?=$file['icon']?>
+		 <?=$link? '<i class="fa fa-external-link"></i>' : $file['icon']?>
 		</span>				
 		<div class="doc_detail">			
     <div class="doc_title">

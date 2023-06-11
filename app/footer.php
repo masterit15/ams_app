@@ -27,7 +27,7 @@
 					<ul class="footer_info">
 						<li>С понедельника по пятницу – с 9.00 до 18.00</li>
 						<li>
-							Телефон справочной службы
+							Телефон контакт-центра
 							АМС г. Владикавказ
 							<a href="tel:+78867303030">30-30-30</a>
 							звонки принимаются
@@ -66,41 +66,45 @@
 				<ul class="footer_info">
 						<li>Владикавказ, пл. Штыба, №2</li>
 						<li>Тел: (8672) 70-72-14</li>
-						<li>И.о. гл. редактора: Каллагова З. М.</li>
+						<li>Главный редактор: Биазарти Д. К.</li>
 						<li>Свидетельство о регистрации СМИ ЭЛ № ФС 77 – 75258 от 07.03.2019 выданное Федеральной Службой по надзору в сфере связи, информационных технологий и массовых коммуникаций</li>
 						<li>Учредитель: Администрация местного самоуправления г. Владикавказ</li>
+						<li>Адрес редакции: Владикавказ, пл. Штыба, №2</li>
+						<li>Е-почта редакции: <a href="mailto:smi-ams@rso-a.ru">smi-ams@rso-a.ru</a></li>
 						<li><a href="/legal/" target="_blank" rel="noopener noreferrer">Соглашение о пользовании информационными системами и ресурсами города Владикавказ</a></li>
 					</ul>
 				</div>
-				<div class="copyright">© 2019—2020. Официальный сайт администрации самоуправления и Собрание представителей г. Владикавказ. <span class="soip">12+</span>
-				</div>
+				<div class="copyright">© 2019—2020. Официальный сайт администрации местного самоуправления и Собрание представителей г. Владикавказ. <span class="soip">6+</span>
+<!-- Yandex.Metrika informer -->
+<a href="https://metrika.yandex.ru/stat/?id=91636455&amp;from=informer"
+target="_blank" rel="nofollow"><img src="https://informer.yandex.ru/informer/91636455/3_0_6654E2FF_6654E2FF_1_uniques"
+style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика" title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)" class="ym-advanced-informer" data-cid="91636455" data-lang="ru" /></a>
+<!-- /Yandex.Metrika informer -->
+
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();
+   for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(91636455, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true,
+        webvisor:true,
+        trackHash:true
+   });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/91636455" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+			</div>
 			</div>
 		</div>
 	</footer>
 	<!-- end footer -->
 	<div id="toTop"><i class="fa fa-chevron-up"></i></div>
-	<nav id="footer_nav">
-		<ul>
-			<li>
-				<a href="tel:303030"><i class="fa fa-phone"></i></a>
-			</li>
-			<li>
-				<div class="search">
-					<i class="fa fa-search"></i>
-				</div>
-			</li>
-			<li>
-				<span class="aa-enable aa-hide" tabindex="1" data-aa-on>
-					<i class="fa fa-low-vision"></i>
-				</span>
-			</li>
-			<li>
-				<a class="appliction" href="javascript:void(0)" data-izimodal-open="#modal_app_form" data-izimodal-transitionin="fadeInDown">
-					<i class="fa fa-pencil-square-o"></i>
-				</a>
-			</li>
-		</ul>
-	</nav>
 	<!-- begin modal -->
 	<div id="modal_app_form" data-iziModal-fullscreen="true" data-iziModal-title="Форма электронного обращения"
 		data-iziModal-subtitle="Поля, отмеченные *, обязательны для заполнения" data-iziModal-icon="icon-home">
@@ -133,5 +137,100 @@
 		</div>
 	</div>
 	<!-- end modal -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.1.2/js.cookie.js"></script>
+    <style>
+        .cookie-notification {
+            position: fixed;
+            background-color: rgba(0, 0, 0, .8);
+            bottom: 0;
+						left: 0;
+						right: 0;
+            width: 100%;
+						/* max-width: 1200px; */
+            color: white;
+						margin: auto;
+            padding: 15px;
+						z-index: 9999;
+        }
+        .cookie-notification_hidden_yes {
+            display: none;
+        }
+        .cookie-notification__header {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        .cookie-notification__body {
+            margin-bottom: 10px;
+						font-size: 14px;
+        }
+				.cookie-notification__button{
+					cursor: pointer;
+					padding: 10px 20px;
+				}
+    </style>
+	<div class="cookie-notification cookie-notification_hidden_yes">
+        <div class="cookie-notification__header">Мы используем Яндекс Метрику</div>
+        <div class="cookie-notification__body">
+            <p>Этот сайт использует сервис веб-аналитики Яндекс Метрика, предоставляемый компанией ООО «ЯНДЕКС», 119021, Россия, Москва, ул. Л. Толстого, 16 (далее&nbsp;— Яндекс).</p>
+	     <p>Сервис Яндекс Метрика использует технологию “cookie”&nbsp;— небольшие текстовые файлы, размещаемые на компьютере пользователей с целью анализа их пользовательской активности.</p>
+            <p>Собранная при помощи cookie информация не может идентифицировать вас, однако может помочь нам улучшить работу нашего сайта. Информация об использовании вами данного сайта, собранная при помощи cookie, будет передаваться Яндексу и храниться на сервере Яндекса в ЕС и Российской Федерации. Яндекс будет обрабатывать эту информацию для оценки использования вами сайта, составления для нас отчетов о деятельности нашего сайта, и предоставления других услуг. Яндекс обрабатывает эту информацию в порядке, установленном в условиях использования сервиса Яндекс Метрика.</p>
+            <p>Вы можете отказаться от использования cookies, выбрав соответствующие настройки в браузере. Также вы можете использовать инструмент&nbsp;— https://yandex.ru/support/metrika/general/opt-out.html Однако это может повлиять на работу некоторых функций сайта. Используя этот сайт, вы соглашаетесь на обработку данных о вас Яндексом в порядке и целях, указанных выше.</p>
+        </div>
+        <div class="cookie-notification__buttons">
+            <button class="cookie-notification__button" id="yes">Я согласен</button>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var messageElement = document.querySelector('.cookie-notification');
+        // Если нет cookies, то показываем плашку
+        if (!Cookies.get('agreement')) {
+            showMessage();
+        } else {
+            initCounter();
+        }
+        // Загружаем сам код счетчика сразу
+        (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+        (window, document,'script','//mc.yandex.ru/metrika/tag.js', 'ym')
+        // Функция добавляет класс к DOM-элементу. Вы можете использовать библиотеку jQuery или другой фреймворк
+        function addClass (o, c) {
+            var re = new RegExp("(^|\\s)" + c + "(\\s|$)", "g");
+            if (!o || re.test(o.className)) {
+                return;
+            }
+            o.className = (o.className + " " + c).replace(/\s+/g, " ").replace(/(^ | $)/g, "");
+        }
+        // Функция удаляет класс из DOM-элемента. Вы можете использовать библиотеку jQuery или другой фреймворк
+        function removeClass (o, c) {
+            var re = new RegExp('(^|\\s)' + c + '(\\s|$)', 'g');
+            if (!o) {
+                return;
+            }
+            o.className = o.className.replace(re, '$1').replace(/\s+/g, ' ').replace(/(^ | $)/g, '');
+        }
+        // Функция, которая прячет предупреждение
+        function hideMessage () {
+            addClass(messageElement, 'cookie-notification_hidden_yes');
+        }
+        // Функция, которая показывает предупреждение
+        function showMessage () {
+            removeClass(messageElement, 'cookie-notification_hidden_yes');
+        }
+        function saveAnswer () {
+            // Прячем предупреждение
+            hideMessage();
+
+            // Ставим cookies
+            Cookies.set('agreement', '1');
+        }
+        function initCounter () {
+            ym(91636455, 'init', {});
+            saveAnswer();
+        }
+        // Нажатие кнопки "Я согласен"
+        document.querySelector('#yes').addEventListener('click', function () {
+            initCounter();
+        });
+    </script>
 </body>
 </html>

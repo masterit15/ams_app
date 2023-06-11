@@ -13,19 +13,13 @@
 $this->setFrameMode(true);
 ?>
 
-
-
-
-
-<div class="gos_banner">
-		<div class="container">
-			<div class="row">
+			<div class="banner_row">
 				<?foreach($arResult["ITEMS"] as $arItem):?>
 					<?
 					$this->AddEditAction($arItem['ID'], $arItem['EDIT_LINK'], CIBlock::GetArrayByID($arItem["IBLOCK_ID"], "ELEMENT_EDIT"));
 					$this->AddDeleteAction($arItem['ID'], $arItem['DELETE_LINK'], CIBlock::GetArrayByID($arItem["IBLOCK_ID"], "ELEMENT_DELETE"), array("CONFIRM" => GetMessage('CT_BNL_ELEMENT_DELETE_CONFIRM')));
 					?>
-				<div class="col-12 <?=$arItem['PROPERTIES']['WIDTH']['VALUE_XML_ID']?>" id="<?=$this->GetEditAreaId($arItem['ID']);?>" 
+				<div class="banner_item <?//=$arItem['PROPERTIES']['WIDTH']['VALUE_XML_ID']?>" id="<?=$this->GetEditAreaId($arItem['ID']);?>" 
 				style="background-color: #<?=$arItem['DISPLAY_PROPERTIES']['BG_COLOR']['VALUE']?>; color: #<?=$arItem['DISPLAY_PROPERTIES']['TEXT_COLOR']['VALUE'];?>;">
 					<?if($arItem['DISPLAY_PROPERTIES']['BANNER_CODE']['DISPLAY_VALUE']){
 
@@ -46,9 +40,4 @@ $this->setFrameMode(true);
 					<?}?>
 					</div>
 				<?endforeach;?>
-				<?if($arParams["DISPLAY_BOTTOM_PAGER"]):?>
-					<br /><?=$arResult["NAV_STRING"]?>
-				<?endif;?>
 		</div>
-	</div>
-</div>

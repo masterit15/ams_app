@@ -1,0 +1,17 @@
+﻿.history_list{
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+.history_item{
+	display: flex;
+	justify-content: flex-start;
+	gap: 20px;
+}
+.history_item_media{
+	width: 320px;
+}
+.history_item_media img{
+	min-width: 320px;
+	height: auto;
+}

@@ -38,6 +38,11 @@ $this->setFrameMode(true);
 						/>
 				<?endif?>
 			<?}?>
+			<div class="news_info">
+				<i class="fa fa-eye"></i>
+				<span title="Количество просмотров: <?=$arResult['SHOW_COUNTER'];?>"
+					data-toggle="tooltip" data-placement="top"><?=$arResult['SHOW_COUNTER'];?></span>
+			</div>
 	<?if ($arParams["DISPLAY_DATE"] != "N" && $arResult["DISPLAY_ACTIVE_FROM"]): ?>
 		<span class="news-date-time"><?=$arResult["DISPLAY_ACTIVE_FROM"]?></span>
 	<?endif;?>
@@ -85,11 +90,35 @@ $this->setFrameMode(true);
 				?>
 			</div>
 		</div>
-		<div class="news-application-files">
-			<h3><?=$arResult["PROPERTIES"]['APPLICATION_FILES']['NAME']?></h3>
-			<hr>
+		<?if($arResult["PROPERTIES"]["VOTE"]["VALUE"] == 'ДА'){?>
 			
-			<?if(!arrCount($arResult["PROPERTIES"]['APPLICATION_FILES'])){?>
+			<?
+			$APPLICATION->IncludeComponent(
+				"bitrix:voting.current",
+				"",
+				Array(
+					"AJAX_MODE" => "Y",
+					"AJAX_OPTION_ADDITIONAL" => "",
+					"AJAX_OPTION_HISTORY" => "N",
+					"AJAX_OPTION_JUMP" => "N",
+					"AJAX_OPTION_STYLE" => "Y",
+					"CACHE_TIME" => "3600",
+					"CACHE_TYPE" => "A",
+					"CHANNEL_SID" => "ANTICOR",
+					"COMPOSITE_FRAME_MODE" => "A",
+					"COMPOSITE_FRAME_TYPE" => "AUTO",
+					"VOTE_ALL_RESULTS" => "N",
+					"VOTE_ID" => "20"
+				)
+			);?>
+		<?}?>
+		<div class="news-application-files">
+			
+			<?if(!arrCount($arResult["PROPERTIES"]['APPLICATION_FILES']['VALUE'])){?>
+				<?if($arResult["PROPERTIES"]['APPLICATION_FILES']['VALUE']){?>
+				<h3><?=$arResult["PROPERTIES"]['APPLICATION_FILES']['NAME']?></h3>
+				<hr>
+				<?}?>
 				<?if($arResult["PROPERTIES"]['APPLICATION_FILES']['VALUE']){?>
 					<?$file = getFileArr($arResult["PROPERTIES"]['APPLICATION_FILES']['VALUE']);?>
 					<div class="doc_item item" title='<?=$file['NAME']?>'>
