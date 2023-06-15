@@ -1,4 +1,10 @@
-﻿.download_zip {
+﻿
+.subordinate_list i{
+    width: 30px;
+    height: 30px;
+}
+
+.download_zip {
     cursor: pointer;
 }
 
