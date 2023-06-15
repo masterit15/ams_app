@@ -4,4 +4,4 @@ vendor/
 ddf/
 old/
 sass/
-app/api/*.json
+app/api/**/*.json
